@@ -12,7 +12,8 @@
     "product_name": "Recorded Future",
     "product_version_regex": ".*",
     "min_phantom_version": "1.2.236",
-    "logo": "recordedfuture.png",
+    "logo": "logo_recordedfuture.svg",
+    "logo_dark": "logo_recordedfuture_dark.svg",
     "configuration": {
         "recordedfuture_api_token": {
             "description": "Recorded Future API Token",
