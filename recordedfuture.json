@@ -16,7 +16,7 @@
     "configuration": {
         "recordedfuture_api_token": {
             "description": "Recorded Future API Token",
-            "data_type": "string",
+            "data_type": "password",
             "required": true
         },
         "recordedfuture_api_basename": {
