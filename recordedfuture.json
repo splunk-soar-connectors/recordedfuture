@@ -7,12 +7,13 @@
     "type": "threat intelligence service",
     "license": "Copyright (c) Recorded Future, Inc. 2016",
     "main_module": "recordedfuture_connector.pyc",
-    "app_version": "1.1.3",
+    "app_version": "1.1.4",
     "product_vendor": "Recorded Future",
     "product_name": "Recorded Future",
     "product_version_regex": ".*",
-    "min_phantom_version": "1.2.236",
-    "logo": "recordedfuture.png",
+    "min_phantom_version": "4.0.1068",
+    "logo": "logo_recordedfuture.svg",
+    "logo_dark": "logo_recordedfuture_dark.svg",
     "configuration": {
         "recordedfuture_api_token": {
             "description": "Recorded Future API Token",
