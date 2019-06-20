@@ -1,7 +1,7 @@
 # --
 # File: recordedfuture_view.py
 #
-# Copyright (c) Recorded Future, Inc., 2016
+# Copyright (c) Recorded Future, Inc., 2019
 #
 # This unpublished material is proprietary to Recorded Future.
 # All rights reserved. The methods and
@@ -14,15 +14,27 @@
 # -----------------------------------------
 # Recorded Future App View python file
 # -----------------------------------------
+APP_URL = 'https://app.recordedfuture.com/live/sc/entity/%s%%3A%s'
 
 
-def format_result(result):
-
-    retval = { 'param': result.get_param() }
+def format_result(result, all_data=False):
+    retval = {'param': result.get_param()}
 
     data = result.get_data()
     if (data):
-        retval['data'] = data[0]
+        if all_data:
+            retval['data'] = data[0]
+        else:
+            retval['data'] = data[0]
+
+    if 'risk' in retval['data'] \
+            and retval['data']['risk']['score'] is not None:
+        if 'ip' in retval['param']:
+            retval['intelCard'] = APP_URL % ('ip', retval['param']['ip'])
+        elif 'hash' in retval['param']:
+            retval['intelCard'] = APP_URL % ('hash', retval['param']['hash'])
+        elif 'domain' in retval['param']:
+            retval['intelCard'] = APP_URL % ('idn', retval['param']['domain'])
 
     summary = result.get_summary()
     if (summary):
@@ -41,8 +53,7 @@ def format_result(result):
     return retval
 
 
-def display_results(provides, all_app_runs, context):
-
+def reputation_results(provides, all_app_runs, context):
     context['results'] = results = []
     for summary, action_results in all_app_runs:
         for result in action_results:
@@ -51,4 +62,27 @@ def display_results(provides, all_app_runs, context):
             if (not formatted):
                 continue
             results.append(formatted)
-    return 'display_results.html'
+    return 'reputation_results.html'
+
+
+def format_alert_result(result):
+    return format_result(result)
+
+
+def alert_results(provides, all_app_runs, context):
+    """Setup the view for alert results."""
+    context['results'] = results = []
+
+    for summary, action_results in all_app_runs:
+
+        for result in action_results:
+            # formatted = format_alert_result(result, True)
+            formatted = {
+                'param': result.get_param(),
+                'data': result.get_data()
+            }
+            if not formatted:
+                continue
+            results.append(formatted)
+
+    return 'alert_results.html'

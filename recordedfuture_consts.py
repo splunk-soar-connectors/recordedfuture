@@ -1,5 +1,5 @@
-# --
-# File: recordedfuture_view.py
+#
+# File: recordedfuture_consts.py
 #
 # Copyright (c) Recorded Future, Inc., 2019
 #
@@ -10,4 +10,10 @@
 # or in part, is forbidden except by express written permission
 # of Recorded Future.
 #
-# --
+# ---------------------------------------------
+# Phantom Recorded Future Connector python file
+# ---------------------------------------------
+
+# Define your constants here
+version = '1.2.0'
+buildid = '135878'
