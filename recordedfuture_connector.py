@@ -35,60 +35,6 @@ from phantom.action_result import ActionResult
 # Usage of the consts file is recommended
 from recordedfuture_consts import *
 
-# These dicts map which path_info, which fields, what the Recorded Future
-# category is called and whether to quote the entity or not.
-# They are used to make the reputation/intelligence method parameterized.
-# (path_info template, fields, quote parameter)
-REPUTATION_MAP = {
-    'ip': ('/ip/%s',
-           ['entity', 'risk', 'timestamps'],
-           'ip',
-           False),
-    'domain': ('/domain/idn:%s',
-               ['entity', 'risk', 'timestamps'],
-               'domain',
-               False),
-    'file': ('/hash/%s',
-             ['entity', 'risk', 'timestamps'],
-             'hash',
-             False),
-    'vulnerability': ('/vulnerability/%s',
-                      ['entity', 'risk', 'timestamps'],
-                      'vulnerability',
-                      False),
-    'url': ('/url/%s',
-            ['entity', 'risk', 'timestamps'],
-            'url',
-            True),
-}
-INTELLIGENCE_MAP = {
-    'ip': ('/ip/%s',
-           ['entity', 'risk', 'timestamps', "threatLists", "intelCard",
-            "metrics", "location", "relatedEntities"],
-           'ip',
-           False),
-    'domain': ('/domain/idn:%s',
-               ['entity', 'risk', 'timestamps', "threatLists",
-                "intelCard", "metrics", "relatedEntities"],
-               'domain',
-               False),
-    'file': ('/hash/%s',
-             ['entity', 'risk', 'timestamps', "threatLists", "intelCard",
-              "metrics", "hashAlgorithm", "relatedEntities"],
-             'hash',
-             False),
-    'vulnerability': ('/vulnerability/%s',
-                      ['entity', 'risk', 'timestamps', "threatLists",
-                       "intelCard",
-                       "metrics", "cvss", "nvdDescription", "relatedEntities"],
-                      'vulnerability',
-                      False),
-    'url': ('/url/%s',
-            ['entity', 'risk', 'timestamps', "metrics", "relatedEntities"],
-            'url',
-            True),
-}
-
 
 class RetVal(tuple):
     def __new__(cls, val1, val2=None):
@@ -680,7 +626,7 @@ class RecordedfutureConnector(BaseConnector):
         optional_config_name = config.get('optional_config_name')
         """
 
-        self._base_url = config.get('recordedfuture_api_basename')
+        self._base_url = config.get('recordedfuture_base_url')
 
         return phantom.APP_SUCCESS
 

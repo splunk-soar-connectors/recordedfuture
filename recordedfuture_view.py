@@ -21,11 +21,7 @@ def format_result(result, all_data=False):
     retval = {'param': result.get_param()}
 
     data = result.get_data()
-    if (data):
-        if all_data:
-            retval['data'] = data[0]
-        else:
-            retval['data'] = data[0]
+    retval['data'] = data[0]
 
     if 'risk' in retval['data'] \
             and retval['data']['risk']['score'] is not None:

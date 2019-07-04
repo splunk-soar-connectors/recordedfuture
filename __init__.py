@@ -1,5 +1,5 @@
 # --
-# File: recordedfuture_view.py
+# File: __init__.py
 #
 # Copyright (c) Recorded Future, Inc., 2019
 #

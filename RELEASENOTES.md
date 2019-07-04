@@ -33,7 +33,7 @@ the following steps for each playbook that uses the app:
    a similar set of information as the previous version, the format is
    changed however.
 1. **lookup vulnerability**: the action as been renamed to 
-   **vulnerabiltiy reputation**. It returns a smaller set of information 
+   **vulnerability reputation**. It returns a smaller set of information 
    compared to previous versions. The new action "vulnerability intelligence" 
    returns a similar set of information as the previous version, the format is
    changed however.
@@ -54,7 +54,7 @@ the following steps for each playbook that uses the app:
    vulnerability (ex CVE id).
    Full Risk information, Related Entities, Metrics, Threat Lists, CVSS 
    data, NVD Description and Timestamps are provided.
-1. **url intelligence**: get an extensive contect for the given url.
+1. **url intelligence**: get an extensive context for the given url.
    Full Risk information, Related Entities, Metrics and Timestamps is 
    provided.
 1. **url reputation**: get reputation information for an URL.

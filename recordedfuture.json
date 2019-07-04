@@ -23,7 +23,7 @@
       "required": true,
       "order": 0
     },
-    "recordedfuture_api_basename": {
+    "recordedfuture_base_url": {
       "description": "Recorded Future API Basename",
       "data_type": "string",
       "required": true,
