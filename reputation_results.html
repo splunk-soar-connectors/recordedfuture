@@ -13,8 +13,8 @@
 
 {% block widget_content %} <!-- Main Start Block -->
 
-<!-- 
-File: display_results.html
+<!--
+File: reputation_results.html
 
 Recorded Future App View html template file
 
@@ -30,16 +30,8 @@ of Recorded Future.
 
 <style>
 
-a:link {
-  color: black;
-}
-
 a:hover {
   text-decoration:underline;
-}
-
-a:visited {
-  color: black;
 }
 
 .wf-table-vertical {
@@ -151,6 +143,25 @@ a:visited {
   <td>{{ result.data.risk.riskSummary }}</td>
   <td>{{ result.data.hashAlgorithm }}</td>
 {% endif %}
+{% if result.param.url %}
+<tr>
+  <th>URL</th>
+  <th>Risk Score</th>
+  <th>Criticality</th>
+  <th>Risk Summary</th>
+  <th>First Seen</th>
+  <th>Last Seen</th>
+  <th>Recorded Future</th>
+</tr>
+<tr>
+  <td>
+    <a href="javascript:;" onclick="context_menu(this, [{'contains': ['url'], 'value': '{{ result.param.url }}' }], 0, {{ container.id }}, null, false);">{{ result.param.url }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
+    </a>
+  </td>
+  <td>{{ result.data.risk.score }}</td>
+  <td>{{ result.data.risk.criticalityLabel }}</td>
+  <td>{{ result.data.risk.riskSummary }}</td>
+{% endif %}
 {% if result.param.vulnerability %}
 <tr>
   <th>Vulnerability</th>
@@ -172,7 +183,13 @@ a:visited {
 {% endif %}
   <td>{{ result.data.timestamps.firstSeen }}</td>
   <td>{{ result.data.timestamps.lastSeen }}</td>
-  <td><a href="{{ result.data.intelCard }}" target="new">Browse to Intel Card</a></td>
+  <td>
+    {% if result.data.intelCard %}
+      <a href="{{ result.data.intelCard }}" target="new">Browse to Intel Card</a>
+    {% elif result.intelCard %}
+      <a href="{{ result.intelCard }}" target="new">Browse to Intel Card</a>
+    {% endif %}
+  </td>
 </tr>
 </table>
 <br>
@@ -264,23 +281,25 @@ a:visited {
         {% endfor %}
       </table>
       <br>
-      {% else %}
-      <p> No Threat Lists in results </p>
       {% endif %}
 
     <!-- Location -->
       {% if result.data.location %}
       <table class="wf-table-horizontal">
-        <tr><th colspan="3">ASN and Geolocation</th></tr>
+        <tr><th colspan="5">ASN and Geolocation</th></tr>
         <tr>
           <td>AS Number</td>
+          <td>AS Name</td>
           <td>IP Range</td>
-          <td>Location</td>
+          <td>Geolocation (city)</td>
+          <td>Geolocation (country)</td>
         </tr>
         <tr>
-          <td> {{ result.data.location.asn.name }} </td>
+          <td> {{ result.data.location.asn }} </td>
+          <td> {{ result.data.location.organization }} </td>
           <td> {{ result.data.location.cidr.name }} </td>
-          <td> {{ result.data.location.location.name }} </td>
+          <td> {{ result.data.location.location.city }} </td>
+          <td> {{ result.data.location.location.country }} </td>
         </tr>
       </table>
       <br>
@@ -298,8 +317,6 @@ a:visited {
         {% endfor %}
       </table>
       <br>
-      {% else %}
-      <p> No Metrics in results </p>
       {% endif %}
 
 {% else %} <!-- handle no data responses -->
@@ -322,4 +339,3 @@ a:visited {
 </div> <!-- Main Div -->
 
 {% endblock %} <!-- Main Start Block -->
-

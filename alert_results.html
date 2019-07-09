@@ -1,0 +1,136 @@
+{% extends 'widgets/widget_template.html' %}
+{% load custom_template %}
+
+{% block title_color %}{{ title_color|default:'white' }}{% endblock %}
+{% block title_text_color %}{{ title_text_color|default:'rgb(101, 71, 150)' }}{% endblock %}
+{% block body_color %}{{ body_color|default:'white' }}{% endblock %}
+{% block body_text_color %}{{ body_text_color|default:'black' }}{% endblock %}
+{% block custom_title_prop %}{% if title_logo %}style="background-size: auto 60%; background-position: 50%; background-repeat: no-repeat; background-image: url('/app_resource/{{ title_logo }}');"{% endif %}{% endblock %}
+{% block title1 %}{{ title1 }}{% endblock %}
+{% block title2 %}{{ title2 }}{% endblock %}
+{% block custom_tools %}
+{% endblock %}
+
+{% block widget_content %} <!-- Main Start Block -->
+
+<!--
+File: alert_results.html
+
+Recorded Future App View html template file
+
+Copyright (c) Recorded Future, Inc., 2019
+
+This unpublished material is proprietary to Recorded Future.
+All rights reserved. The methods and
+techniques described herein are considered trade secrets
+and/or confidential. Reproduction or distribution, in whole
+or in part, is forbidden except by express written permission
+of Recorded Future.
+-->
+
+<style>
+
+  a:link {
+    color: black;
+  }
+
+  a:hover {
+    text-decoration:underline;
+  }
+
+  a:visited {
+    color: black;
+  }
+
+  .wf-table-vertical {
+    width: initial;
+    font-size: 12px;
+  }
+
+  .wf-table-vertical td {
+    padding: 5px;
+    border: 1px solid rgb(234, 234, 234);
+  }
+
+  .wf-table-horizontal {
+    width: initial;
+    border: 1px solid rgb(234, 234, 234);
+    font-size: 12px;
+  }
+
+  .wf-table-horizontal th {
+    text-align: center;
+    border: 1px solid rgb(234, 234, 234);
+    text-transform: uppercase;
+    font-weight: normal;
+    color: rgb(108, 129, 139);
+    padding: 5px;
+  }
+
+  .wf-table-horizontal td {
+    border: 1px solid rgb(234, 234, 234);
+    padding: 5px;
+    padding-left: 4px;
+  }
+
+  .wf-h3-style {
+    font-size : 20px
+  }
+
+  .wf-h4-style {
+    font-size : 16px
+  }
+
+  .wf-h5-style {
+    font-size : 14px
+  }
+  .wf-subheader-style {
+    font-size : 12px
+  }
+
+  table.recorded-future-entities-table {
+    width: 100%;
+  }
+  .recorded-future-entities-table th {
+    vertical-align: top;
+  }
+
+  .recorded-future-entities-table td {
+    vertical-align: top;
+  }
+
+</style>
+<div style="overflow: auto; width: 100%; height: 100%; padding-left:10px; padding-right:10px"> <!-- Main Div -->
+
+  {% for result in results %}
+    <h2>Alert rule: {{ result.data.0.rule.name }}</h2>
+
+    <div>
+      {% for alert in result.data.0.alerts %}
+
+        {% if alert.alert %}
+          <h3>Alert: {{ alert.alert.content.title }}</h3>
+          <p>Triggered: {{ alert.alert.content.triggered }}</p>
+
+          {% if alert.alert.entities %}
+            <table class="recorded-future-entities-table">
+              {% for key, val in alert.alert.entities.items %}
+                <tr>
+                  <th>{{ key }}</th>
+                  <td>
+                    {% for entityvalue in val %}
+                      <div>{{ entityvalue }}</div>
+                    {% endfor %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </table>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endfor %}
+
+</div> <!-- Main Div -->
+
+{% endblock %} <!-- Main Start Block -->
