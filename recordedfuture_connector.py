@@ -21,6 +21,7 @@ import urllib
 import json
 import hashlib
 import platform
+import ipaddress
 # noinspection PyUnresolvedReferences
 from bs4 import BeautifulSoup
 
@@ -610,6 +611,22 @@ class RecordedfutureConnector(BaseConnector):
 
         return my_ret_val
 
+    def _is_ip(self, input_ip_address):
+        """ Function that checks given address and return True if address is valid IPv4 or IPV6 address.
+
+        :param input_ip_address: IP address
+        :return: status (success/failure)
+        """
+
+        ip_address_input = input_ip_address
+
+        try:
+            ipaddress.ip_address(unicode(ip_address_input))
+        except:
+            return False
+
+        return True
+
     def initialize(self):
 
         # Load the state in initialize, use it to store data
@@ -630,6 +647,8 @@ class RecordedfutureConnector(BaseConnector):
         """
 
         self._base_url = config.get('recordedfuture_base_url')
+
+        self.set_validator('ipv6', self._is_ip)
 
         return phantom.APP_SUCCESS
 
