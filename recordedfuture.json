@@ -1,7 +1,7 @@
 {
   "appid": "6efe0e1b-76ac-4ffd-8fa0-ac58fd6efd77",
   "name": "Recorded Future",
-  "description": "This app implements lookups for quick reputation information, contextual threat intelligence and external threat alerts.",
+  "description": "This app implements lookups for quick reputation information, contextual threat intelligence and external threat alerts",
   "type": "reputation",
   "product_vendor": "Recorded Future, Inc",
   "logo": "logo_recordedfuture.svg",
@@ -14,7 +14,7 @@
   "utctime_updated": "2019-04-17T07:33:58.826014Z",
   "package_name": "phantom_recordedfuture",
   "main_module": "recordedfuture_connector.pyc",
-  "min_phantom_version": "4.1.94",
+  "min_phantom_version": "4.2.7532",
   "app_wizard_version": "1.0.0",
   "configuration": {
     "recordedfuture_api_token": {
@@ -27,16 +27,8 @@
       "description": "Recorded Future API Basename",
       "data_type": "string",
       "required": true,
-      "value_list": [],
       "default": "https://api.recordedfuture.com/v2",
       "order": 1
-    },
-    "recordedfuture_verify_ssl": {
-      "description": "Verify SSL certificates",
-      "data_type": "boolean",
-      "required": true,
-      "default": true,
-      "order": 2
     }
   },
   "actions": [
@@ -64,9 +56,7 @@
           "data_type": "string",
           "required": true,
           "primary": true,
-          "value_list": [],
           "allow_list": true,
-          "default": "",
           "order": 0
         },
         "timeframe": {
@@ -74,9 +64,8 @@
           "data_type": "string",
           "required": true,
           "primary": false,
-          "value_list": [],
           "default": "-24h to now",
-          "order": 0
+          "order": 1
         }
       },
       "output": [
@@ -291,7 +280,6 @@
           "data_type": "string",
           "required": true,
           "primary": true,
-          "value_list": [],
           "default": "",
           "order": 0
         }
@@ -367,8 +355,6 @@
           "contains": [
             "url"
           ],
-          "value_list": [],
-          "default": "",
           "order": 0
         }
       },
@@ -526,8 +512,6 @@
           "contains": [
             "url"
           ],
-          "value_list": [],
-          "default": "",
           "order": 0
         }
       },
@@ -642,8 +626,6 @@
           "contains": [
             "vulnerability"
           ],
-          "value_list": [],
-          "default": "",
           "order": 0
         }
       },
@@ -858,8 +840,6 @@
           "contains": [
             "vulnerability"
           ],
-          "value_list": [],
-          "default": "",
           "order": 0
         }
       },
@@ -970,8 +950,6 @@
             "sha1",
             "md5"
           ],
-          "value_list": [],
-          "default": "",
           "order": 0
         }
       },
@@ -1160,8 +1138,6 @@
             "sha1",
             "md5"
           ],
-          "value_list": [],
-          "default": "",
           "order": 0
         }
       },
@@ -1277,8 +1253,6 @@
           "contains": [
             "domain"
           ],
-          "value_list": [],
-          "default": "",
           "order": 0
         }
       },
@@ -1470,8 +1444,6 @@
           "contains": [
             "domain"
           ],
-          "value_list": [],
-          "default": "",
           "order": 0
         }
       },
@@ -1581,8 +1553,6 @@
           "contains": [
             "ip"
           ],
-          "value_list": [],
-          "default": "",
           "order": 0
         }
       },
@@ -1790,8 +1760,6 @@
           "contains": [
             "ip"
           ],
-          "value_list": [],
-          "default": "",
           "order": 0
         }
       },

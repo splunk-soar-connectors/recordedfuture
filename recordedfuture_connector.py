@@ -279,7 +279,6 @@ class RecordedfutureConnector(BaseConnector):
             resp = request_func(
                 url,
                 headers=my_headers,
-                verify=config.get('verify_server_cert', False),
                 **kwargs)
         except Exception as err:
             return RetVal(action_result.set_status(
@@ -309,7 +308,7 @@ class RecordedfutureConnector(BaseConnector):
 
         if phantom.is_fail(my_ret_val):
             self.save_progress("Test Connectivity Failed.")
-            return action_result.get_status()
+            return action_result.set_status(phantom.APP_ERROR)
 
         # Return success
         self.save_progress("Test Connectivity Passed")
@@ -327,6 +326,10 @@ class RecordedfutureConnector(BaseConnector):
         # the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
 
+        try:
+            path_info.encode("utf-8")
+        except:
+            return action_result.set_status(phantom.APP_ERROR, "Parameter value failed validation. Enter the appropriate value.")
         # Params for the API call
         params = {
             'fields': ','.join(fields)
