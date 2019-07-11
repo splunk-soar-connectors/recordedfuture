@@ -103,32 +103,36 @@ of Recorded Future.
 <div style="overflow: auto; width: 100%; height: 100%; padding-left:10px; padding-right:10px"> <!-- Main Div -->
 
   {% for result in results %}
-    <h2>Alert rule: {{ result.data.0.rule.name }}</h2>
+    {% if not result.data %}
+      <h4>Alert rule: No data found</h4>
+    {% else %}
+      <h2>Alert rule: {{ result.data.0.rule.name }}</h2>
 
-    <div>
-      {% for alert in result.data.0.alerts %}
+      <div>
+        {% for alert in result.data.0.alerts %}
 
-        {% if alert.alert %}
-          <h3>Alert: {{ alert.alert.content.title }}</h3>
-          <p>Triggered: {{ alert.alert.content.triggered }}</p>
+          {% if alert.alert %}
+            <h3>Alert: {{ alert.alert.content.title }}</h3>
+            <p>Triggered: {{ alert.alert.content.triggered }}</p>
 
-          {% if alert.alert.entities %}
-            <table class="recorded-future-entities-table">
-              {% for key, val in alert.alert.entities.items %}
-                <tr>
-                  <th>{{ key }}</th>
-                  <td>
-                    {% for entityvalue in val %}
-                      <div>{{ entityvalue }}</div>
-                    {% endfor %}
-                  </td>
-                </tr>
-              {% endfor %}
-            </table>
+            {% if alert.alert.entities %}
+              <table class="recorded-future-entities-table">
+                {% for key, val in alert.alert.entities.items %}
+                  <tr>
+                    <th>{{ key }}</th>
+                    <td>
+                      {% for entityvalue in val %}
+                        <div>{{ entityvalue }}</div>
+                      {% endfor %}
+                    </td>
+                  </tr>
+                {% endfor %}
+              </table>
+            {% endif %}
           {% endif %}
-        {% endif %}
-      {% endfor %}
-    </div>
+        {% endfor %}
+      </div>
+    {% endif %}
   {% endfor %}
 
 </div> <!-- Main Div -->

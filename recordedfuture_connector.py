@@ -347,6 +347,9 @@ class RecordedfutureConnector(BaseConnector):
                                                 'my_ret_val': my_ret_val,
                                                 'response': response})
 
+        if response is None:
+            action_result.set_status(phantom.APP_SUCCESS, "No data found.")
+
         if phantom.is_fail(my_ret_val):
             return action_result.get_status()
 
@@ -462,6 +465,10 @@ class RecordedfutureConnector(BaseConnector):
                           'params': params,
                           'my_ret_val': my_ret_val,
                           'response': response})
+
+        # If there is no response 
+        if response is None:
+            action_result.set_status(phantom.APP_SUCCESS, "No data found.")
 
         # Something went wrong
         if phantom.is_fail(my_ret_val):
