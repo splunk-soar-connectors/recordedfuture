@@ -154,6 +154,7 @@ class RecordedfutureConnector(BaseConnector):
         # If an IOC has no data in Recorded Future's API it returns 404.
         # While this is correct in REST semantics it's not what our app
         # needs. We will create an empty response instead.
+
         self.debug_print('_process_json_response kwargs: ', kwargs)
         if 'fields' in kwargs.get('params', {}):
             fields = kwargs['params']['fields'].split(',')
@@ -163,12 +164,20 @@ class RecordedfutureConnector(BaseConnector):
 
                 return RetVal(phantom.APP_SUCCESS, resp_json)
 
+        msg = "No data found"
+
+        if resp_json.get('message'):
+            msg = resp_json.get('message')
+
+        if resp_json.get('error').get('message'):
+            if msg:
+                msg = "{} and {}".format(msg, resp_json.get('error').get('message'))
+            else:
+                msg = resp_json.get('error').get('message')
+
         # You should process the error returned in the json
         message = "Error from server. Status Code: {0} " \
-                  "Data from server: {1}".format(resp.status_code,
-                                                 resp.text.replace(
-                                                     u'{',
-                                                     '{{').replace(u'}', '}}'))
+                  "Data from server: {1}".format(resp.status_code, msg)
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message),
                       None)
@@ -228,7 +237,6 @@ class RecordedfutureConnector(BaseConnector):
             a RetVal:       see above.
         """
         # **kwargs can be any additional parameters that requests.request
-        # accepts
         config = self.get_config()
 
         resp_json = None
@@ -309,8 +317,7 @@ class RecordedfutureConnector(BaseConnector):
 
         if phantom.is_fail(my_ret_val):
             self.save_progress("Test Connectivity Failed.")
-            return action_result.set_status(phantom.APP_ERROR)
-
+            return action_result.get_status()
         # Return success
         self.save_progress("Test Connectivity Passed")
         return action_result.set_status(phantom.APP_SUCCESS)
@@ -346,9 +353,6 @@ class RecordedfutureConnector(BaseConnector):
                                                 'params': params,
                                                 'my_ret_val': my_ret_val,
                                                 'response': response})
-
-        if response is None:
-            action_result.set_status(phantom.APP_SUCCESS, "No data found.")
 
         if phantom.is_fail(my_ret_val):
             return action_result.get_status()
@@ -465,10 +469,6 @@ class RecordedfutureConnector(BaseConnector):
                           'params': params,
                           'my_ret_val': my_ret_val,
                           'response': response})
-
-        # If there is no response 
-        if response is None:
-            action_result.set_status(phantom.APP_SUCCESS, "No data found.")
 
         # Something went wrong
         if phantom.is_fail(my_ret_val):

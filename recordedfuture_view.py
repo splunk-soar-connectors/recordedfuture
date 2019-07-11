@@ -18,12 +18,14 @@ APP_URL = 'https://app.recordedfuture.com/live/sc/entity/%s%%3A%s'
 
 
 def format_result(result, all_data=False):
+
     retval = {'param': result.get_param()}
 
     data = result.get_data()
-    retval['data'] = data[0]
+    if data:
+        retval['data'] = data[0]
 
-    if 'risk' in retval['data'] \
+    if data and 'risk' in retval['data'] \
             and retval['data']['risk']['score'] is not None:
         if 'ip' in retval['param']:
             retval['intelCard'] = APP_URL % ('ip', retval['param']['ip'])
