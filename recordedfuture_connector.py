@@ -337,7 +337,7 @@ class RecordedfutureConnector(BaseConnector):
         try:
             path_info.encode("utf-8")
         except:
-            return action_result.set_status(phantom.APP_ERROR, "Parameter value failed validation. Enter the appropriate value.")
+            return action_result.set_status(phantom.APP_ERROR, "Parameter value failed validation. Enter the valid value.")
         # Params for the API call
         params = {
             'fields': ','.join(fields)
