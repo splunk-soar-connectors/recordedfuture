@@ -1,0 +1,345 @@
+{% extends 'widgets/widget_template.html' %}
+{% load custom_template %}
+
+{% block title_color %}{{ title_color|default:'white' }}{% endblock %}
+{% block title_text_color %}{{ title_text_color|default:'rgb(101, 71, 150)' }}{% endblock %}
+{% block body_color %}{{ body_color|default:'white' }}{% endblock %}
+{% block body_text_color %}{{ body_text_color|default:'black' }}{% endblock %}
+{% block custom_title_prop %}{% if title_logo %}style="background-size: auto 60%; background-position: 50%; background-repeat: no-repeat; background-image: url('/app_resource/{{ title_logo }}');"{% endif %}{% endblock %}
+{% block title1 %}{{ title1 }}{% endblock %}
+{% block title2 %}{{ title2 }}{% endblock %}
+{% block custom_tools %}
+{% endblock %}
+
+{% block widget_content %} <!-- Main Start Block -->
+
+<!--
+  File: reputation_results.html
+  
+  Recorded Future App View html template file
+  
+  Copyright (c) Recorded Future, Inc., 2019
+  
+  This unpublished material is proprietary to Recorded Future.
+  All rights reserved. The methods and
+  techniques described herein are considered trade secrets
+  and/or confidential. Reproduction or distribution, in whole
+  or in part, is forbidden except by express written permission
+  of Recorded Future.
+-->
+
+<style>
+  
+  a:hover {
+    text-decoration:underline;
+  }
+  
+  .wf-table-vertical {
+    width: initial;
+    font-size: 12px;
+  }
+  
+  .wf-table-vertical td {
+    padding: 5px;
+    border: 1px solid rgb(234, 234, 234);
+  }
+  
+  .wf-table-horizontal {
+    width: initial;
+    border: 1px solid rgb(234, 234, 234);
+    font-size: 12px;
+  }
+  
+  .wf-table-horizontal th {
+    text-align: center;
+    border: 1px solid rgb(234, 234, 234);
+    text-transform: uppercase;
+    font-weight: normal;
+    color: rgb(108, 129, 139);
+    padding: 5px;
+  }
+  
+  .wf-table-horizontal td {
+    border: 1px solid rgb(234, 234, 234);
+    padding: 5px;
+    padding-left: 4px;
+  }
+  
+  .wf-h3-style {
+    font-size : 20px
+  }
+  
+  .wf-h4-style {
+    font-size : 16px
+  }
+  
+  .wf-h5-style {
+    font-size : 14px
+  }
+  .wf-subheader-style {
+    font-size : 12px
+  }
+  
+</style>
+<div style="overflow: auto; width: 100%; height: 100%; padding-left:10px; padding-right:10px"> <!-- Main Div -->
+  {% for result in results %} <!-- loop for each result -->
+  <br>
+    {% if not result.data %}
+    <h4>No data found</h4>
+    {% endif %}
+    
+    <!------------------- For each Result ---------------------->
+    
+    {% if result.data %} <!-- else case will handle errors and no data found responses -->
+    <!-- <h3 class="wf-h3-style">Info</h3> -->
+    <table class="wf-table-horizontal">
+      {% if result.param.domain %}
+      <tr>
+        <th>Domain</th>
+        <th>First Seen</th>
+        <th>Last Seen</th>
+        <th>Recorded Future</th>
+      </tr>
+      <tr>
+        <td>
+          <a href="javascript:;" onclick="context_menu(this, [{'contains': ['domain'], 'value': '{{ result.param.domain }}' }], 0, {{ container.id }}, null, false);">{{ result.param.domain }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
+          </a>
+        </td>
+        {% endif %}
+        {% if result.param.ip %}
+        <tr>
+          <th>IP Address</th>
+          <th>Risk Score</th>
+          <th>Criticality</th>
+          <th>Risk Summary</th>
+          <th>First Seen</th>
+          <th>Last Seen</th>
+          <th>Recorded Future</th>
+        </tr>
+        <tr>
+          <td>
+            <a href="javascript:;" onclick="context_menu(this, [{'contains': ['ip'], 'value': '{{ result.param.ip }}' }], 0, {{ container.id }}, null, false);">{{ result.param.ip }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
+            </a>
+          </td>
+          <td>{{ result.data.risk.score }}</td>
+          <td>{{ result.data.risk.criticalityLabel }}</td>
+          <td>{{ result.data.risk.riskSummary }}</td>
+          {% endif %}
+          {% if result.param.hash %}
+          <tr>
+            <th>Hash</th>
+            <th>Risk Score</th>
+            <th>Criticality</th>
+            <th>Risk Summary</th>
+            <th>Hash Algorithm</th>
+            <th>First Seen</th>
+            <th>Last Seen</th>
+            <th>Recorded Future</th>
+          </tr>
+          <tr>
+            <td>
+              <a href="javascript:;" onclick="context_menu(this, [{'contains': ['hash'], 'value': '{{ result.param.hash }}' }], 0, {{ container.id }}, null, false);">{{ result.param.hash }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
+              </a>
+            </td>
+            <td>{{ result.data.risk.score }}</td>
+            <td>{{ result.data.risk.criticalityLabel }}</td>
+            <td>{{ result.data.risk.riskSummary }}</td>
+            <td>{{ result.data.hashAlgorithm }}</td>
+            {% endif %}
+            {% if result.param.url %}
+            <tr>
+              <th>URL</th>
+              <th>Risk Score</th>
+              <th>Criticality</th>
+              <th>Risk Summary</th>
+              <th>First Seen</th>
+              <th>Last Seen</th>
+              <th>Recorded Future</th>
+            </tr>
+            <tr>
+              <td>
+                <a href="javascript:;" onclick="context_menu(this, [{'contains': ['url'], 'value': '{{ result.param.url }}' }], 0, {{ container.id }}, null, false);">{{ result.param.url }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                </a>
+              </td>
+              <td>{{ result.data.risk.score }}</td>
+              <td>{{ result.data.risk.criticalityLabel }}</td>
+              <td>{{ result.data.risk.riskSummary }}</td>
+              {% endif %}
+              {% if result.param.vulnerability %}
+              <tr>
+                <th>Vulnerability</th>
+                <th>Risk Score</th>
+                <th>Criticality</th>
+                <th>Risk Summary</th>
+                <th>First Seen</th>
+                <th>Last Seen</th>
+                <th>Recorded Future</th>
+              </tr>
+              <tr>
+                <td>
+                  <a href="javascript:;" onclick="context_menu(this, [{'contains': ['vulnerability'], 'value': '{{ result.param.vulnerability }}' }], 0, {{ container.id }}, null, false);">{{ result.param.vulnerability }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                  </a>
+                </td>
+                <td>{{ result.data.risk.score }}</td>
+                <td>{{ result.data.risk.criticalityLabel }}</td>
+                <td>{{ result.data.risk.riskSummary }}</td>
+                {% endif %}
+                <td>{{ result.data.timestamps.firstSeen }}</td>
+                <td>{{ result.data.timestamps.lastSeen }}</td>
+                <td>
+                  {% if result.data.intelCard %}
+                  <a href="{{ result.data.intelCard }}" target="new">Browse to Intel Card</a>
+                  {% elif result.intelCard %}
+                  <a href="{{ result.intelCard }}" target="new">Browse to Intel Card</a>
+                  {% endif %}
+                </td>
+              </tr>
+            </table>
+            <br>
+            <!-- NVD CVSS -->
+            {% if result.data.nvdDescription %}
+            <table class="wf-table-horizontal">
+              <tr><th>NVD Vulnerability Description</th></tr>
+              <tr>
+                <td> {{ result.data.nvdDescription }} </td>
+              </tr>
+            </table>
+            <br>
+            {% endif %}
+            
+            <!-- Risk Rules Triggered -->
+            {% if result.data.risk.evidenceDetails %}
+            <table class="wf-table-horizontal">
+              <tr><th colspan="4">Risk Rules Triggered</th></tr>
+              <tr>
+                <td>Criticality</td>
+                <td>Rule Name</td>
+                <td>Evidence</td>
+                <td>Timestamp</td>
+              </tr>
+              {% for rule in result.data.risk.evidenceDetails %}
+              <tr>
+                <td> {{ rule.criticalityLabel }} </td>
+                <td> {{ rule.rule }} </td>
+                <td> {{ rule.evidenceString }} </td>
+                <td> {{ rule.timestamp }} </td>
+              </tr>
+              {% endfor %}
+            </table>
+            <br>
+            {% endif %}
+            
+            <!-- NVD CVSS -->
+            {% if result.data.cvss %}
+            <table class="wf-table-horizontal">
+              <tr><th colspan="2">CVSS Vulnerability Metrics</th></tr>
+              <tr>
+                <td> Score </td>
+                <td> {{ result.data.cvss.score }} </td>
+              </tr>
+              <tr>
+                <td> Access Vector </td>
+                <td> {{ result.data.cvss.accessVector }} </td>
+              </tr>
+              <tr>
+                <td> Availability </td>
+                <td> {{ result.data.cvss.availability }} </td>
+              </tr>
+              <tr>
+                <td> Authentication </td>
+                <td> {{ result.data.cvss.authentication }} </td>
+              </tr>
+              <tr>
+                <td> Access Complexity </td>
+                <td> {{ result.data.cvss.accessComplexity }} </td>
+              </tr>
+              <tr>
+                <td> Confidentiality </td>
+                <td> {{ result.data.cvss.confidentiality }} </td>
+              </tr>
+              <tr>
+                <td> Integrity </td>
+                <td> {{ result.data.cvss.integrity }} </td>
+              </tr>
+              <tr>
+                <td> Published </td>
+                <td> {{ result.data.cvss.published }} </td>
+              </tr>
+              <tr>
+                <td> Last Modified </td>
+                <td> {{ result.data.cvss.lastModified }} </td>
+              </tr>
+            </table>
+            <br>
+            {% endif %}
+            
+            <!-- Threat Lists -->
+            {% if result.data.threatLists %}
+            <table class="wf-table-horizontal">
+              <tr><th>Threat Lists</th></tr>
+              {% for threatList in result.data.threatLists %}
+              <tr>
+                <td> {{ threatList.name }} </td>
+              </tr>
+              {% endfor %}
+            </table>
+            <br>
+            {% endif %}
+            
+            <!-- Location -->
+            {% if result.data.location %}
+            <table class="wf-table-horizontal">
+              <tr><th colspan="5">ASN and Geolocation</th></tr>
+              <tr>
+                <td>AS Number</td>
+                <td>AS Name</td>
+                <td>IP Range</td>
+                <td>Geolocation (city)</td>
+                <td>Geolocation (country)</td>
+              </tr>
+              <tr>
+                <td> {{ result.data.location.asn }} </td>
+                <td> {{ result.data.location.organization }} </td>
+                <td> {{ result.data.location.cidr.name }} </td>
+                <td> {{ result.data.location.location.city }} </td>
+                <td> {{ result.data.location.location.country }} </td>
+              </tr>
+            </table>
+            <br>
+            {% endif %}
+            
+            <!-- Metrics -->
+            {% if result.data.metrics %}
+            <table class="wf-table-horizontal">
+              <tr><th colspan="2">Metrics</th></tr>
+              {% for metric in result.data.metrics %}
+              <tr>
+                <td> {{ metric.type }} </td>
+                <td> {{ metric.value }} </td>
+              </tr>
+              {% endfor %}
+            </table>
+            <br>
+            {% endif %}
+            
+            {% else %} <!-- handle no data responses -->
+            
+            <table class="wf-table-horizontal">
+              <tr>
+                <th>Status</th>
+                <th>Message</th>
+              </tr>
+              <tr>
+                <td>{{ result.status }}</td>
+                <td>{{ result.message }}</td>
+              </tr>
+            </table>
+            {% endif %}
+          
+          <!------------------- For each Result END ---------------------->
+          
+          {% endfor %} <!-- loop for each result end -->
+        </div> <!-- Main Div -->
+        
+        {% endblock %} <!-- Main Start Block -->
+        
