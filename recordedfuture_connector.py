@@ -1,7 +1,7 @@
 #
 # File: recordedfuture_connector.py
 #
-# Copyright (c) Recorded Future, Inc., 2019
+# Copyright (c) Recorded Future, Inc., 2019-2020
 #
 # This unpublished material is proprietary to Recorded Future.
 # All rights reserved. The methods and
@@ -35,6 +35,7 @@ from phantom.action_result import ActionResult
 
 # Usage of the consts file is recommended
 from recordedfuture_consts import *
+from bs4 import UnicodeDammit
 
 
 class RetVal(tuple):
@@ -83,7 +84,7 @@ class RecordedfutureConnector(BaseConnector):
         except Exception as err:
             error_text = "Cannot parse error details: %s" % err
 
-        message = "Status Code: {0}. Data from server:\n{1}\n".format(
+        message = "Please check the app configuration parameters. Status Code: {0}. Data from server:\n{1}\n".format(
             status_code,
             error_text)
 
@@ -154,7 +155,6 @@ class RecordedfutureConnector(BaseConnector):
         # If an IOC has no data in Recorded Future's API it returns 404.
         # While this is correct in REST semantics it's not what our app
         # needs. We will create an empty response instead.
-
         self.debug_print('_process_json_response kwargs: ', kwargs)
         if 'fields' in kwargs.get('params', {}):
             fields = kwargs['params']['fields'].split(',')
@@ -237,6 +237,7 @@ class RecordedfutureConnector(BaseConnector):
             a RetVal:       see above.
         """
         # **kwargs can be any additional parameters that requests.request
+        # accepts
         config = self.get_config()
 
         resp_json = None
@@ -250,7 +251,7 @@ class RecordedfutureConnector(BaseConnector):
                 resp_json)
 
         # Create a URL to connect to
-        url = self._base_url + endpoint
+        url = "{}{}".format(UnicodeDammit(self._base_url).unicode_markup.encode('utf-8'), endpoint)
 
         # Create a HTTP_USER_AGENT header
         # container_id is added to track actions associated with an event in
@@ -278,7 +279,7 @@ class RecordedfutureConnector(BaseConnector):
         # url:          shows if the url to ConnectAPI has been changed
         # kwargs:       shows fields and other keywords
         # fingerprint:  can be used to verify that the correct API key is used
-        self.debug_print('_make_rest_call url', url)
+        self.debug_print('_make_rest_call url: '.format(url))
         self.debug_print('_make_rest_call kwargs', kwargs)
         self.debug_print('_make_rest_call api key fingerprint: %s'
                          % hashlib.md5(api_key).hexdigest()[:6])
@@ -288,11 +289,13 @@ class RecordedfutureConnector(BaseConnector):
             resp = request_func(
                 url,
                 headers=my_headers,
+                verify=config.get('recordedfuture_verify_ssl', False),
                 **kwargs)
         except Exception as err:
+            error_msg = err.message if err.message else "Unknown error occurred."
             return RetVal(action_result.set_status(
                 phantom.APP_ERROR,
-                "Error Connecting to server. Details: {0}".format(str(err))),
+                "Error Connecting to server. Details: {0}".format(UnicodeDammit(error_msg).unicode_markup.encode('utf-8'))),
                 resp_json)
 
         # Process the response
@@ -318,26 +321,24 @@ class RecordedfutureConnector(BaseConnector):
         if phantom.is_fail(my_ret_val):
             self.save_progress("Test Connectivity Failed.")
             return action_result.get_status()
+
         # Return success
         self.save_progress("Test Connectivity Passed")
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def _handle_reputation(self, param, path_info, fields, operation_type):
-
-        # Implement the handler here
-        # use self.save_progress(...) to send progress messages back to the
-        # platform
+    def _handle_intelligence(self, param, path_info, fields, operation_type):
+        """Return intelligence for an entity."""
         self.save_progress(
             "In action handler for: {0}".format(self.get_action_identifier()))
 
-        # Add an action result object to self (BaseConnector) to represent
-        # the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
 
+        # Validate path_info
         try:
             path_info.encode("utf-8")
         except:
             return action_result.set_status(phantom.APP_ERROR, "Parameter value failed validation. Enter a valid value.")
+
         # Params for the API call
         params = {
             'fields': ','.join(fields)
@@ -348,7 +349,55 @@ class RecordedfutureConnector(BaseConnector):
                                                     action_result,
                                                     params=params)
 
-        self.debug_print('_handle_reputation', {'path_info': path_info,
+        self.debug_print('_handle_intelligence',
+                         {'path_info': path_info,
+                          'action_result': action_result,
+                          'params': params,
+                          'my_ret_val': my_ret_val,
+                          'response': response})
+
+        if phantom.is_fail(my_ret_val):
+            return action_result.get_status()
+
+        res = response['data']
+        action_result.add_data(res)
+        self.save_progress('Added data with keys {}', res.keys())
+
+        # Update the summary
+        summary = action_result.get_summary()
+        if 'risk' in res:
+            if 'criticalityLabel' in res['risk']:
+                summary['criticalityLabel'] = res['risk'][
+                    'criticalityLabel']
+            if 'riskSummary' in res['risk']:
+                summary['riskSummary'] = res['risk']['riskSummary']
+        if 'timestamps' in res:
+            if 'lastSeen' in res['timestamps']:
+                summary['lastSeen'] = res['timestamps']['lastSeen']
+
+        action_result.set_summary(summary)
+
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _handle_reputation(self, param, category, entity):
+        """Return reputation information."""
+        self.save_progress(
+            "In action handler for: {0}".format(self.get_action_identifier()))
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        # Params for the API call
+        params = {
+            category: entity
+        }
+
+        # make rest call
+        my_ret_val, response = self._make_rest_call('/soar/enrichment',
+                                                    action_result,
+                                                    json=params,
+                                                    method='post')
+
+        self.debug_print('_handle_reputation', {'path_info': entity,
+                                                'endpoint': '/soar/enrichment',
                                                 'action_result': action_result,
                                                 'params': params,
                                                 'my_ret_val': my_ret_val,
@@ -357,65 +406,63 @@ class RecordedfutureConnector(BaseConnector):
         if phantom.is_fail(my_ret_val):
             return action_result.get_status()
 
-        # if response == {}:
-        #    return action_result.set_status(phantom.APP_SUCCESS)
+        if response['data'].get('results', []):
 
-        # Now post process the data,  uncomment code as you deem fit
-        ####################################################
-        #
-        # This section emulates upcoming high throughput API
-        #
-        if operation_type == 'reputation':
-            legacy = response['data']  # [0]['result_data'][0]
-            self.save_progress('Legacy {}', legacy)
-            if legacy['risk']['score'] is None:
-                max_count = None
+            summary = action_result.get_summary()
+            item = response['data']['results'][0]
+            risk = item['risk']
+            rule = risk['rule']
+            if 'evidence' in rule:
+                evidence_list = rule['evidence']
+                evidence = [{
+                    'ruleid': evidence_id,
+                    'timestamp': evidence_list[evidence_id]['timestamp'],
+                    'description': evidence_list[evidence_id]['description'],
+                    'rule': evidence_list[evidence_id]['rule'],
+                    'level': evidence_list[evidence_id]['level'],
+                    'mitigation': evidence_list[evidence_id].get('mitigation', None)}
+                    for evidence_id in evidence_list.keys()]
             else:
-                max_count = int(legacy['risk']['riskString'].split('/')[1])
+                evidence = []
+
             res = {
-                'entity': {
-                    'id': legacy['entity']['id'],
-                    'name': legacy['entity']['name'],
-                    'type': legacy['entity']['type']
-                },
-                'risk': {
-                    'score': legacy['risk']['score'],
-                    'level': legacy['risk']['criticality'],
-                    'rule': {
-                        'count': legacy['risk']['rules'],
-                        'maxCount': max_count
-                    }
-                }
+                'id': item['entity']['id'],
+                'name': item['entity']['name'],
+                'type': item['entity']['type'],
+                'risklevel': risk['level'],
+                'riskscore': risk['score'],
+                'rulecount': rule['count'],
+                'maxrules': rule['maxCount'],
+                'evidence': evidence,
+                'description':
+                    item['entity'].get('description', None)
             }
 
-        #
-        # End emulation
-        #
+            if 'description' in item['entity']:
+                res['description'] = item['entity']['description']
+
+            # Update the summary
+            summary = action_result.get_summary()
+            summary['riskscore'] = res['riskscore']
+            summary['risklevel'] = res['risklevel']
+            summary['type'] = res['type']
+
         else:
-            res = response['data']
-        #
-        # End original functionality
-        #
-        ####################################################
+            res = {
+                "id": None,
+                "name": '',
+                "type": None,
+                "description": '',
+                "risklevel": None,
+                "riskscore": None,
+                "rulecount": None,
+                "maxrules": None,
+            }
+            summary = action_result.get_summary()
+            summary['riskscore'] = "No information available."
+
         action_result.add_data(res)
         self.save_progress('Added data with keys {}', res.keys())
-
-        # Update the summary
-        summary = action_result.get_summary()
-        if operation_type == 'reputation':
-            summary['type'] = res['entity'].get('type', None)
-            summary['score'] = res['risk']['score']
-            summary['level'] = res['risk']['level']
-        else:
-            if 'risk' in res:
-                if 'criticalityLabel' in res['risk']:
-                    summary['criticalityLabel'] = res['risk'][
-                        'criticalityLabel']
-                if 'riskSummary' in res['risk']:
-                    summary['riskSummary'] = res['risk']['riskSummary']
-            if 'timestamps' in res:
-                if 'lastSeen' in res['timestamps']:
-                    summary['lastSeen'] = res['timestamps']['lastSeen']
 
         action_result.set_summary(summary)
 
@@ -584,7 +631,6 @@ class RecordedfutureConnector(BaseConnector):
         # Get the action that we are supposed to execute for this App Run
         action_id = self.get_action_identifier()
         self.debug_print("action_id", action_id)
-
         # Try to split on _ in order to handle reputation/intelligence and
         # ip/domain/file/vulnerability/url permutation.
         if len(action_id.split('_')) == 2:
@@ -598,17 +644,22 @@ class RecordedfutureConnector(BaseConnector):
         if action_id == 'test_connectivity':
             my_ret_val = self._handle_test_connectivity(param)
 
-        elif operation_type in ['reputation', 'intelligence']:
-            # Use the dicts to calculate parameters
-            omap = {'reputation': REPUTATION_MAP,
-                    'intelligence': INTELLIGENCE_MAP}[operation_type]
+        elif operation_type == 'intelligence':
+            omap = INTELLIGENCE_MAP
             path_info_tmplt, fields, tag, do_quote = omap[entity_type]
             if do_quote:
                 path_info = path_info_tmplt % urllib.quote_plus(param[tag])
             else:
                 path_info = path_info_tmplt % param[tag]
-            my_ret_val = self._handle_reputation(param, path_info, fields,
-                                                 operation_type)
+            my_ret_val = self._handle_intelligence(param, path_info, fields,
+                                                   operation_type)
+        elif operation_type == 'reputation':
+            # phantom entity type file has to be changed to hash
+            if entity_type == 'file':
+                tag = 'hash'
+            else:
+                tag = entity_type
+            my_ret_val = self._handle_reputation(param, tag, param[tag])
 
         elif action_id == 'rule_id_lookup':
             my_ret_val = self._handle_rule_id_lookup(param)
