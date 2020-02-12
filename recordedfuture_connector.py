@@ -292,10 +292,19 @@ class RecordedfutureConnector(BaseConnector):
                 verify=config.get('recordedfuture_verify_ssl', False),
                 **kwargs)
         except Exception as err:
-            error_msg = err.message if err.message else "Unknown error occurred."
+            if err.message:
+                if isinstance(err.message, basestring):
+                    error_msg = UnicodeDammit(err.message).unicode_markup.encode('UTF-8')
+                else:
+                    try:
+                        error_msg = str(err.message)
+                    except:
+                        error_msg = "Unknown error occurred. Please check the asset configuration parameters."
+            else:
+                error_msg = "Unknown error occurred. Please check the asset configuration parameters."
             return RetVal(action_result.set_status(
                 phantom.APP_ERROR,
-                "Error Connecting to server. Details: {0}".format(UnicodeDammit(error_msg).unicode_markup.encode('utf-8'))),
+                "Error Connecting to server. Details: {0}".format(error_msg)),
                 resp_json)
 
         # Process the response
