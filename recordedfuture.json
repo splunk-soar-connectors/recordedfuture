@@ -1,7 +1,7 @@
 {
     "appid": "6efe0e1b-76ac-4ffd-8fa0-ac58fd6efd77",
     "name": "Recorded Future",
-    "description": "This app implements lookups for quick reputation information, contextual threat intelligence and external threat alerts",
+    "description": "This app implements investigative actions to perform lookups for quick reputation information, contextual threat intelligence and external threat alerts",
     "type": "reputation",
     "product_vendor": "Recorded Future, Inc",
     "logo": "logo_recordedfuture.svg",
@@ -31,7 +31,7 @@
             "order": 1
         },
         "recordedfuture_verify_ssl": {
-            "description": "Verify SSL certificates",
+            "description": "Verify SSL Certificates",
             "data_type": "boolean",
             "default": true,
             "order": 2

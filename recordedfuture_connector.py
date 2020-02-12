@@ -279,7 +279,7 @@ class RecordedfutureConnector(BaseConnector):
         # url:          shows if the url to ConnectAPI has been changed
         # kwargs:       shows fields and other keywords
         # fingerprint:  can be used to verify that the correct API key is used
-        self.debug_print('_make_rest_call url: '.format(url))
+        self.debug_print('_make_rest_call url: {}'.format(url))
         self.debug_print('_make_rest_call kwargs', kwargs)
         self.debug_print('_make_rest_call api key fingerprint: %s'
                          % hashlib.md5(api_key).hexdigest()[:6])
@@ -319,7 +319,7 @@ class RecordedfutureConnector(BaseConnector):
                                                     action_result)
 
         if phantom.is_fail(my_ret_val):
-            self.save_progress("Test Connectivity Failed.")
+            self.save_progress("Test Connectivity Failed")
             return action_result.get_status()
 
         # Return success
