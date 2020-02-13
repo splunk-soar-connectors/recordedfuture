@@ -1,5 +1,17 @@
 # RELEASE NOTES
 
+## VERSION 2.0
+
+This version uses Recorded Future's new SOAR API when performing the reputation
+actions. This API is designed for much higher volume of calls.
+
+A new configuration option has been added to disable SSL certificate verification.
+This is sometimes needed when access to Internet is through a proxy.
+
+### Upgrading
+
+In most cases no manual action is required.
+
 ## VERSION 1.2
 
 This version is a complete re-write of the app. It is not backwards compatible
