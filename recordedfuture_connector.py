@@ -297,7 +297,7 @@ class RecordedfutureConnector(BaseConnector):
                     error_msg = UnicodeDammit(err.message).unicode_markup.encode('UTF-8')
                 else:
                     try:
-                        error_msg = str(err.message)
+                        error_msg = UnicodeDammit(err.message).unicode_markup.encode('utf-8')
                     except:
                         error_msg = "Unknown error occurred. Please check the asset configuration parameters."
             else:
