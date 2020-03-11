@@ -14,6 +14,7 @@
 # -----------------------------------------
 # Recorded Future App View python file
 # -----------------------------------------
+
 APP_URL = 'https://app.recordedfuture.com/live/sc/entity/%s%%3A%s'
 
 

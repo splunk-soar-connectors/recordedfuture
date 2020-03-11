@@ -10,10 +10,14 @@
     "product_version_regex": ".*",
     "publisher": "Recorded Future, Inc",
     "license": "Copyright (c) Recorded Future, Inc, 2019-2020",
-    "app_version": "2.0.0",
+    "app_version": "3.0.0",
     "utctime_updated": "2019-04-17T07:33:58.826014Z",
     "package_name": "phantom_recordedfuture",
-    "main_module": "recordedfuture_connector.pyc",
+    "main_module": "recordedfuture_connector.py",
+    "python_version": "3",
+    "latest_tested_versions": [
+        
+    ],
     "min_phantom_version": "4.6.19142",
     "app_wizard_version": "1.0.0",
     "configuration": {
