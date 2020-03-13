@@ -443,11 +443,14 @@ class RecordedfutureConnector(BaseConnector):
                 'risklevel': risk['level'],
                 'riskscore': risk['score'],
                 'rulecount': rule['count'],
-                'maxrules': rule['maxCount'],
+                # 'maxrules': rule['maxCount'],
                 'evidence': evidence,
                 'description':
                     item['entity'].get('description', None)
             }
+
+            if rule.get('maxCount'):
+                res['maxrules'] = rule['maxCount']
 
             if 'description' in item['entity']:
                 res['description'] = item['entity']['description']
