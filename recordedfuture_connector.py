@@ -17,9 +17,15 @@
 # Global imports
 import os
 import requests
-import urllib.request
-import urllib.parse
-import urllib.error
+import sys
+
+try:
+    import urllib
+except:
+    import urllib.request
+    import urllib.parse
+    import urllib.error
+
 import json
 import hashlib
 import platform
@@ -90,7 +96,10 @@ class RecordedfutureConnector(BaseConnector):
             status_code,
             error_text)
 
-        message = message.replace('{', '{{').replace('}', '}}')
+        if sys.version_info[0] == 3:
+            message = message.replace('{', '{{').replace('}', '}}')
+        elif sys.version_info[0] < 3:
+            message = message.replace('{', '{{').replace(u'}', '}}')
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message),
                       None)
@@ -253,7 +262,14 @@ class RecordedfutureConnector(BaseConnector):
                 resp_json)
 
         # Create a URL to connect to
-        url = "{}{}".format(UnicodeDammit(self._base_url).unicode_markup, endpoint)
+        if sys.version_info[0] == 3:
+            url = "{}{}".format(UnicodeDammit(self._base_url).unicode_markup, endpoint)
+        elif sys.version_info[0] < 3:
+            url = "{}{}".format(UnicodeDammit(self._base_url).unicode_markup.encode('utf-8'), endpoint)
+        # try:
+        #     url = "{}{}".format(UnicodeDammit(self._base_url).unicode_markup.encode('utf-8'), endpoint)
+        # except:
+        #     url = "{}{}".format(UnicodeDammit(self._base_url).unicode_markup, endpoint)
 
         # Create a HTTP_USER_AGENT header
         # container_id is added to track actions associated with an event in
@@ -283,8 +299,12 @@ class RecordedfutureConnector(BaseConnector):
         # fingerprint:  can be used to verify that the correct API key is used
         self.debug_print('_make_rest_call url: {}'.format(url))
         self.debug_print('_make_rest_call kwargs', kwargs)
-        self.debug_print('_make_rest_call api key fingerprint: %s'
-                         % hashlib.md5(api_key.encode('utf-8')).hexdigest()[:6])
+        try:
+            self.debug_print('_make_rest_call api key fingerprint: %s'
+                % hashlib.md5(api_key).hexdigest()[:6])
+        except:
+            self.debug_print('_make_rest_call api key fingerprint: %s'
+                 % hashlib.md5(api_key.encode('utf-8')).hexdigest()[:6])
 
         # Make the call
         try:
@@ -295,6 +315,8 @@ class RecordedfutureConnector(BaseConnector):
                 **kwargs)
         except Exception as err:
             if err.message:
+                if isinstance(err.message, basestring):
+                    error_msg = UnicodeDammit(err.message).unicode_markup.encode('UTF-8')
                 if isinstance(err.message, str):
                     error_msg = UnicodeDammit(err.message).unicode_markup
                 else:
@@ -662,7 +684,14 @@ class RecordedfutureConnector(BaseConnector):
             omap = INTELLIGENCE_MAP
             path_info_tmplt, fields, tag, do_quote = omap[entity_type]
             if do_quote:
-                path_info = path_info_tmplt % urllib.parse.quote_plus(param[tag])
+                if sys.version_info[0] == 3:
+                    path_info = path_info_tmplt % urllib.parse.quote_plus(param[tag])
+                elif sys.version_info[0] < 3:
+                    path_info = path_info_tmplt % urllib.quote_plus(param[tag])
+                # try:
+                #     path_info = path_info_tmplt % urllib.quote_plus(param[tag])
+                # except:
+                #     path_info = path_info_tmplt % urllib.parse.quote_plus(param[tag])
             else:
                 path_info = path_info_tmplt % param[tag]
             my_ret_val = self._handle_intelligence(param, path_info, fields,
@@ -693,8 +722,10 @@ class RecordedfutureConnector(BaseConnector):
         ip_address_input = input_ip_address
 
         try:
-            ipaddress.ip_address(str(ip_address_input))
+            ipaddress.ip_address(unicode(ip_address_input))
         except:
+            ipaddress.ip_address(str(ip_address_input))
+        else:
             return False
 
         return True
