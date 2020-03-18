@@ -266,10 +266,6 @@ class RecordedfutureConnector(BaseConnector):
             url = "{}{}".format(UnicodeDammit(self._base_url).unicode_markup, endpoint)
         elif sys.version_info[0] < 3:
             url = "{}{}".format(UnicodeDammit(self._base_url).unicode_markup.encode('utf-8'), endpoint)
-        # try:
-        #     url = "{}{}".format(UnicodeDammit(self._base_url).unicode_markup.encode('utf-8'), endpoint)
-        # except:
-        #     url = "{}{}".format(UnicodeDammit(self._base_url).unicode_markup, endpoint)
 
         # Create a HTTP_USER_AGENT header
         # container_id is added to track actions associated with an event in
@@ -688,10 +684,6 @@ class RecordedfutureConnector(BaseConnector):
                     path_info = path_info_tmplt % urllib.parse.quote_plus(param[tag])
                 elif sys.version_info[0] < 3:
                     path_info = path_info_tmplt % urllib.quote_plus(param[tag])
-                # try:
-                #     path_info = path_info_tmplt % urllib.quote_plus(param[tag])
-                # except:
-                #     path_info = path_info_tmplt % urllib.parse.quote_plus(param[tag])
             else:
                 path_info = path_info_tmplt % param[tag]
             my_ret_val = self._handle_intelligence(param, path_info, fields,
