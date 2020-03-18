@@ -17,7 +17,15 @@
 # Global imports
 import os
 import requests
-import urllib
+import sys
+
+try:
+    import urllib
+except:
+    import urllib.request
+    import urllib.parse
+    import urllib.error
+
 import json
 import hashlib
 import platform
@@ -88,7 +96,10 @@ class RecordedfutureConnector(BaseConnector):
             status_code,
             error_text)
 
-        message = message.replace(u'{', '{{').replace(u'}', '}}')
+        if sys.version_info[0] == 3:
+            message = message.replace('{', '{{').replace('}', '}}')
+        elif sys.version_info[0] < 3:
+            message = message.replace('{', '{{').replace(u'}', '}}')
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message),
                       None)
@@ -251,7 +262,10 @@ class RecordedfutureConnector(BaseConnector):
                 resp_json)
 
         # Create a URL to connect to
-        url = "{}{}".format(UnicodeDammit(self._base_url).unicode_markup.encode('utf-8'), endpoint)
+        if sys.version_info[0] == 3:
+            url = "{}{}".format(UnicodeDammit(self._base_url).unicode_markup, endpoint)
+        elif sys.version_info[0] < 3:
+            url = "{}{}".format(UnicodeDammit(self._base_url).unicode_markup.encode('utf-8'), endpoint)
 
         # Create a HTTP_USER_AGENT header
         # container_id is added to track actions associated with an event in
@@ -281,8 +295,12 @@ class RecordedfutureConnector(BaseConnector):
         # fingerprint:  can be used to verify that the correct API key is used
         self.debug_print('_make_rest_call url: {}'.format(url))
         self.debug_print('_make_rest_call kwargs', kwargs)
-        self.debug_print('_make_rest_call api key fingerprint: %s'
-                         % hashlib.md5(api_key).hexdigest()[:6])
+        try:
+            self.debug_print('_make_rest_call api key fingerprint: %s'
+                % hashlib.md5(api_key).hexdigest()[:6])
+        except:
+            self.debug_print('_make_rest_call api key fingerprint: %s'
+                 % hashlib.md5(api_key.encode('utf-8')).hexdigest()[:6])
 
         # Make the call
         try:
@@ -295,6 +313,8 @@ class RecordedfutureConnector(BaseConnector):
             if err.message:
                 if isinstance(err.message, basestring):
                     error_msg = UnicodeDammit(err.message).unicode_markup.encode('UTF-8')
+                if isinstance(err.message, str):
+                    error_msg = UnicodeDammit(err.message).unicode_markup
                 else:
                     try:
                         error_msg = str(err.message)
@@ -370,7 +390,7 @@ class RecordedfutureConnector(BaseConnector):
 
         res = response['data']
         action_result.add_data(res)
-        self.save_progress('Added data with keys {}', res.keys())
+        self.save_progress('Added data with keys {}', list(res.keys()))
 
         # Update the summary
         summary = action_result.get_summary()
@@ -430,7 +450,7 @@ class RecordedfutureConnector(BaseConnector):
                     'rule': evidence_list[evidence_id]['rule'],
                     'level': evidence_list[evidence_id]['level'],
                     'mitigation': evidence_list[evidence_id].get('mitigation', None)}
-                    for evidence_id in evidence_list.keys()]
+                    for evidence_id in list(evidence_list.keys())]
             else:
                 evidence = []
 
@@ -441,11 +461,14 @@ class RecordedfutureConnector(BaseConnector):
                 'risklevel': risk['level'],
                 'riskscore': risk['score'],
                 'rulecount': rule['count'],
-                'maxrules': rule['maxCount'],
+                # 'maxrules': rule['maxCount'],
                 'evidence': evidence,
                 'description':
                     item['entity'].get('description', None)
             }
+
+            if rule.get('maxCount'):
+                res['maxrules'] = rule['maxCount']
 
             if 'description' in item['entity']:
                 res['description'] = item['entity']['description']
@@ -471,7 +494,7 @@ class RecordedfutureConnector(BaseConnector):
             summary['riskscore'] = "No information available."
 
         action_result.add_data(res)
-        self.save_progress('Added data with keys {}', res.keys())
+        self.save_progress('Added data with keys {}', list(res.keys()))
 
         action_result.set_summary(summary)
 
@@ -618,7 +641,7 @@ class RecordedfutureConnector(BaseConnector):
 
         # Now post process the data
         rule_ids = []
-        for result in response['data'].values():
+        for result in list(response['data'].values()):
             for rule in result:
                 action_result.add_data({'rule': rule})
                 rule_ids.append(rule['id'])
@@ -657,7 +680,10 @@ class RecordedfutureConnector(BaseConnector):
             omap = INTELLIGENCE_MAP
             path_info_tmplt, fields, tag, do_quote = omap[entity_type]
             if do_quote:
-                path_info = path_info_tmplt % urllib.quote_plus(param[tag])
+                if sys.version_info[0] == 3:
+                    path_info = path_info_tmplt % urllib.parse.quote_plus(param[tag])
+                elif sys.version_info[0] < 3:
+                    path_info = path_info_tmplt % urllib.quote_plus(param[tag])
             else:
                 path_info = path_info_tmplt % param[tag]
             my_ret_val = self._handle_intelligence(param, path_info, fields,
@@ -690,6 +716,8 @@ class RecordedfutureConnector(BaseConnector):
         try:
             ipaddress.ip_address(unicode(ip_address_input))
         except:
+            ipaddress.ip_address(str(ip_address_input))
+        else:
             return False
 
         return True
@@ -752,9 +780,10 @@ if __name__ == '__main__':
         password = getpass.getpass("Password: ")
 
     if username and password:
+        login_url = BaseConnector._get_phantom_base_url() + "login"
         try:
-            print ("Accessing the Login page")
-            r = requests.get("https://127.0.0.1/login", verify=False)
+            print("Accessing the Login page")
+            r = requests.get(login_url, verify=False)
             csrftoken = r.cookies['csrftoken']
 
             data = dict()
@@ -764,14 +793,14 @@ if __name__ == '__main__':
 
             headers = dict()
             headers['Cookie'] = 'csrftoken=' + csrftoken
-            headers['Referer'] = 'https://127.0.0.1/login'
+            headers['Referer'] = login_url
 
-            print ("Logging into Platform to get the session id")
-            r2 = requests.post("https://127.0.0.1/login", verify=False,
+            print("Logging into Platform to get the session id")
+            r2 = requests.post(login_url, verify=False,
                                data=data, headers=headers)
             session_id = r2.cookies['sessionid']
         except Exception as e:
-            print ("Unable to get session id from the platform. Error: " + str(
+            print("Unable to get session id from the platform. Error: " + str(
                 e))
             exit(1)
 
@@ -789,6 +818,6 @@ if __name__ == '__main__':
             connector._set_csrf_info(csrftoken, headers['Referer'])
 
         ret_val = connector._handle_action(json.dumps(in_json), None)
-        print (json.dumps(json.loads(ret_val), indent=4))
+        print(json.dumps(json.loads(ret_val), indent=4))
 
     exit(0)
