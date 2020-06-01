@@ -812,7 +812,6 @@ class RecordedfutureConnector(BaseConnector):
                 last_ingested_time = int(config.get('initial_ingest_days', 1))
                 last_ingested_time = (datetime.now() - timedelta(days=last_ingested_time)).isoformat()
 
-        # timeframe = '[{}, {}]'.format(last_ingested_time, datetime.now().isoformat()),
         timeframe = '[{},]'.format(last_ingested_time)
 
         # Prepare the REST call

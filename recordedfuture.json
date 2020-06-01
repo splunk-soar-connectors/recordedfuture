@@ -47,7 +47,7 @@
             "order": 3
         },
         "initial_ingest_days": {
-            "description": "# of days back for first ingest (default is 1)",
+            "description": "Number of days back since first ingest (default is 1)",
             "data_type": "numeric",
             "default": "1",
             "order": 4
