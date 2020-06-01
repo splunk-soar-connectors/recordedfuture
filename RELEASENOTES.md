@@ -1,5 +1,13 @@
 # RELEASE NOTES
 
+## VERSION 2.1
+
+This version uses Recorded Future's new extension of the SOAR API which is
+designed to do automatic threat assessments for sets of related IOCs (ex all IOCs 
+collected from an email) in a given context (ex Phishing).
+
+All dashboards have been improved for better readability.
+
 ## VERSION 2.0
 
 This version uses Recorded Future's new SOAR API when performing the reputation

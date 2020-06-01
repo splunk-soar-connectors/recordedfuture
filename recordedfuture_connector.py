@@ -29,9 +29,11 @@ except:
 import json
 import hashlib
 import platform
+# noinspection PyCompatibility
 import ipaddress
 # noinspection PyUnresolvedReferences
 from bs4 import BeautifulSoup
+from datetime import datetime, timedelta
 
 # Phantom App imports
 # noinspection PyUnresolvedReferences
@@ -90,16 +92,16 @@ class RecordedfutureConnector(BaseConnector):
             split_lines = [x.strip() for x in split_lines if x.strip()]
             error_text = '\n'.join(split_lines)
         except Exception as err:
-            error_text = "Cannot parse error details: %s" % err
+            error_text = "Cannot parse error details: {0}".format(err)
 
-        message = "Please check the app configuration parameters. Status Code: {0}. Data from server:\n{1}\n".format(
-            status_code,
-            error_text)
+        message = "Please check the app configuration parameters. Status Code: {0}. Data from server:\n{1}\n".format(status_code, UnicodeDammit(error_text).unicode_markup.encode('utf-8'))	
+        if sys.version_info[0] == 3:	
+            message = message.replace('{', '{{').replace('}', '}}')	
+        elif sys.version_info[0] < 3:	
+            message = message.replace(u'{', '{{').replace(u'}', '}}')	
 
-        if sys.version_info[0] == 3:
-            message = message.replace('{', '{{').replace('}', '}}')
-        elif sys.version_info[0] < 3:
-            message = message.replace('{', '{{').replace(u'}', '}}')
+        if len(message) > 500:
+            message = 'Error while connecting to server'
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message),
                       None)
@@ -475,9 +477,9 @@ class RecordedfutureConnector(BaseConnector):
 
             # Update the summary
             summary = action_result.get_summary()
-            summary['riskscore'] = res['riskscore']
-            summary['risklevel'] = res['risklevel']
-            summary['type'] = res['type']
+            summary['risk score'] = res['riskscore']
+            summary['risk summary'] = '%s rules triggered of %s' % (
+                res['rulecount'], res['maxrules'])
 
         else:
             res = {
@@ -495,6 +497,129 @@ class RecordedfutureConnector(BaseConnector):
 
         action_result.add_data(res)
         self.save_progress('Added data with keys {}', list(res.keys()))
+
+        action_result.set_summary(summary)
+
+        # Return success, no need to set the message, only the status
+        # BaseConnector will create a textual message based off of the summary
+        # dictionary
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _handle_triage(self, param):
+        """Return threat assessment information."""
+        self.save_progress(
+            "In action handler for: {0}".format(self.get_action_identifier()))
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        # Params for the API call
+        param_types = ['ip', 'domain', 'url', 'hash']
+        params = {}
+        for i in param.keys():
+            if i in param_types:
+                params[i] = [entry.strip() for entry in param[i].split(',')
+                             if entry != 'None']
+
+        self.save_progress('Params found to triage: %s' % params)
+
+        # make rest call
+        my_ret_val, response = self._make_rest_call(
+            '/soar/triage/contexts/%s?%s' % (param['threat_context'],
+                                             '&format=phantom'),
+            action_result,
+            json=params,
+            method='post')
+
+        self.debug_print('_handle_triage', {'path_info': 'triage',
+                                            'endpoint': '/soar/triage',
+                                            'action_result': action_result,
+                                            'params': params,
+                                            'my_ret_val': my_ret_val,
+                                            'response': response})
+
+        self.save_progress('Obtained API response')
+
+        if phantom.is_fail(my_ret_val):
+            return action_result.get_status()
+
+        # there will always be a response with data, how best represent this?
+        summary = action_result.get_summary()
+        if response:
+            # restructure json
+            res = {
+                'context': response['context'],
+                'verdict': response['verdict'],
+                'assessment_riskscore': response['scores']['max'],
+                'entities': [{
+                    'id': entity['id'],
+                    'name': entity['name'],
+                    'type': entity['type'],
+                    'score': entity['score'],
+                    'evidence': entity['rule']['evidence']}
+                    for entity in response['entities']]
+            }
+            action_result.add_data(res)
+
+            # set summary
+            if response['verdict']:
+                summary['assessment'] = 'Suspected to be malicious'
+            else:
+                summary['assessment'] = 'Not found to be malicious'
+            summary['riskscore'] = response['scores']['max']
+        else:
+            res = {}
+
+        action_result.set_summary(summary)
+        self.save_progress('Added data with keys {}', res.keys())
+
+        # Return success, no need to set the message, only the status
+        # BaseConnector will create a textual message based off of the summary
+        # dictionary
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _handle_list_contexts(self, param):
+        """List available contexts"""
+
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        self.save_progress(
+            "In action handler for: {0}".format(self.get_action_identifier()))
+
+        # make rest call
+        my_ret_val, response = self._make_rest_call('/soar/triage/contexts',
+                                                    action_result)
+
+        self.debug_print('_handle_list_contexts',
+                         {'action_result': action_result,
+                          'my_ret_val': my_ret_val,
+                          'response': response})
+
+        if phantom.is_fail(my_ret_val):
+            self.save_progress("API call to retrieve triage contexts failed.")
+            return action_result.get_status()
+
+        if response:
+            self.save_progress('Added data with keys {}', response.keys())
+
+            summary = action_result.get_summary()
+            summary_statement = ''
+            for triage_context in response.keys():
+                # Assemble summary
+                if summary_statement == '':
+                    summary_statement = triage_context
+                else:
+                    summary_statement = summary_statement + ', ' + triage_context
+
+                action_result.add_data({
+                    "context": triage_context,
+                    "name": response[triage_context]['name'],
+                    "datagroup": response[triage_context]['datagroup']
+                })
+
+            summary['contexts_available_for_threat_assessment'] = \
+                summary_statement
+
+        else:
+            self.save_progress("API call failed to retrieve any information.")
+            summary = 'API call to retrieve triage contexts failed'
 
         action_result.set_summary(summary)
 
@@ -656,20 +781,177 @@ class RecordedfutureConnector(BaseConnector):
         # Return success, no need to set the message, only the status
         return action_result.set_status(phantom.APP_SUCCESS)
 
+    def _handle_on_poll(self, param):
+        # Add an action result object to self (BaseConnector) to represent
+        # the action for this param
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        dt_str_format = '%Y-%m-%dT%H:%M:%S.000'
+        now_minus_day = (datetime.now() - timedelta(days=1)).strftime(dt_str_format)
+
+        # Required values can be accessed directly
+        config = self.get_config()
+        rule_id = config.get('rule_id')
+
+        if not rule_id:
+            return action_result.set_status(phantom.APP_ERROR, 'A Rule ID must be supplied in order for ingestion to work.')
+
+        if self.is_poll_now():
+            # "Poll Now" button was pushed, set maximum containers
+            max_containers = param.get('container_count', 100)
+            last_ingested_time = self._state.get('last_ingested_time', now_minus_day)
+        elif self._state.get('first_run', True):
+            self._state['first_run'] = False
+            max_containers = 100
+            last_ingested_time = int(config.get('initial_ingest_days', 1))
+            last_ingested_time = (datetime.now() - timedelta(days=last_ingested_time)).isoformat()
+        else:
+            max_containers = 100
+            last_ingested_time = self._state.get('last_ingested_time')
+            if not last_ingested_time:
+                last_ingested_time = int(config.get('initial_ingest_days', 1))
+                last_ingested_time = (datetime.now() - timedelta(days=last_ingested_time)).isoformat()
+
+        # timeframe = '[{}, {}]'.format(last_ingested_time, datetime.now().isoformat()),
+        timeframe = '[{},]'.format(last_ingested_time)
+
+        # Prepare the REST call
+        params = {
+            'alertRule': rule_id,
+            'triggered': timeframe
+        }
+
+        # Make rest call
+        self.save_progress('Searching for alerts under Rule ID {}...'.format(rule_id))
+        my_ret_val, response = self._make_rest_call('/alert/search',
+                                                    action_result,
+                                                    params=params)
+
+        self.debug_print('_handle_alert_data_lookup',
+                         {'path_info': '/alert/search',
+                          'action_result': action_result,
+                          'params': params,
+                          'my_ret_val': my_ret_val,
+                          'response': response})
+
+        # Something went wrong
+        if phantom.is_fail(my_ret_val):
+            return action_result.get_status()
+
+        # No results can be non existing rule id or just that, no results...
+        if response['counts']['total'] == 0:
+            self.save_progress('No alerts triggered from rule %s '
+                                            'within timerange "%s"'
+                                            % (rule_id,
+                                               timeframe))
+            return action_result.set_status(phantom.APP_SUCCESS)
+
+        self.save_progress('Rule Found, name: {}'.format(response['data']['results'][0]['rule']['name']))
+        self.save_progress('Found {} alerts.'.format(response['counts']['total']))
+        self.save_progress('{} alerts returned.'.format(response['counts']['returned']))
+
+        # For each alert that match the rule id/timerange search details
+        # are fetched and added.
+        saved_container_count = 0
+        for alert in reversed(response['data']['results']):
+            self.save_progress('Fetching alert id: %s' % alert['id'])
+            url2 = '/alert/%s' % alert['id']
+            ret_val2, response2 = self._make_rest_call(url2, action_result)
+            self.debug_print('_handle_alert_data_lookup',
+                             {'path_info': url2,
+                              'action_result': action_result,
+                              'params': None,
+                              'my_ret_val': ret_val2,
+                              'response': response2})
+
+            artifacts = []
+            alert_content = response2['data']
+            triggered = alert_content['triggered']
+            for entity in alert_content.get('entities', []):
+                for doc in entity.get('documents', []):
+                    # populate references
+                    # reference entities will be the CEF for the artifact
+                    for ref in doc.get('references', []):
+                        cef = {
+                            'alertSource': doc.get('source', {}).get('name', "N/A"),
+                            'requestURL': doc.get('url')
+                        }
+                        cef_types = {
+                            "EmailAddress": ["email"]
+                        }
+
+                        for ent in ref.get('entities', []):
+                            entity_type = ent.get('type')
+                            if entity_type == "InternetDomainName":
+                                entity_type = "destinationDnsDomain"
+                            cef[entity_type] = ent.get('name')
+
+                        artifact = {
+                            'name': doc.get('title'),
+                            'data': ref.get('fragment', ''),
+                            'label': 'alert',
+                            'severity': 'low',
+                            'type': 'event',
+                            'source_data_identifier': alert_content.get('id'),
+                            'cef': cef,
+                            'cef_types': cef_types
+                        }
+                        artifacts.append(artifact)
+
+            container = {
+                'name': response2['data']['title'],
+                'description': 'Alert from Recorded Future (Rule ID: {})'.format(rule_id),
+                'asset_id': self.get_asset_id(),
+                'ingest_app_id': self.get_app_id(),
+                'source_data_identifier': alert_content.get('id'),
+                'start_time': triggered,
+                'severity': 'high',
+                'artifacts': artifacts
+            }
+
+            status, msg, container_id = self.save_container(container)
+            if phantom.is_fail(status):
+                self.save_progress('Failed to store alert to container. Message: {}', *[msg])
+                self.debug_print('Failed to store: {}'.format(msg))
+                if 'authentication failure' in msg:
+                    self.save_progress('Skipping error if running in pudb mode.')
+                else:
+                    return action_result.set_status(phantom.APP_ERROR, 'Container creation failed: {}'.format(msg))
+            else:
+                # if duplicate and poll_now, continue creating containers
+                if self.is_poll_now() and 'Duplicate container found' in msg:
+                    self.save_progress('Duplicate found. Continuing ingestion...')
+                    continue
+
+                self.save_progress('Created container id {}'.format(container_id))
+
+                if not self.is_poll_now():
+                    # Save last ingested time
+                    self._state.update({'last_ingested_time': triggered})
+                else:
+                    saved_container_count += 1
+                    if saved_container_count >= max_containers:
+                        self.save_progress("Reached max containers. Exiting on_poll.")
+                        return action_result.set_status(phantom.APP_SUCCESS)
+
+        # Return success, no need to set the message, only the status
+        return action_result.set_status(phantom.APP_SUCCESS)
+
     def handle_action(self, param):
         """Handle a call to the app, switch depending on action."""
         my_ret_val = phantom.APP_SUCCESS
 
         # Get the action that we are supposed to execute for this App Run
         action_id = self.get_action_identifier()
-        self.debug_print("action_id", action_id)
+        self.debug_print('DEBUG: action_id = %s' % action_id)
+
         # Try to split on _ in order to handle reputation/intelligence and
         # ip/domain/file/vulnerability/url permutation.
         if len(action_id.split('_')) == 2:
             entity_type, operation_type = action_id.split('_')
         else:
             entity_type, operation_type = None, None
-        self.debug_print('entity_type, operation_type = %s, %s'
+        self.debug_print('DEBUG: entity_type, operation_type = %s, %s'
                          % (entity_type, operation_type))
 
         # Switch depending on action
@@ -701,6 +983,9 @@ class RecordedfutureConnector(BaseConnector):
 
         elif action_id == 'alert_data_lookup':
             my_ret_val = self._handle_alert_data_lookup(param)
+
+        elif action_id == 'on_poll':
+            my_ret_val = self._handle_on_poll(param)
 
         return my_ret_val
 
