@@ -110,11 +110,11 @@ and will be merged during compilation:
   {% for result in results %} <!-- loop for each result -->
 
   <!------------------- For each Result ---------------------->
-  ​
+     
     {% if result.data %} <!-- else case will handle errors and no data found responses -->
-      <div class="rf-box">
-        <table class="rf-table">
-          {% for entry in result.data|dictsort:"context" %} <!-- loop for each context -->
+      {% for entry in result.data|dictsort:"context" %} <!-- loop for each context --> 
+        <div class="rf-box">
+          <table class="rf-table">    
             <tr>
               <td>
                 <span class="non-highlighted">Context ID</span><br/>
@@ -125,10 +125,23 @@ and will be merged during compilation:
                 {{ entry.name }}
               </td>
             </tr>
-          {% endfor %}
-        </table>
-      </div>
+          </table>
+        </div>
+      {% endfor %}
+    {% else %}
+      <table class="rf-table">
+        <tr>
+          <th>Status</th>
+          <th>Message</th>
+        </tr>
+        <tr>
+          <td>{{ result.status }}</td>
+          <td>{{ result.message }}</td>
+        </tr>
+      </table>
     {% endif %}
+      
+    
   {% endfor %} <!-- loop for each result end -->
 </div> <!-- Main Div -->
 ​

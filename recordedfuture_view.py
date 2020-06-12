@@ -26,34 +26,35 @@ def format_result(result, all_data=False):
     if data:
         retval['data'] = data[0]
 
-    if data and 'risk' in retval['data'] \
-            and retval['data']['risk']['score'] is not None:
-        if 'domain' in retval['param']:
-            retval['intelCard'] = APP_URL % ('idn', retval['param']['domain'])
-        elif 'ip' in retval['param']:
-            retval['intelCard'] = APP_URL % ('ip', retval['param']['ip'])
-        elif 'hash' in retval['param']:
-            retval['intelCard'] = APP_URL % ('hash', retval['param']['hash'])
-        elif 'url' in retval['param']:
-            retval['intelCard'] = APP_URL % ('url', retval['param']['url'])
-        elif 'vulnerability' in retval['param']:
-            retval['intelCard'] = VULN_APP_URL \
-                                  % (retval['data']['entity']['id'])
+    try:
+        if data and retval.get('data').get('risk'):
+            if 'domain' in retval['param']:
+                retval['intelCard'] = APP_URL % ('idn', retval['param']['domain'])
+            elif 'ip' in retval['param']:
+                retval['intelCard'] = APP_URL % ('ip', retval['param']['ip'])
+            elif 'hash' in retval['param']:
+                retval['intelCard'] = APP_URL % ('hash', retval['param']['hash'])
+            elif 'url' in retval['param']:
+                retval['intelCard'] = APP_URL % ('url', retval['param']['url'])
+            elif 'vulnerability' in retval['param']:
+                retval['intelCard'] = VULN_APP_URL \
+                                    % (retval['data']['entity']['id'])
 
-        for rule in retval['data']['risk']['evidenceDetails']:
-            rule['timestampShort'] = rule['timestamp'][:10]
+            for rule in retval['data']['risk']['evidenceDetails']:
+                rule['timestampShort'] = rule['timestamp'][:10]
 
-    if data and 'cvss' in retval['data'] \
-            and 'published' in retval['data']['cvss']:
-        retval['data']['cvss']['publishedShort'] = \
-            retval['data']['cvss']['published'][:10]
-        retval['data']['cvss']['lastModifiedShort'] = \
-            retval['data']['cvss']['lastModified'][:10]
+        if data and retval.get('data').get('cvss'):
+            retval['data']['cvss']['publishedShort'] = \
+                retval['data']['cvss']['published'][:10]
+            retval['data']['cvss']['lastModifiedShort'] = \
+                retval['data']['cvss']['lastModified'][:10]
 
-    retval['data']['timestamps']['firstSeenShort'] = \
-        retval['data']['timestamps']['firstSeen'][:10]
-    retval['data']['timestamps']['lastSeenShort'] = \
-        retval['data']['timestamps']['lastSeen'][:10]
+        retval['data']['timestamps']['firstSeenShort'] = \
+            retval['data']['timestamps']['firstSeen'][:10]
+        retval['data']['timestamps']['lastSeenShort'] = \
+            retval['data']['timestamps']['lastSeen'][:10]
+    except:
+        retval['data'] = None
 
     summary = result.get_summary()
     if (summary):
@@ -68,6 +69,10 @@ def format_result(result, all_data=False):
     message = result.get_message()
     if (message):
         retval['message'] = message
+
+    data = result.get_data()
+    if data:
+        retval['data'] = data[0]
 
     return retval
 
@@ -141,6 +146,7 @@ def intelligence_results(provides, all_app_runs, context):
             if (not formatted):
                 continue
             results.append(formatted)
+
     return 'intelligence_results.html'
 
 
@@ -153,6 +159,7 @@ def reputation_results(provides, all_app_runs, context):
             if (not formatted):
                 continue
             results.append(formatted)
+
     return 'reputation_results.html'
 
 

@@ -40,17 +40,6 @@
             "data_type": "boolean",
             "default": true,
             "order": 2
-        },
-        "rule_id": {
-            "description": "Rule ID (for on_poll)",
-            "data_type": "string",
-            "order": 3
-        },
-        "initial_ingest_days": {
-            "description": "Number of days back since first ingest (default is 1)",
-            "data_type": "numeric",
-            "default": "1",
-            "order": 4
         }
     },
     "actions": [
@@ -3303,45 +3292,6 @@
                 "view": "recordedfuture_view.threat_assessment_results",
                 "title": "Threat Summary for a collection of entities"
             },
-            "versions": "EQ(*)"
-        },
-        {
-            "action": "on poll",
-            "identifier": "on_poll",
-            "description": "Ingests Recorded Future alerts into Phantom containers",
-            "type": "ingest",
-            "read_only": true,
-            "parameters": {
-                "start_time": {
-                    "description": "Parameter Ignored in this app",
-                    "data_type": "numeric",
-                    "order": 0
-                },
-                "end_time": {
-                    "description": "Parameter Ignored in this app",
-                    "data_type": "numeric",
-                    "order": 1
-                },
-                "container_id": {
-                    "description": "Parameter Ignored in this app",
-                    "data_type": "numeric",
-                    "order": 2
-                },
-                "container_count": {
-                    "description": "Maximum number of emails to ingest",
-                    "data_type": "numeric",
-                    "required": true,
-                    "default": "100",
-                    "order": 3
-                },
-                "artifact_count": {
-                    "description": "Parameter Ignored in this app",
-                    "data_type": "numeric",
-                    "default": "1000",
-                    "order": 4
-                }
-            },
-            "output": [],
             "versions": "EQ(*)"
         },
         {

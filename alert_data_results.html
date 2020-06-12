@@ -107,42 +107,45 @@ and will be merged during compilation:
 <div class="rf-widget"> <!-- Main Div -->
   <!------------------- For each Result ---------------------->
   {% for result in results %}
-    {% for alert in result.data %}
-      <div class="rf-box">
-        <table class="rf-table">
-          <tr>
-            <td colspan="3">
-              <span class="non-highlighted">Rule</span><br/>
-              {{ alert.rule.name }}
-            </td>
-          </tr>
-          {% for trigged in alert.alerts %}
+    {% if not result.data %}
+      <h4>No data found</h4>
+    {% else %}
+      {% for alert in result.data %}
+        <div class="rf-box">
+          <table class="rf-table">
             <tr>
-              <td>
-                <span class="non-highlighted">Alert Title</span><br/>
-                {{ trigged.alert.alertTitle }}
-              </td>
-              <td>
-                <span class="non-highlighted">Triggered</span><br/>
-                {{ trigged.alert.triggered }}
-              </td>
-              <td>
-                {% if trigged.alert.entities.EmailAddress %}
-                  {% for email in trigged.alert.entities.EmailAddress %}
-                    <div>
-                      <span class="non-highlighted">Email</span><br/>
-                      {{ email }}
-                    </div>
-                  {% endfor %}
-                {% endif %}
-                <span class="non-highlighted"></span>
+              <td colspan="3">
+                <span class="non-highlighted">Rule</span><br/>
+                {{ alert.rule.name }}
               </td>
             </tr>
-          {% endfor %}
-        </table>
-      </div>
-    {% endfor %}
-
+            {% for trigged in alert.alerts %}
+              <tr>
+                <td>
+                  <span class="non-highlighted">Alert Title</span><br/>
+                  {{ trigged.alert.alertTitle }}
+                </td>
+                <td>
+                  <span class="non-highlighted">Triggered</span><br/>
+                  {{ trigged.alert.triggered }}
+                </td>
+                <td>
+                  {% if trigged.alert.entities.EmailAddress %}
+                    {% for email in trigged.alert.entities.EmailAddress %}
+                      <div>
+                        <span class="non-highlighted">Email</span><br/>
+                        {{ email }}
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                  <span class="non-highlighted"></span>
+                </td>
+              </tr>
+            {% endfor %}
+          </table>
+        </div>
+      {% endfor %}
+    {% endif %}
   {% endfor %}
 </div> <!-- Main Div -->
 

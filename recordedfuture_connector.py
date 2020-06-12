@@ -33,7 +33,6 @@ import platform
 import ipaddress
 # noinspection PyUnresolvedReferences
 from bs4 import BeautifulSoup
-from datetime import datetime, timedelta
 
 # Phantom App imports
 # noinspection PyUnresolvedReferences
@@ -94,11 +93,9 @@ class RecordedfutureConnector(BaseConnector):
         except Exception as err:
             error_text = "Cannot parse error details: {0}".format(err)
 
-        message = "Please check the app configuration parameters. Status Code: {0}. Data from server:\n{1}\n".format(status_code, UnicodeDammit(error_text).unicode_markup.encode('utf-8'))	
-        if sys.version_info[0] == 3:	
-            message = message.replace('{', '{{').replace('}', '}}')	
-        elif sys.version_info[0] < 3:	
-            message = message.replace(u'{', '{{').replace(u'}', '}}')	
+        message = "Please check the app configuration parameters. Status Code: {0}. Data from server:" \
+                  "\n{1}\n".format(status_code, UnicodeDammit(error_text).unicode_markup.encode('utf-8'))
+        message = message.replace('{', '{{').replace('}', '}}')
 
         if len(message) > 500:
             message = 'Error while connecting to server'
@@ -235,6 +232,24 @@ class RecordedfutureConnector(BaseConnector):
         return RetVal(action_result.set_status(phantom.APP_ERROR, message),
                       None)
 
+    def _handle_py_ver_compat_for_input_str(self, input_str):
+        """
+        This method returns the encoded|original string based on the Python version.
+        :param sys.version_info[0]: Python major version
+        :param input_str: Input string to be processed
+        :return: input_str
+        """
+
+        try:
+            if input_str and sys.version_info[0] < 3:
+                input_str = UnicodeDammit(input_str).unicode_markup.encode('utf-8')
+            elif input_str:
+                input_str = UnicodeDammit(input_str).unicode_markup
+        except:
+            self.debug_print("Error occurred while handling python 2to3 compatibility for the input string")
+
+        return input_str
+
     def _make_rest_call(self, endpoint, action_result, method="get", **kwargs):
         """Make a REST call to Recorded Future's ConnectAPI.
 
@@ -262,13 +277,9 @@ class RecordedfutureConnector(BaseConnector):
                 phantom.APP_ERROR,
                 "Invalid method: {0}".format(method)),
                 resp_json)
-
+        # self.save_progress("base {}".format(self._base_url))
         # Create a URL to connect to
-        if sys.version_info[0] == 3:
-            url = "{}{}".format(UnicodeDammit(self._base_url).unicode_markup, endpoint)
-        elif sys.version_info[0] < 3:
-            url = "{}{}".format(UnicodeDammit(self._base_url).unicode_markup.encode('utf-8'), endpoint)
-
+        url = "{}{}".format(self._handle_py_ver_compat_for_input_str(self._base_url), endpoint)
         # Create a HTTP_USER_AGENT header
         # container_id is added to track actions associated with an event in
         # order to improve the app
@@ -285,7 +296,7 @@ class RecordedfutureConnector(BaseConnector):
                           'python-requests/{requests_id} ({platform_id})'
         user_agent = user_agent_tplt.format(**pdict)
         # headers
-        api_key = config.get('recordedfuture_api_token')
+        api_key = UnicodeDammit(config.get('recordedfuture_api_token')).unicode_markup.encode('utf-8')
         my_headers = {
             'X-RFToken': api_key,
             'User-Agent': user_agent
@@ -295,8 +306,8 @@ class RecordedfutureConnector(BaseConnector):
         # url:          shows if the url to ConnectAPI has been changed
         # kwargs:       shows fields and other keywords
         # fingerprint:  can be used to verify that the correct API key is used
-        self.debug_print('_make_rest_call url: {}'.format(url))
-        self.debug_print('_make_rest_call kwargs', kwargs)
+        # self.debug_print('_make_rest_call url: {}'.format(url))
+        # self.debug_print('_make_rest_call kwargs', kwargs)
         try:
             self.debug_print('_make_rest_call api key fingerprint: %s'
                 % hashlib.md5(api_key).hexdigest()[:6])
@@ -311,24 +322,33 @@ class RecordedfutureConnector(BaseConnector):
                 headers=my_headers,
                 verify=config.get('recordedfuture_verify_ssl', False),
                 **kwargs)
-        except Exception as err:
-            if err.message:
-                if isinstance(err.message, basestring):
-                    error_msg = UnicodeDammit(err.message).unicode_markup.encode('UTF-8')
-                if isinstance(err.message, str):
-                    error_msg = UnicodeDammit(err.message).unicode_markup
+        except Exception as e:
+            try:
+                if hasattr(e, 'args'):
+                    if len(e.args) > 1:
+                        error_code = e.args[0]
+                        error_msg = e.args[1]
+                    elif len(e.args) == 1:
+                        error_code = "Error code Unknown"
+                        error_msg = e.args[0]
                 else:
-                    try:
-                        error_msg = UnicodeDammit(err.message).unicode_markup.encode('utf-8')
-                    except:
-                        error_msg = "Unknown error occurred. Please check the asset configuration parameters."
-            else:
-                error_msg = "Unknown error occurred. Please check the asset configuration parameters."
+                    error_code = "Error code Unknown"
+                    error_msg = "Unknown Error occured"
+            except:
+                error_code = "Error Unknown"
+                error_msg = "Unknown Error occured"
+
+            try:
+                error_msg = self._handle_py_ver_compat_for_input_str(error_msg)
+            except TypeError:
+                error_msg = "type conversion error"
+            except:
+                error_msg = "Unknown Error occured"
+
             return RetVal(action_result.set_status(
                 phantom.APP_ERROR,
-                "Error Connecting to server. Details: {0}".format(error_msg)),
+                "Error Connecting to server. Details: Error code:{0}. Error message:{1}".format(error_code, error_msg)),
                 resp_json)
-
         # Process the response
         return self._process_response(resp, action_result, **kwargs)
 
@@ -516,14 +536,14 @@ class RecordedfutureConnector(BaseConnector):
         params = {}
         for i in param.keys():
             if i in param_types:
-                params[i] = [entry.strip() for entry in param[i].split(',')
+                params[i] = [self._handle_py_ver_compat_for_input_str(entry.strip()) for entry in param[i].split(',')
                              if entry != 'None']
 
         self.save_progress('Params found to triage: %s' % params)
 
         # make rest call
         my_ret_val, response = self._make_rest_call(
-            '/soar/triage/contexts/%s?%s' % (param['threat_context'],
+            '/soar/triage/contexts/%s?%s' % (self._handle_py_ver_compat_for_input_str(param['threat_context']),
                                              '&format=phantom'),
             action_result,
             json=params,
@@ -651,15 +671,15 @@ class RecordedfutureConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # Required values can be accessed directly
-        rule_id = param['rule_id']
-        timeframe = param['timeframe']
+        rule_id = self._handle_py_ver_compat_for_input_str(param['rule_id'])
+        timeframe = self._handle_py_ver_compat_for_input_str(param['timeframe'])
         assert rule_id is not None
         assert timeframe is not None
 
         # Prepare the REST call
         params = {
-            'alertRule': param['rule_id'],
-            'triggered': param['timeframe']
+            'alertRule': rule_id,
+            'triggered': timeframe
         }
 
         # Make rest call
@@ -689,8 +709,8 @@ class RecordedfutureConnector(BaseConnector):
             return action_result.set_status(phantom.APP_SUCCESS,
                                             'No alerts triggered from rule %s '
                                             'within timerange "%s"'
-                                            % (param['rule_id'],
-                                               param['timeframe']))
+                                            % (rule_id,
+                                               timeframe))
 
         # Add info about the rule to summary and action_result['data']
         summary['rule_name'] = response['data']['results'][0]['rule']['name']
@@ -744,7 +764,7 @@ class RecordedfutureConnector(BaseConnector):
 
         # Prepare the REST call
         params = {
-            'freetext': param['rule_name'],
+            'freetext': self._handle_py_ver_compat_for_input_str(param['rule_name']),
             'limit': 100
         }
 
@@ -781,161 +801,6 @@ class RecordedfutureConnector(BaseConnector):
         # Return success, no need to set the message, only the status
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def _handle_on_poll(self, param):
-        # Add an action result object to self (BaseConnector) to represent
-        # the action for this param
-        action_result = self.add_action_result(ActionResult(dict(param)))
-
-        dt_str_format = '%Y-%m-%dT%H:%M:%S.000'
-        now_minus_day = (datetime.now() - timedelta(days=1)).strftime(dt_str_format)
-
-        # Required values can be accessed directly
-        config = self.get_config()
-        rule_id = config.get('rule_id')
-
-        if not rule_id:
-            return action_result.set_status(phantom.APP_ERROR, 'A Rule ID must be supplied in order for ingestion to work.')
-
-        if self.is_poll_now():
-            # "Poll Now" button was pushed, set maximum containers
-            max_containers = param.get('container_count', 100)
-            last_ingested_time = self._state.get('last_ingested_time', now_minus_day)
-        elif self._state.get('first_run', True):
-            self._state['first_run'] = False
-            max_containers = 100
-            last_ingested_time = int(config.get('initial_ingest_days', 1))
-            last_ingested_time = (datetime.now() - timedelta(days=last_ingested_time)).isoformat()
-        else:
-            max_containers = 100
-            last_ingested_time = self._state.get('last_ingested_time')
-            if not last_ingested_time:
-                last_ingested_time = int(config.get('initial_ingest_days', 1))
-                last_ingested_time = (datetime.now() - timedelta(days=last_ingested_time)).isoformat()
-
-        timeframe = '[{},]'.format(last_ingested_time)
-
-        # Prepare the REST call
-        params = {
-            'alertRule': rule_id,
-            'triggered': timeframe
-        }
-
-        # Make rest call
-        self.save_progress('Searching for alerts under Rule ID {}...'.format(rule_id))
-        my_ret_val, response = self._make_rest_call('/alert/search',
-                                                    action_result,
-                                                    params=params)
-
-        self.debug_print('_handle_alert_data_lookup',
-                         {'path_info': '/alert/search',
-                          'action_result': action_result,
-                          'params': params,
-                          'my_ret_val': my_ret_val,
-                          'response': response})
-
-        # Something went wrong
-        if phantom.is_fail(my_ret_val):
-            return action_result.get_status()
-
-        # No results can be non existing rule id or just that, no results...
-        if response['counts']['total'] == 0:
-            self.save_progress('No alerts triggered from rule %s '
-                                            'within timerange "%s"'
-                                            % (rule_id,
-                                               timeframe))
-            return action_result.set_status(phantom.APP_SUCCESS)
-
-        self.save_progress('Rule Found, name: {}'.format(response['data']['results'][0]['rule']['name']))
-        self.save_progress('Found {} alerts.'.format(response['counts']['total']))
-        self.save_progress('{} alerts returned.'.format(response['counts']['returned']))
-
-        # For each alert that match the rule id/timerange search details
-        # are fetched and added.
-        saved_container_count = 0
-        for alert in reversed(response['data']['results']):
-            self.save_progress('Fetching alert id: %s' % alert['id'])
-            url2 = '/alert/%s' % alert['id']
-            ret_val2, response2 = self._make_rest_call(url2, action_result)
-            self.debug_print('_handle_alert_data_lookup',
-                             {'path_info': url2,
-                              'action_result': action_result,
-                              'params': None,
-                              'my_ret_val': ret_val2,
-                              'response': response2})
-
-            artifacts = []
-            alert_content = response2['data']
-            triggered = alert_content['triggered']
-            for entity in alert_content.get('entities', []):
-                for doc in entity.get('documents', []):
-                    # populate references
-                    # reference entities will be the CEF for the artifact
-                    for ref in doc.get('references', []):
-                        cef = {
-                            'alertSource': doc.get('source', {}).get('name', "N/A"),
-                            'requestURL': doc.get('url')
-                        }
-                        cef_types = {
-                            "EmailAddress": ["email"]
-                        }
-
-                        for ent in ref.get('entities', []):
-                            entity_type = ent.get('type')
-                            if entity_type == "InternetDomainName":
-                                entity_type = "destinationDnsDomain"
-                            cef[entity_type] = ent.get('name')
-
-                        artifact = {
-                            'name': doc.get('title'),
-                            'data': ref.get('fragment', ''),
-                            'label': 'alert',
-                            'severity': 'low',
-                            'type': 'event',
-                            'source_data_identifier': alert_content.get('id'),
-                            'cef': cef,
-                            'cef_types': cef_types
-                        }
-                        artifacts.append(artifact)
-
-            container = {
-                'name': response2['data']['title'],
-                'description': 'Alert from Recorded Future (Rule ID: {})'.format(rule_id),
-                'asset_id': self.get_asset_id(),
-                'ingest_app_id': self.get_app_id(),
-                'source_data_identifier': alert_content.get('id'),
-                'start_time': triggered,
-                'severity': 'high',
-                'artifacts': artifacts
-            }
-
-            status, msg, container_id = self.save_container(container)
-            if phantom.is_fail(status):
-                self.save_progress('Failed to store alert to container. Message: {}', *[msg])
-                self.debug_print('Failed to store: {}'.format(msg))
-                if 'authentication failure' in msg:
-                    self.save_progress('Skipping error if running in pudb mode.')
-                else:
-                    return action_result.set_status(phantom.APP_ERROR, 'Container creation failed: {}'.format(msg))
-            else:
-                # if duplicate and poll_now, continue creating containers
-                if self.is_poll_now() and 'Duplicate container found' in msg:
-                    self.save_progress('Duplicate found. Continuing ingestion...')
-                    continue
-
-                self.save_progress('Created container id {}'.format(container_id))
-
-                if not self.is_poll_now():
-                    # Save last ingested time
-                    self._state.update({'last_ingested_time': triggered})
-                else:
-                    saved_container_count += 1
-                    if saved_container_count >= max_containers:
-                        self.save_progress("Reached max containers. Exiting on_poll.")
-                        return action_result.set_status(phantom.APP_SUCCESS)
-
-        # Return success, no need to set the message, only the status
-        return action_result.set_status(phantom.APP_SUCCESS)
-
     def handle_action(self, param):
         """Handle a call to the app, switch depending on action."""
         my_ret_val = phantom.APP_SUCCESS
@@ -960,6 +825,7 @@ class RecordedfutureConnector(BaseConnector):
         elif operation_type == 'intelligence':
             omap = INTELLIGENCE_MAP
             path_info_tmplt, fields, tag, do_quote = omap[entity_type]
+            param[tag] = self._handle_py_ver_compat_for_input_str(param[tag])
             if do_quote:
                 if sys.version_info[0] == 3:
                     path_info = path_info_tmplt % urllib.parse.quote_plus(param[tag])
@@ -977,14 +843,18 @@ class RecordedfutureConnector(BaseConnector):
                 tag = entity_type
             my_ret_val = self._handle_reputation(param, tag, param[tag])
 
+        elif action_id == 'threat_assessment':
+            # todo: need to check the in-parameters
+            my_ret_val = self._handle_triage(param)
+        elif action_id == 'list_contexts':
+            # todo: need to check the in-parameters
+            my_ret_val = self._handle_list_contexts(param)
+
         elif action_id == 'rule_id_lookup':
             my_ret_val = self._handle_rule_id_lookup(param)
 
         elif action_id == 'alert_data_lookup':
             my_ret_val = self._handle_alert_data_lookup(param)
-
-        elif action_id == 'on_poll':
-            my_ret_val = self._handle_on_poll(param)
 
         return my_ret_val
 
@@ -995,13 +865,11 @@ class RecordedfutureConnector(BaseConnector):
         :return: status (success/failure)
         """
 
-        ip_address_input = input_ip_address
+        ip_address_input = UnicodeDammit(input_ip_address).unicode_markup
 
         try:
-            ipaddress.ip_address(unicode(ip_address_input))
+            ipaddress.ip_address(ip_address_input)
         except:
-            ipaddress.ip_address(str(ip_address_input))
-        else:
             return False
 
         return True
