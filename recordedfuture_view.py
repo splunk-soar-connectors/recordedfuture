@@ -27,7 +27,8 @@ def format_result(result, all_data=False):
         retval['data'] = data[0]
 
     try:
-        if data and retval.get('data').get('risk'):
+        if data and 'risk' in retval['data'] \
+                and retval['data']['risk']['score'] is not None:
             if 'domain' in retval['param']:
                 retval['intelCard'] = APP_URL % ('idn', retval['param']['domain'])
             elif 'ip' in retval['param']:
@@ -43,7 +44,8 @@ def format_result(result, all_data=False):
             for rule in retval['data']['risk']['evidenceDetails']:
                 rule['timestampShort'] = rule['timestamp'][:10]
 
-        if data and retval.get('data').get('cvss'):
+        if data and 'cvss' in retval['data'] \
+                and 'published' in retval['data']['cvss']:
             retval['data']['cvss']['publishedShort'] = \
                 retval['data']['cvss']['published'][:10]
             retval['data']['cvss']['lastModifiedShort'] = \
