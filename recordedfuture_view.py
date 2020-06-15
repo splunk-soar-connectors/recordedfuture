@@ -72,10 +72,6 @@ def format_result(result, all_data=False):
     if (message):
         retval['message'] = message
 
-    data = result.get_data()
-    if data:
-        retval['data'] = data[0]
-
     return retval
 
 
@@ -148,7 +144,6 @@ def intelligence_results(provides, all_app_runs, context):
             if (not formatted):
                 continue
             results.append(formatted)
-
     return 'intelligence_results.html'
 
 
@@ -161,7 +156,6 @@ def reputation_results(provides, all_app_runs, context):
             if (not formatted):
                 continue
             results.append(formatted)
-
     return 'reputation_results.html'
 
 

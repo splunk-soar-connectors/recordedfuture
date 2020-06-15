@@ -73,10 +73,7 @@ class RecordedfutureConnector(BaseConnector):
         if response.status_code == 200:
             return RetVal(phantom.APP_SUCCESS, {})
 
-        return RetVal(action_result.set_status(
-            phantom.APP_ERROR,
-            "Empty response and no information in the header"),
-            None)
+        return RetVal(action_result.set_status(phantom.APP_ERROR, "Status code: {0}. Empty response and no information in the header".format(response.status_code)), None)
 
     @staticmethod
     def _process_html_response(response, action_result):
@@ -86,6 +83,9 @@ class RecordedfutureConnector(BaseConnector):
 
         try:
             soup = BeautifulSoup(response.text, "html.parser")
+            # Remove the script, style, footer and navigation part from the HTML message
+            for element in soup(["script", "style", "footer", "nav"]):
+               element.extract()
             error_text = soup.text
             split_lines = error_text.split('\n')
             split_lines = [x.strip() for x in split_lines if x.strip()]
@@ -101,16 +101,13 @@ class RecordedfutureConnector(BaseConnector):
         except:
             error_text = error_text
 
-        message = "Please check the app configuration parameters. Status Code: {0}. Data from server:" \
-                  "\n{1}\n".format(status_code, error_text)
+        message = "Please check the app configuration parameters. Status Code: {0}. Data from server:\n{1}\n".format(
+            status_code, error_text)
 
         if sys.version_info[0] < 3:
             message = message.replace(u'{', '{{').replace(u'}', '}}')
         else:
             message = message.replace('{', '{{').replace('}', '}}')
-
-        if len(message) > 500:
-            message = 'Error while connecting to server'
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message),
                       None)
@@ -236,11 +233,10 @@ class RecordedfutureConnector(BaseConnector):
             return self._process_empty_response(resp, action_result)
 
         # everything else is actually an error at this point
+        error_msg = self._handle_py_ver_compat_for_input_str(resp.text.replace('{','{{').replace('}', '}}'))
         message = "Can't process response from server. Status Code: {0} " \
                   "Data from server: {1}".format(resp.status_code,
-                                                 resp.text.replace(
-                                                     '{',
-                                                     '{{').replace('}', '}}'))
+                                                 error_msg)
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message),
                       None)
@@ -252,7 +248,7 @@ class RecordedfutureConnector(BaseConnector):
         """
 
         try:
-            if e.args:
+            if hasattr(e, 'args'):
                 if len(e.args) > 1:
                     error_code = e.args[0]
                     error_msg = e.args[1]
@@ -320,7 +316,6 @@ class RecordedfutureConnector(BaseConnector):
                 phantom.APP_ERROR,
                 "Invalid method: {0}".format(method)),
                 resp_json)
-        # self.save_progress("base {}".format(self._base_url))
         # Create a URL to connect to
         url = "{}{}".format(self._handle_py_ver_compat_for_input_str(self._base_url), endpoint)
         # Create a HTTP_USER_AGENT header
@@ -350,7 +345,7 @@ class RecordedfutureConnector(BaseConnector):
         # kwargs:       shows fields and other keywords
         # fingerprint:  can be used to verify that the correct API key is used
         self.debug_print('_make_rest_call url: {}'.format(url))
-        self.debug_print('_make_rest_call kwargs', kwargs)
+        self.debug_print('_make_rest_call kwargs {}'.format(kwargs))
         try:
             self.debug_print('_make_rest_call api key fingerprint: %s'
                 % hashlib.md5(api_key).hexdigest()[:6])
@@ -406,12 +401,6 @@ class RecordedfutureConnector(BaseConnector):
             "In action handler for: {0}".format(self.get_action_identifier()))
 
         action_result = self.add_action_result(ActionResult(dict(param)))
-
-        # Validate path_info
-        try:
-            path_info
-        except:
-            return action_result.set_status(phantom.APP_ERROR, "Parameter value failed validation. Enter a valid value.")
 
         # Params for the API call
         params = {
@@ -479,9 +468,7 @@ class RecordedfutureConnector(BaseConnector):
 
         if phantom.is_fail(my_ret_val):
             return action_result.get_status()
-
-        if response['data'].get('results', []):
-
+        if response.get('data').get('results', []):
             summary = action_result.get_summary()
             item = response['data']['results'][0]
             risk = item['risk']
@@ -559,7 +546,7 @@ class RecordedfutureConnector(BaseConnector):
         params = {}
         for i in param.keys():
             if i in param_types:
-                params[i] = [self._handle_py_ver_compat_for_input_str(entry.strip()) for entry in param[i].split(',')
+                params[i] = [self._handle_py_ver_compat_for_input_str(entry.strip()) for entry in param.get(i).split(',')
                              if entry != 'None']
 
         self.save_progress('Params found to triage: %s' % params)
@@ -586,35 +573,32 @@ class RecordedfutureConnector(BaseConnector):
 
         # there will always be a response with data, how best represent this?
         summary = action_result.get_summary()
-        try:
-            if response:
-                # restructure json
-                res = {
-                    'context': response['context'],
-                    'verdict': response['verdict'],
-                    'assessment_riskscore': response['scores']['max'],
-                    'entities': [{
-                        'id': entity['id'],
-                        'name': entity['name'],
-                        'type': entity['type'],
-                        'score': entity['score'],
-                        'evidence': entity['rule']['evidence']}
-                        for entity in response['entities']]
-                }
-                action_result.add_data(res)
+        if response:
+            # restructure json
+            res = {
+                'context': response['context'],
+                'verdict': response['verdict'],
+                'assessment_riskscore': response['scores']['max'],
+                'entities': [{
+                    'id': entity['id'],
+                    'name': entity['name'],
+                    'type': entity['type'],
+                    'score': entity['score'],
+                    'evidence': entity['rule']['evidence']}
+                    for entity in response['entities']]
+            }
+            action_result.add_data(res)
 
-                # set summary
-                if response['verdict']:
-                    summary['assessment'] = 'Suspected to be malicious'
-                else:
-                    summary['assessment'] = 'Not found to be malicious'
-                summary['riskscore'] = response['scores']['max']
+            # set summary
+            if response['verdict']:
+                summary['assessment'] = 'Suspected to be malicious'
             else:
-                res = {}
-            action_result.set_summary(summary)
-        except:
+                summary['assessment'] = 'Not found to be malicious'
+            summary['riskscore'] = response['scores']['max']
+        else:
             res = {}
 
+        action_result.set_summary(summary)
         self.save_progress('Added data with keys {}', res.keys())
 
         # Return success, no need to set the message, only the status
@@ -656,8 +640,8 @@ class RecordedfutureConnector(BaseConnector):
 
                 action_result.add_data({
                     "context": triage_context,
-                    "name": response[triage_context]['name'],
-                    "datagroup": response[triage_context]['datagroup']
+                    "name": response[triage_context].get('name'),
+                    "datagroup": response[triage_context].get('datagroup')
                 })
 
             summary['contexts_available_for_threat_assessment'] = \
@@ -818,14 +802,12 @@ class RecordedfutureConnector(BaseConnector):
                 rule_ids.append(rule['id'])
 
         # Summary
-        try:
-            summary = action_result.get_summary()
-            summary['total_number_of_rules'] = response['counts']['total']
-            summary['returned_number_of_rules'] = response['counts']['returned']
-            summary['rule_id_list'] = ','.join(rule_ids)
-            action_result.set_summary(summary)
-        except:
-            self.debug_print("Failed to add data to summary")
+        summary = action_result.get_summary()
+        summary['total_number_of_rules'] = response['counts']['total']
+        summary['returned_number_of_rules'] = response['counts']['returned']
+        summary['rule_id_list'] = ','.join(rule_ids)
+        action_result.set_summary(summary)
+
 
         # Return success, no need to set the message, only the status
         return action_result.set_status(phantom.APP_SUCCESS)
@@ -870,6 +852,7 @@ class RecordedfutureConnector(BaseConnector):
                 tag = 'hash'
             else:
                 tag = entity_type
+            param[tag] = self._handle_py_ver_compat_for_input_str(param[tag])
             my_ret_val = self._handle_reputation(param, tag, param[tag])
 
         elif action_id == 'threat_assessment':

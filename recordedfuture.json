@@ -400,6 +400,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 },
                 {
@@ -407,6 +410,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 }
             ],
@@ -505,6 +511,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 },
                 {
@@ -512,6 +521,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 }
             ],
@@ -743,6 +755,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 },
                 {
@@ -750,6 +765,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 }
             ],
@@ -914,6 +932,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 },
                 {
@@ -921,6 +942,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 }
             ],
@@ -1266,6 +1290,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 },
                 {
@@ -1273,6 +1300,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 }
             ],
@@ -1460,6 +1490,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 },
                 {
@@ -1467,6 +1500,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 }
             ],
@@ -1753,6 +1789,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 },
                 {
@@ -1760,6 +1799,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 }
             ],
@@ -1946,6 +1988,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 },
                 {
@@ -1953,6 +1998,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 }
             ],
@@ -2248,6 +2296,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 },
                 {
@@ -2255,6 +2306,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 }
             ],
@@ -2432,6 +2486,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 },
                 {
@@ -2439,6 +2496,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 }
             ],
@@ -2762,6 +2822,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 },
                 {
@@ -2769,6 +2832,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 }
             ],
@@ -2949,6 +3015,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 },
                 {
@@ -2956,6 +3025,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 }
             ],
@@ -3238,6 +3310,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 },
                 {
@@ -3245,6 +3320,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recodedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 },
                 {
@@ -3352,6 +3430,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recordedfuture threat assessment total objects"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 },
                 {
@@ -3359,6 +3440,9 @@
                     "data_type": "numeric",
                     "contains": [
                         "recordedfuture threat assessment total objects successful"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 }
             ],
