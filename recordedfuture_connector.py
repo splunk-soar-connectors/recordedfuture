@@ -113,7 +113,7 @@ class RecordedfutureConnector(BaseConnector):
                       None)
 
     @staticmethod
-    def _create_emtpy_response(fields):
+    def _create_empty_response(fields):
         """Create an empty response.
 
         This is typically used when the API return 404 (not found). Rather
@@ -180,7 +180,7 @@ class RecordedfutureConnector(BaseConnector):
             fields = kwargs['params']['fields'].split(',')
             self.debug_print('_process_json_response fields: ', fields)
             if resp.status_code == 404:
-                resp_json = self._create_emtpy_response(fields)
+                resp_json = self._create_empty_response(fields)
 
                 return RetVal(phantom.APP_SUCCESS, resp_json)
 
@@ -233,7 +233,7 @@ class RecordedfutureConnector(BaseConnector):
             return self._process_empty_response(resp, action_result)
 
         # everything else is actually an error at this point
-        error_msg = self._handle_py_ver_compat_for_input_str(resp.text.replace('{','{{').replace('}', '}}'))
+        error_msg = self._handle_py_ver_compat_for_input_str(resp.text.replace('{', '{{').replace('}', '}}'))
         message = "Can't process response from server. Status Code: {0} " \
                   "Data from server: {1}".format(resp.status_code,
                                                  error_msg)
@@ -807,7 +807,6 @@ class RecordedfutureConnector(BaseConnector):
         summary['returned_number_of_rules'] = response['counts']['returned']
         summary['rule_id_list'] = ','.join(rule_ids)
         action_result.set_summary(summary)
-
 
         # Return success, no need to set the message, only the status
         return action_result.set_status(phantom.APP_SUCCESS)
