@@ -104,10 +104,7 @@ class RecordedfutureConnector(BaseConnector):
         message = "Please check the app configuration parameters. Status Code: {0}. Data from server:\n{1}\n".format(
             status_code, error_text)
 
-        if sys.version_info[0] < 3:
-            message = message.replace(u'{', '{{').replace(u'}', '}}')
-        else:
-            message = message.replace('{', '{{').replace('}', '}}')
+        message = message.replace('{', '{{').replace('}', '}}')
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message),
                       None)
@@ -422,7 +419,7 @@ class RecordedfutureConnector(BaseConnector):
         if phantom.is_fail(my_ret_val):
             return action_result.get_status()
 
-        res = response.get('data')
+        res = response.get('data', {})
         action_result.add_data(res)
         self.save_progress('Added data with keys {}', list(res.keys()))
 
@@ -468,7 +465,7 @@ class RecordedfutureConnector(BaseConnector):
 
         if phantom.is_fail(my_ret_val):
             return action_result.get_status()
-        if response.get('data').get('results', []):
+        if response.get('data', {}).get('results', []):
             summary = action_result.get_summary()
             item = response['data']['results'][0]
             risk = item['risk']
@@ -835,14 +832,14 @@ class RecordedfutureConnector(BaseConnector):
         elif operation_type == 'intelligence':
             omap = INTELLIGENCE_MAP
             path_info_tmplt, fields, tag, do_quote = omap[entity_type]
-            param[tag] = self._handle_py_ver_compat_for_input_str(param[tag])
+            param_tag = self._handle_py_ver_compat_for_input_str(param[tag])
             if do_quote:
                 if sys.version_info[0] < 3:
-                    path_info = path_info_tmplt % urllib.quote_plus(param[tag])
+                    path_info = path_info_tmplt % urllib.quote_plus(param_tag)
                 else:
-                    path_info = path_info_tmplt % urllib.parse.quote_plus(param[tag])
+                    path_info = path_info_tmplt % urllib.parse.quote_plus(param_tag)
             else:
-                path_info = path_info_tmplt % param[tag]
+                path_info = path_info_tmplt % param_tag
             my_ret_val = self._handle_intelligence(param, path_info, fields,
                                                    operation_type)
         elif operation_type == 'reputation':
@@ -851,8 +848,8 @@ class RecordedfutureConnector(BaseConnector):
                 tag = 'hash'
             else:
                 tag = entity_type
-            param[tag] = self._handle_py_ver_compat_for_input_str(param[tag])
-            my_ret_val = self._handle_reputation(param, tag, param[tag])
+            param_tag = self._handle_py_ver_compat_for_input_str(param[tag])
+            my_ret_val = self._handle_reputation(param, tag, param_tag)
 
         elif action_id == 'threat_assessment':
             # todo: need to check the in-parameters
