@@ -16,7 +16,8 @@
     "main_module": "recordedfuture_connector.py",
     "python_version": "3",
     "latest_tested_versions": [
-        "Cloud API v2 on 3/13/2020"
+        "Cloud API v2 on 3/13/2020",
+        "2.1.0-rc1"
     ],
     "min_phantom_version": "4.6.19142",
     "app_wizard_version": "1.0.0",
@@ -65,7 +66,7 @@
                     "required": true,
                     "primary": true,
                     "contains": [
-                        "recordedfuture rule id"
+                        "recordedfuture alert rule id"
                     ],
                     "allow_list": true,
                     "order": 0
@@ -75,13 +76,20 @@
                     "data_type": "string",
                     "required": true,
                     "default": "-24h to now",
-                    "order": 1
+                    "order": 1,
+                    "contains": [
+                        "recordedfuture alert timerange"
+                    ],
+                    "primary": true
                 }
             },
             "output": [
                 {
                     "data_path": "action_result.status",
                     "data_type": "string",
+                    "contains": [
+                        "recordedfuture result status"
+                    ],
                     "example_values": [
                         "success",
                         "failed"
@@ -91,7 +99,7 @@
                     "data_path": "action_result.parameter.rule_id",
                     "data_type": "string",
                     "contains": [
-                        "recordedfuture rule id"
+                        "recordedfuture alert rule id"
                     ]
                 },
                 {
@@ -100,163 +108,270 @@
                     "example_values": [
                         "anytime",
                         "-24h to now"
+                    ],
+                    "contains": [
+                        "recordedfuture alert timerange"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.alertTitle",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert title"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.alertUrl",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert url"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.content.counts.documents",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture alert content count documents"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.content.counts.entities",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture alert content count entities"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.content.counts.references",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture alert content count references"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.content.entities.*.documents.*.references.*.entities.*.id",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert content entities references id"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.content.entities.*.documents.*.references.*.entities.*.name",
                     "data_type": "string",
                     "contains": [
-                        "email"
+                        "email",
+                        "recordedfuture alert content entities references name"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.content.entities.*.documents.*.references.*.entities.*.type",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert content entities references type"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.content.entities.*.documents.*.references.*.fragment",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert content entities references fragment"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.content.entities.*.documents.*.references.*.language",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert content entities references language"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.content.entities.*.documents.*.source.id",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert content entities source id"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.content.entities.*.documents.*.source.name",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert content entities source name"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.content.entities.*.documents.*.source.type",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert content entities source type"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.content.entities.*.documents.*.title",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert content entities type"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.content.entities.*.documents.*.url",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert content entities url"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.content.entities.*.entity",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert content entities entity"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.content.id",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert content id"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.content.review.assignee",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert content review assignee"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.content.review.note",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert content review note"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.content.review.noteAuthor",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert content review note author"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.content.review.noteDate",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert content review note data"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.content.review.status",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert content review note status"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.content.rule.id",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert content rule id"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.content.rule.name",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert content rule name"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.content.rule.url",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert content rule url"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.content.title",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert content rule title"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.content.triggered",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert content triggered"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.content.type",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert content type"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.content.url",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert content url"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.entities.Document",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert content entities document"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.entities.EmailAddress",
                     "data_type": "string",
                     "contains": [
-                        "email"
+                        "email",
+                        "recordedfuture alert content entities email address"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.alert.triggered",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert triggered"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.rule.id",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert rule id"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.rule.name",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert rule id"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.rule.url",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert rule url"
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.returned_number_of_alerts",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture alert number of alerts"
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.rule_id",
                     "data_type": "string",
                     "contains": [
-                        "recordedfuture rule id"
+                        "recordedfuture alert rule id"
                     ]
                 },
                 {
@@ -268,17 +383,43 @@
                 },
                 {
                     "data_path": "action_result.summary.total_number_of_alerts",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture alert number of alerts"
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result message"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
+                    ]
                 }
             ],
             "render": {
                 "type": "custom",
-                "view": "recordedfuture_view.alert_results",
-                "title": "Recorded Future Alerts"
+                "view": "recordedfuture_view.alert_data_results",
+                "title": "Recorded Future Alert Data"
             },
             "versions": "EQ(*)"
         },
@@ -295,7 +436,7 @@
                     "required": true,
                     "primary": true,
                     "contains": [
-                        "recordedfuture rule name"
+                        "recordedfuture alert rule name"
                     ],
                     "order": 0
                 }
@@ -304,6 +445,9 @@
                 {
                     "data_path": "action_result.status",
                     "data_type": "string",
+                    "contains": [
+                        "recordedfuture result status"
+                    ],
                     "example_values": [
                         "success",
                         "failed"
@@ -313,7 +457,7 @@
                     "data_path": "action_result.parameter.rule_name",
                     "data_type": "string",
                     "contains": [
-                        "recordedfuture rule name"
+                        "recordedfuture alert rule name"
                     ]
                 },
                 {
@@ -322,38 +466,71 @@
                     "column_name": "Rule ID",
                     "column_order": 0,
                     "contains": [
-                        "recordedfuture rule id"
+                        "recordedfuture alert rule id"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.rule.title",
                     "data_type": "string",
                     "column_name": "Rule Name",
-                    "column_order": 1
+                    "column_order": 1,
+                    "contains": [
+                        "recordedfuture alert rule title"
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.returned_number_of_rules",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture alerts number of rules"
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.rule_id_list",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alerts rule ids"
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.total_number_of_rules",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture rules count total"
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result message"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
+                    ]
                 }
             ],
             "render": {
-                "type": "table",
-                "width": 12,
-                "height": 5,
-                "title": "Alert Rules",
-                "menu_name": "alert data lookup"
+                "type": "custom",
+                "view": "recordedfuture_view.alert_rules_results",
+                "title": "Recorded Future Alert Rules"
             },
             "versions": "EQ(*)"
         },
@@ -379,6 +556,9 @@
                 {
                     "data_path": "action_result.status",
                     "data_type": "string",
+                    "contains": [
+                        "recordedfuture result status"
+                    ],
                     "example_values": [
                         "success",
                         "failed"
@@ -393,7 +573,10 @@
                 },
                 {
                     "data_path": "action_result.data.*.entity.id",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity id"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.entity.name",
@@ -404,19 +587,31 @@
                 },
                 {
                     "data_path": "action_result.data.*.entity.type",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity type"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.metrics.*.type",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture metrics type"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.metrics.*.value",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture metrics value"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.criticality",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk criticality"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.criticalityLabel",
@@ -426,11 +621,17 @@
                         "Malicious",
                         "Suspicious",
                         "Unusual"
+                    ],
+                    "contains": [
+                        "recordedfuture risk criticality label"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.criticality",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk criticality"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.criticalityLabel",
@@ -440,47 +641,80 @@
                         "Malicious",
                         "Suspicious",
                         "Unusual"
+                    ],
+                    "contains": [
+                        "recordedfuture risk criticality label"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.evidenceString",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture risk criticality label"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.mitigationString",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture mitigation string"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.rule",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence rule"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.timestamp",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence timestamp"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.riskString",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture risk string"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.riskSummary",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture risk summary"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.rules",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk rules"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.score",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk score"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.timestamps.firstSeen",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence firstseen"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.timestamps.lastSeen",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence lastseen"
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.criticalityLabel",
@@ -490,19 +724,51 @@
                         "Malicious",
                         "Suspicious",
                         "Unusual"
+                    ],
+                    "contains": [
+                        "recordedfuture risk criticality label"
                     ]
                 },
                 {
                     "data_path": "action_result.summary.lastSeen",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence lastseen"
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.riskSummary",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture risk summary"
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result message"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
+                    ]
                 }
             ],
             "render": {
@@ -534,6 +800,9 @@
                 {
                     "data_path": "action_result.status",
                     "data_type": "string",
+                    "contains": [
+                        "recordedfuture result status"
+                    ],
                     "example_values": [
                         "success",
                         "failed"
@@ -547,34 +816,6 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.evidence.*.description",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.evidence.*.level",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.evidence.*.mitigation",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.evidence.*.rule",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.evidence.*.timestamp",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.id",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.maxrules",
-                    "data_type": "numeric"
-                },
-                {
                     "data_path": "action_result.data.*.name",
                     "data_type": "string",
                     "contains": [
@@ -582,36 +823,129 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.risklevel",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.riskscore",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.rulecount",
-                    "data_type": "numeric"
+                    "data_path": "action_result.data.*.id",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity id"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.type",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity type"
+                    ]
                 },
                 {
-                    "data_path": "action_result.summary.risklevel",
-                    "data_type": "numeric"
+                    "data_path": "action_result.data.*.riskscore",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk score"
+                    ]
                 },
                 {
-                    "data_path": "action_result.summary.riskscore",
-                    "data_type": "numeric"
+                    "data_path": "action_result.data.*.risklevel",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk level"
+                    ]
                 },
                 {
-                    "data_path": "action_result.summary.type",
-                    "data_type": "string"
+                    "data_path": "action_result.data.*.rulecount",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture rule count"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.maxrules",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture max rules"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.timestamp",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.mitigation",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence mitigation"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.description",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence description"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.rule",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture risk rule"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.level",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture evidence level"
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result message"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.riskscore",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.risklevel",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk level"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
+                    ]
                 }
             ],
             "render": {
@@ -634,6 +968,7 @@
                     "required": true,
                     "primary": true,
                     "contains": [
+                        "cve",
                         "recordedfuture vulnerability id"
                     ],
                     "order": 0
@@ -643,6 +978,9 @@
                 {
                     "data_path": "action_result.status",
                     "data_type": "string",
+                    "contains": [
+                        "recordedfuture result status"
+                    ],
                     "example_values": [
                         "success",
                         "failed"
@@ -652,178 +990,320 @@
                     "data_path": "action_result.parameter.vulnerability",
                     "data_type": "string",
                     "contains": [
+                        "cve",
                         "recordedfuture vulnerability id"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.cvss.accessComplexity",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "cvss access complexity"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.cvss.accessVector",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "cvss access vector"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.cvss.authentication",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "cvss authentication"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.cvss.availability",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "cvss availability"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.cvss.confidentiality",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture cvss confidentiality"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.cvss.integrity",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "cvss integrity"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.cvss.lastModified",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "cvss last modified"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.cvss.published",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "cvss published"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.cvss.score",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "cvss score"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.entity.description",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity description"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.entity.id",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity id"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.entity.name",
                     "data_type": "string",
                     "contains": [
+                        "cve",
                         "recordedfuture vulnerability id"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.entity.type",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity type"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.intelCard",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture intelligence card url"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.metrics.*.type",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture metrics type"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.metrics.*.value",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture metrics value"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.nvdDescription",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "nvd description"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.relatedEntities.*.entities.*.count",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture related entities count"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.relatedEntities.*.entities.*.entity.description",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity description"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.relatedEntities.*.entities.*.entity.id",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity id"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.relatedEntities.*.entities.*.entity.name",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity name"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.relatedEntities.*.entities.*.entity.type",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity type"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.relatedEntities.*.type",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture related entity type"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.criticality",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk criticality"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.criticalityLabel",
                     "data_type": "string",
                     "example_values": [
                         "Very Critical"
+                    ],
+                    "contains": [
+                        "recordedfuture risk criticality label"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.criticality",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk criticality"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.criticalityLabel",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture risk criticality label"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.evidenceString",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence string"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.mitigationString",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture mitigation string"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.rule",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence rule"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.timestamp",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence timestamp"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.riskString",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture risk string"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.riskSummary",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture risk summary"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.rules",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk rules"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.score",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk score"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.timestamps.firstSeen",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence firstseen"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.timestamps.lastSeen",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence lastseen"
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.criticalityLabel",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture risk criticality label"
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.lastSeen",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence lastseen"
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.riskSummary",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture risk summary"
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result message"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
+                    ]
                 }
             ],
             "render": {
@@ -846,6 +1326,7 @@
                     "required": true,
                     "primary": true,
                     "contains": [
+                        "cve",
                         "recordedfuture vulnerability id"
                     ],
                     "order": 0
@@ -855,95 +1336,174 @@
                 {
                     "data_path": "action_result.status",
                     "data_type": "string",
+                    "contains": [
+                        "recordedfuture result status"
+                    ],
                     "example_values": [
                         "success",
                         "failed"
                     ]
                 },
                 {
-                    "data_path": "action_result.parameter.vulnerability",
+                    "data_path": "action_result.data.*.name",
                     "data_type": "string",
                     "contains": [
+                        "cve",
                         "recordedfuture vulnerability id"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.description",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.evidence.*.description",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.evidence.*.level",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.evidence.*.mitigation",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.evidence.*.rule",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.evidence.*.ruleid",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.evidence.*.timestamp",
-                    "data_type": "string"
-                },
-                {
                     "data_path": "action_result.data.*.id",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.maxrules",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.name",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.risklevel",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.riskscore",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.rulecount",
-                    "data_type": "numeric"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity id"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.type",
                     "data_type": "string",
                     "example_values": [
                         "CyberVulnerability"
+                    ],
+                    "contains": [
+                        "recordedfuture entity type"
                     ]
                 },
                 {
-                    "data_path": "action_result.summary.risklevel",
-                    "data_type": "numeric"
+                    "data_path": "action_result.data.*.description",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence description"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.riskscore",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.risklevel",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk level"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.rulecount",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture rule count"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.maxrules",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture max rules"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.description",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence description"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.level",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture evidence level"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.timestamp",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.ruleid",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture risk rule id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.rule",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture risk rule"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.mitigation",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence mitigation"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result message"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.vulnerability",
+                    "data_type": "string",
+                    "contains": [
+                        "cve",
+                        "recordedfuture vulnerability id"
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.riskscore",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk score"
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.type",
                     "data_type": "string",
                     "example_values": [
                         "CyberVulnerability"
+                    ],
+                    "contains": [
+                        "recordedfuture entity type"
                     ]
                 },
                 {
-                    "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_path": "action_result.summary.risklevel",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk level"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
+                    ]
                 }
             ],
             "render": {
@@ -978,6 +1538,9 @@
                 {
                     "data_path": "action_result.status",
                     "data_type": "string",
+                    "contains": [
+                        "recordedfuture result status"
+                    ],
                     "example_values": [
                         "success",
                         "failed"
@@ -995,7 +1558,10 @@
                 },
                 {
                     "data_path": "action_result.data.*.entity.id",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity id"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.entity.name",
@@ -1012,6 +1578,9 @@
                     "data_type": "string",
                     "example_values": [
                         "Hash"
+                    ],
+                    "contains": [
+                        "recordedfuture entity type"
                     ]
                 },
                 {
@@ -1019,114 +1588,221 @@
                     "data_type": "string",
                     "example_values": [
                         "MD5"
+                    ],
+                    "contains": [
+                        "recordedfuture hash algorithm"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.intelCard",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture intelligence card url"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.metrics.*.type",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture metrics type"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.metrics.*.value",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture metrics value"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.relatedEntities.*.entities.*.count",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture related entities count"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.relatedEntities.*.entities.*.entity.id",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity id"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.relatedEntities.*.entities.*.entity.name",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity name"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.relatedEntities.*.entities.*.entity.type",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity type"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.relatedEntities.*.type",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture related entity type"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.criticality",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk criticality"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.criticalityLabel",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "Very Malicious"
+                    ],
+                    "contains": [
+                        "recordedfuture risk criticality label"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.criticality",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk criticality"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.criticalityLabel",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "Unusual"
+                    ],
+                    "contains": [
+                        "recordedfuture risk criticality label"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.evidenceString",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence string"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.mitigationString",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture mitigation string"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.rule",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence rule"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.timestamp",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence timestamp"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.riskString",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture risk string"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.riskSummary",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture risk summary"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.rules",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk rules"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.score",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk score"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.timestamps.firstSeen",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence firstseen"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.timestamps.lastSeen",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence lastseen"
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.criticalityLabel",
                     "data_type": "string",
                     "example_values": [
                         "Malicious"
+                    ],
+                    "contains": [
+                        "recordedfuture risk criticality label"
                     ]
                 },
                 {
                     "data_path": "action_result.summary.lastSeen",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence lastseen"
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.riskSummary",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture risk summary"
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result message"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
+                    ]
                 }
             ],
             "render": {
@@ -1161,9 +1837,116 @@
                 {
                     "data_path": "action_result.status",
                     "data_type": "string",
+                    "contains": [
+                        "recordedfuture result status"
+                    ],
                     "example_values": [
                         "success",
                         "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "hash",
+                        "sha1",
+                        "sha256",
+                        "md5"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.id",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.type",
+                    "data_type": "string",
+                    "example_values": [
+                        "Hash"
+                    ],
+                    "contains": [
+                        "recordedfuture entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.riskscore",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.risklevel",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk level"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.rulecount",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture rule count"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.maxrules",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture max rules"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.timestamp",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.mitigation",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence mitigation"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.description",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence description"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.rule",
+                    "data_type": "string",
+                    "contains": [
+                        "recorded future risk rule"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.level",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5
+                    ],
+                    "contains": [
+                        "recordedfuture risk rule level"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "contains": [
+                        "action result message"
                     ]
                 },
                 {
@@ -1177,80 +1960,48 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.evidence.*.description",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.evidence.*.level",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.evidence.*.mitigation",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.evidence.*.rule",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.evidence.*.timestamp",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.id",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.maxrules",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.name",
-                    "data_type": "string",
-                    "contains": [
-                        "hash",
-                        "sha256",
-                        "sha1",
-                        "md5"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.risklevel",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.riskscore",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.rulecount",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.type",
-                    "data_type": "string",
-                    "example_values": [
-                        "Hash"
-                    ]
-                },
-                {
-                    "data_path": "action_result.summary.risklevel",
-                    "data_type": "numeric"
-                },
-                {
                     "data_path": "action_result.summary.riskscore",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk score"
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.type",
                     "data_type": "string",
                     "example_values": [
                         "Hash"
+                    ],
+                    "contains": [
+                        "recordedfuture entity type"
                     ]
                 },
                 {
-                    "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_path": "action_result.summary.risklevel",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk level"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
+                    ]
                 }
             ],
             "render": {
@@ -1282,6 +2033,9 @@
                 {
                     "data_path": "action_result.status",
                     "data_type": "string",
+                    "contains": [
+                        "recordedfuture result status"
+                    ],
                     "example_values": [
                         "success",
                         "failed"
@@ -1296,7 +2050,10 @@
                 },
                 {
                     "data_path": "action_result.data.*.entity.id",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity id"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.entity.name",
@@ -1307,139 +2064,252 @@
                 },
                 {
                     "data_path": "action_result.data.*.entity.type",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity type"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.intelCard",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture intelligence card url"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.metrics.*.type",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture metrics type"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.metrics.*.value",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture metrics value"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.relatedEntities.*.entities.*.count",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture related entities count"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.relatedEntities.*.entities.*.entity.id",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity id"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.relatedEntities.*.entities.*.entity.name",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity name"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.relatedEntities.*.entities.*.entity.type",
                     "data_type": "string",
                     "example_values": [
                         "Hash"
+                    ],
+                    "contains": [
+                        "recordedfuture entity type"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.relatedEntities.*.type",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture related entity type"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.criticality",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk criticality"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.criticalityLabel",
                     "data_type": "string",
                     "example_values": [
                         "Very Malicious"
+                    ],
+                    "contains": [
+                        "recordedfuture risk criticality label"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.criticality",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk criticality"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.criticalityLabel",
                     "data_type": "string",
                     "example_values": [
                         "Unusual"
+                    ],
+                    "contains": [
+                        "recordedfuture risk criticality label"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.evidenceString",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence string"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.mitigationString",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture mitigation string"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.rule",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence rule"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.timestamp",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence timestamp"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.riskString",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture risk string"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.riskSummary",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture risk summary"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.rules",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk rules"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.score",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk score"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.threatLists.*.description",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture threatlist description"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.threatLists.*.id",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture threatlist id"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.threatLists.*.name",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture threatlist name"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.threatLists.*.type",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture threatlist type"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.timestamps.firstSeen",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence firstseen"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.timestamps.lastSeen",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence lastseen"
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.criticalityLabel",
                     "data_type": "string",
                     "example_values": [
                         "Very Malicious"
+                    ],
+                    "contains": [
+                        "recordedfuture risk criticality label"
                     ]
                 },
                 {
                     "data_path": "action_result.summary.lastSeen",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence lastseen"
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.riskSummary",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture risk summary"
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result message"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
+                    ]
                 }
             ],
             "render": {
@@ -1471,9 +2341,113 @@
                 {
                     "data_path": "action_result.status",
                     "data_type": "string",
+                    "contains": [
+                        "recordedfuture result status"
+                    ],
                     "example_values": [
                         "success",
                         "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "domain"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.id",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.type",
+                    "data_type": "string",
+                    "example_values": [
+                        "InternetDomainName"
+                    ],
+                    "contains": [
+                        "recordedfuture entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.riskscore",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.risklevel",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk level"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.rulecount",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture rule count"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.maxrules",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture max rules"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.description",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence description"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.level",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture evidence level"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.timestamp",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.ruleid",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture risk rule id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.rule",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture risk rule"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.mitigation",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence mitigation"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result message"
                     ]
                 },
                 {
@@ -1484,78 +2458,48 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.evidence.*.description",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.evidence.*.level",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.evidence.*.mitigation",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.evidence.*.rule",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.evidence.*.ruleid",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.evidence.*.timestamp",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.id",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.maxrules",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.name",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.risklevel",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.riskscore",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.rulecount",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.type",
-                    "data_type": "string",
-                    "example_values": [
-                        "InternetDomainName"
-                    ]
-                },
-                {
-                    "data_path": "action_result.summary.risklevel",
-                    "data_type": "numeric"
-                },
-                {
                     "data_path": "action_result.summary.riskscore",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk score"
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.type",
                     "data_type": "string",
                     "example_values": [
                         "InternetDomainName"
+                    ],
+                    "contains": [
+                        "recordedfuture summary type"
                     ]
                 },
                 {
-                    "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_path": "action_result.summary.risklevel",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk level"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
+                    ]
                 }
             ],
             "render": {
@@ -1588,6 +2532,9 @@
                 {
                     "data_path": "action_result.status",
                     "data_type": "string",
+                    "contains": [
+                        "recordedfuture result status"
+                    ],
                     "example_values": [
                         "success",
                         "failed"
@@ -1603,7 +2550,10 @@
                 },
                 {
                     "data_path": "action_result.data.*.entity.id",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity id"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.entity.name",
@@ -1615,152 +2565,277 @@
                 },
                 {
                     "data_path": "action_result.data.*.entity.type",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity type"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.intelCard",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture intelligence card url"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.location.asn",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture location asn"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.location.cidr.id",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture location cidr id"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.location.cidr.name",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture location cidr name"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.location.cidr.type",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture location cidr type"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.location.location.city",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture location city"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.location.location.continent",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture location continent"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.location.location.country",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture location country"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.location.organization",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture location organization"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.metrics.*.type",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture metrics type"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.metrics.*.value",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture metrics value"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.relatedEntities.*.entities.*.count",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture related entities count"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.relatedEntities.*.entities.*.entity.id",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity id"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.relatedEntities.*.entities.*.entity.name",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity name"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.relatedEntities.*.entities.*.entity.type",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity type"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.relatedEntities.*.type",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture related entity type"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.criticality",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk criticality"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.criticalityLabel",
                     "data_type": "string",
                     "example_values": [
                         "Very Malicious"
+                    ],
+                    "contains": [
+                        "recordedfuture risk criticality label"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.criticality",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk criticality"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.criticalityLabel",
                     "data_type": "string",
                     "example_values": [
                         "Unusual"
+                    ],
+                    "contains": [
+                        "recordedfuture risk criticality label"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.evidenceString",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence string"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.mitigationString",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture mitigation string"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.rule",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence rule"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.evidenceDetails.*.timestamp",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence timestamp"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.riskString",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture risk string"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.risk.riskSummary",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture risk summary"
+                    ]
                 },
                 {
-                    "data_path": "action_result.data.*.riskrules",
-                    "data_type": "numeric"
+                    "data_path": "action_result.data.*.risk.rules",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk rules"
+                    ]
                 },
                 {
-                    "data_path": "action_result.data.*.riskscore",
-                    "data_type": "numeric"
+                    "data_path": "action_result.data.*.risk.score",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk score"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.timestamps.firstSeen",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence firstseen"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.timestamps.lastSeen",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence lastseen"
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.criticalityLabel",
                     "data_type": "string",
                     "example_values": [
                         "Very Malicious"
+                    ],
+                    "contains": [
+                        "recordedfuture risk criticality label"
                     ]
                 },
                 {
                     "data_path": "action_result.summary.lastSeen",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence lastseen"
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.riskSummary",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture risk summary"
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result message"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
+                    ]
                 }
             ],
             "render": {
@@ -1793,9 +2868,114 @@
                 {
                     "data_path": "action_result.status",
                     "data_type": "string",
+                    "contains": [
+                        "recordedfuture result status"
+                    ],
                     "example_values": [
                         "success",
                         "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.id",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "ip",
+                        "ipv6"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.type",
+                    "data_type": "string",
+                    "example_values": [
+                        "IpAddress"
+                    ],
+                    "contains": [
+                        "recordedfuture entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.risklevel",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk level"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.rulecount",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture rule count"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.ruleid",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture risk rule id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.timestamp",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.mitigation",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence mitigation"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.description",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence description"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.rule",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture risk rule"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.level",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture evidence level"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.maxrules",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture max rules"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.riskscore",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result message"
                     ]
                 },
                 {
@@ -1807,87 +2987,469 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.evidence.*.description",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.evidence.*.level",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.evidence.*.mitigation",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.evidence.*.rule",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.evidence.*.ruleid",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.evidence.*.timestamp",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.id",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.maxrules",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.name",
-                    "data_type": "string",
-                    "contains": [
-                        "ip"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.risklevel",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.riskscore",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.rulecount",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.type",
-                    "data_type": "string",
-                    "example_values": [
-                        "IpAddress"
-                    ]
-                },
-                {
-                    "data_path": "action_result.summary.risklevel",
-                    "data_type": "numeric"
-                },
-                {
                     "data_path": "action_result.summary.riskscore",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk score"
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.type",
                     "data_type": "string",
                     "example_values": [
                         "IpAddress"
+                    ],
+                    "contains": [
+                        "recordedfuture entity type"
                     ]
                 },
                 {
-                    "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_path": "action_result.summary.risklevel",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk level"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
+                    ]
                 }
             ],
             "render": {
                 "type": "custom",
                 "view": "recordedfuture_view.reputation_results",
                 "title": "Threat Reputation of an IP Address"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "threat assessment",
+            "identifier": "threat_assessment",
+            "description": "Get an indicator of the risk based on context",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {
+                "threat_context": {
+                    "description": "Context to use",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "order": 0,
+                    "contains": [
+                        "recordedfuture threat assessment context"
+                    ]
+                },
+                "ip": {
+                    "description": "IP to query",
+                    "data_type": "string",
+                    "primary": true,
+                    "allow_list": true,
+                    "contains": [
+                        "ip",
+                        "ipv6"
+                    ],
+                    "order": 1
+                },
+                "domain": {
+                    "description": "Domain to query",
+                    "data_type": "string",
+                    "primary": true,
+                    "allow_list": true,
+                    "contains": [
+                        "domain"
+                    ],
+                    "order": 2
+                },
+                "url": {
+                    "description": "URL to query",
+                    "data_type": "string",
+                    "primary": true,
+                    "allow_list": true,
+                    "contains": [
+                        "url"
+                    ],
+                    "order": 3
+                },
+                "hash": {
+                    "description": "Hash to query",
+                    "data_type": "string",
+                    "primary": true,
+                    "allow_list": true,
+                    "contains": [
+                        "hash",
+                        "sha256",
+                        "sha1",
+                        "md5"
+                    ],
+                    "order": 4
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ],
+                    "contains": [
+                        "action result status"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.entities.*.id",
+                    "data_type": "string",
+                    "contains": [
+                        "recorded future entity id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.entities.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "ip",
+                        "domain",
+                        "hash",
+                        "sha1",
+                        "md5",
+                        "sha256",
+                        "url"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.entities.*.type",
+                    "data_type": "string",
+                    "example_values": [
+                        "IpAddress",
+                        "InternetDomainName"
+                    ],
+                    "contains": [
+                        "recordedfuture entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.verdict",
+                    "data_type": "boolean",
+                    "example_values": [
+                        false,
+                        true
+                    ],
+                    "contains": [
+                        "recordedfuture threat assessment verdict"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.risklevel",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture threat assessment risk level"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.rulecount",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture threat assessmewnt rule count"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.entities.*.evidence.*.ruleid",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture risk rule id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.entities.*.evidence.*.timestamp",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.entities.*.evidence.*.mitigation",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence mitigation"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.entities.*.evidence.*.description",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence description"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.entities.*.evidence.*.rule",
+                    "data_type": "string",
+                    "contains": [
+                        "recorded future risk rule"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.entities.*.evidence.*.level",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5
+                    ],
+                    "contains": [
+                        "recordedfuture risk rule level"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.maxrules",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture threat assessment max rules"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assessment_riskscore",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture threat assessment risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "contains": [
+                        "action result message"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.threat_context",
+                    "data_type": "string",
+                    "example_values": [
+                        "c2",
+                        "phishing"
+                    ],
+                    "contains": [
+                        "recordedfuture threat assessment context"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.ip",
+                    "data_type": "string",
+                    "contains": [
+                        "ip",
+                        "ipv6"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.domain",
+                    "data_type": "string",
+                    "contains": [
+                        "domain"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.url",
+                    "data_type": "string",
+                    "contains": [
+                        "url"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.hash",
+                    "data_type": "string",
+                    "contains": [
+                        "hash",
+                        "sha256",
+                        "sha1",
+                        "md5"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.riskscore",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture threat assessment risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.type",
+                    "data_type": "string",
+                    "example_values": [
+                        "IpAddress"
+                    ],
+                    "contains": [
+                        "recordedfuture entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.risklevel",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk level"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recodedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.entities.*.score",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.entities.*.evidence.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture evidence name"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.context",
+                    "data_type": "string",
+                    "example_values": [
+                        "c2",
+                        "phishing"
+                    ],
+                    "contains": [
+                        "recordedfuture threat assessment context"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.riskscore",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture threat assessment risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.assessment",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture threat assessment summary"
+                    ]
+                }
+            ],
+            "render": {
+                "type": "custom",
+                "view": "recordedfuture_view.threat_assessment_results",
+                "title": "Threat Summary for a collection of entities"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "list contexts",
+            "identifier": "list_contexts",
+            "description": "Get a list of possible contexts to use in threat triage",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {},
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result string"
+                    ],
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.context",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture threat assessment context"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "ip",
+                        "domain",
+                        "hash",
+                        "sha1",
+                        "sha256",
+                        "md5",
+                        "vulnerability"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture threat assessment result message"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.contexts_available_for_threat_assessment",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture threat assessment contexts"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture threat assessment total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture threat assessment total objects successful"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "render": {
+                "type": "custom",
+                "view": "recordedfuture_view.contexts_results",
+                "title": "List of available contexts"
             },
             "versions": "EQ(*)"
         }

@@ -15,8 +15,8 @@
 # ---------------------------------------------
 
 # Define your constants here
-version = '2.0.0'
-buildid = '2.0.0'
+version = '2.1.0-rc1'
+buildid = '139690'
 
 # These dicts map which path_info, which fields, what the Recorded Future
 # category is called and whether to quote the entity or not.
