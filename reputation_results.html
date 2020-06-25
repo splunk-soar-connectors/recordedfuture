@@ -24,146 +24,177 @@ or in part, is forbidden except by express written permission
 of Recorded Future.
 -->
 
+<!--
+Style elements are defined in a separate file, named below,
+and will be merged during compilation:
+       recordedfuture_style.css          -->
 <style>
+  a:hover {
+    text-decoration: underline;
+  }
 
-a:hover {
-  text-decoration:underline;
-}
+  .rf-widget {
+    overflow: auto;
+    width: 100%;
+    height: 100%;
+    padding-left:10px;
+    padding-right:10px;
+  }
 
-.wf-table-horizontal {
-  width: initial;
-  font-size: 12px;
-  border: 1px solid;
-  width:90%;
-  margin-left:5%;
-  margin-right:5%;
-}
+  .rf-box {
+    width: 98%;
+    padding: 5px 10px 5px 10px;
+    margin: 0 5px;
+    font-size: 12px;
+  }
 
-.wf-table-horizontal th {
-  text-align: center;
-  border: 1px solid;
-  text-transform: uppercase;
-  font-weight: normal;
-  padding: 5px;
-  padding-left: 4px;
-}
+  .highlighted {
+    font-weight: bold;
+  }
 
-.wf-table-horizontal td {
-  border: 1px solid;
-  padding: 5px;
-  padding-left: 4px;
-}
+  .non-highlighted {
+    font-size: xx-small;
+  }
 
-.wf-h3-style {
-  font-size : 20px
-}
+  .rf-box th {
+    text-align: left;
+  }
 
-.wf-h4-style {
-  font-size : 16px
-}
+  .rf-table {
+    width: 98%;
+    border-collapse: collapse;
+    margin: 5px 5px 5px 0;
+    padding: 10px;
+    font-size: 12px;
+  }
 
-.wf-h5-style {
-  font-size : 14px
-}
-.wf-subheader-style {
-  font-size : 12px
-}
+  td.rf-criticality-level-3, td.rf-criticality-level-4,
+  td.rf-criticality-level-5 {
+    background: #cf0a2c;
+    width: 0 !important;
+    padding: 0 2px 0 3px !important;
+  }
+  td.rf-criticality-level-2 {
+    background: #ffce00;
+    width: 0 !important;
+    padding: 0 2px 0 3px !important;
+  }
+  td.rf-criticality-level-1 {
+    background: #cccccc;
+    width: 0 !important;
+    padding: 0 2px 0 3px !important;
+  }
 
+  .rf-table td {
+    vertical-align: text-top;
+    padding: 10px;
+  }
+
+  td.rf-timestamp {
+    min-width: 13ex !important;
+  }
+
+  .rf-hover-info {
+    font-weight: normal;
+  }
+
+  .rf-hover-info:hover {
+    font-weight: bold;
+  }
 </style>
-<div style="overflow: auto; width: 100%; height: 100%; padding-left:10px; padding-right:10px">
+
+
+<div class="rf-widget">
   <!-- Main Div -->
   {% for result in results %} <!-- loop for each result -->
-    <br>
 
     <!------------------- For each Result ---------------------->
 
     {% if result.data %} <!-- else case will handle errors and no data found responses -->
-      <!-- <h3 class="wf-h3-style">Info</h3> -->
-      <table class="wf-table-horizontal">
+    <!-- Overview -->
+    <div class="rf-box">
+      <table class="rf-table">
         <tr>
-          {% if result.param.domain %}
-            <th>Domain</th>
-          {% elif result.param.ip %}
-            <th>IP Address</th>
-          {% elif result.param.hash %}
-            <th>File Hash</th>
-          {% elif result.param.url %}
-            <th>URL</th>
-          {% elif result.param.vulnerability %}
-            <th>Vulnerability</th>
-          {% endif %}
-          <th>RiskScore</th>
-          <th>Risk Level</th>
-          <th>Risk Rules Triggered</th>
-          <th>Total Number of Risk Rules</th>
-          <th>Recorded Future</th>
-        </tr>
-        <tr>
-          <td>
-            {% if result.param.domain %}
-              <a href="javascript:;" onclick="context_menu(this, [{'contains': ['domain'], 'value': '{{ result.param.domain }}' }], 0, {{ container.id }}, null, false);">{{ result.param.domain }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
+          <td colspan="3">{% if result.param.domain %}
+            <span class="non-highlighted">Domain</span> <br/>
+            <a href="javascript:;" onclick="context_menu(this, [{'contains': ['domain'], 'value': '{{ result.param.domain }}' }], 0, {{ container.id }}, null, false);">{{ result.param.domain }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
             {% elif result.param.ip %}
-              <a href="javascript:;" onclick="context_menu(this, [{'contains': ['ip'], 'value': '{{ result.param.ip }}' }], 0, {{ container.id }}, null, false);">{{ result.param.ip }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
+            <span class="non-highlighted">IP</span> <br/>
+            <a href="javascript:;" onclick="context_menu(this, [{'contains': ['ip'], 'value': '{{ result.param.ip }}' }], 0, {{ container.id }}, null, false);">{{ result.param.ip }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
             {% elif result.param.hash %}
-              <a href="javascript:;" onclick="context_menu(this, [{'contains': ['hash'], 'value': '{{ result.param.hash }}' }], 0, {{ container.id }}, null, false);">{{ result.param.hash }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
+            <span class="non-highlighted">Hash</span> <br/>
+            <a href="javascript:;" onclick="context_menu(this, [{'contains': ['hash'], 'value': '{{ result.param.hash }}' }], 0, {{ container.id }}, null, false);">{{ result.param.hash }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
             {% elif result.param.url %}
-              <a href="javascript:;" onclick="context_menu(this, [{'contains': ['url'], 'value': '{{ result.param.url }}' }], 0, {{ container.id }}, null, false);">{{ result.param.url }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
+            <span class="non-highlighted">URL</span> <br/>
+            <a href="javascript:;" onclick="context_menu(this, [{'contains': ['url'], 'value': '{{ result.param.url }}' }], 0, {{ container.id }}, null, false);">{{ result.param.url }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
             {% elif result.param.vulnerability %}
-              <a href="javascript:;" onclick="context_menu(this, [{'contains': ['vulnerability'], 'value': '{{ result.param.vulnerability }}' }], 0, {{ container.id }}, null, false);">{{ result.param.vulnerability }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
+            <span class="non-highlighted">Vulnerability</span> <br/>
+            <a href="javascript:;" onclick="context_menu(this, [{'contains': ['vulnerability'], 'value': '{{ result.param.vulnerability }}' }], 0, {{ container.id }}, null, false);">{{ result.param.vulnerability }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
             {% endif %}
           </td>
-          <td>{{ result.data.riskscore }}</td>
-          <td>{{ result.data.risklevel }}</td>
-          <td>{{ result.data.rulecount }}</td>
-          <td>{{ result.data.maxrules }}</td>
+        </tr>
+        <tr>
+          <td><span class="non-highlighted">Risk Score</span> <br/>
+            {{ result.data.riskscore }}</td>
           <td>
+            <span class="non-highlighted">Number of triggered Risk
+              Rules</span><br/>
+            {{ result.data.rulecount }} of {{ result.data.maxrules }} rules triggered</td>
+          <td>
+            <span class="non-highlighted">Intelligence Card</span> <br/>
             {% if result.data.intelCard %}
-              <a href="{{ result.data.intelCard }}" target="new">Browse to Intel Card</a>
+              <a href="{{ result.data.intelCard }}" target="new">Open</a>
             {% elif result.intelCard %}
-              <a href="{{ result.intelCard }}" target="new">Browse to Intel Card</a>
+              <a href="{{ result.intelCard }}" target="new">Open</a>
             {% endif %}
           </td>
         </tr>
       </table>
-      <br>
+    </div>
 
       <!-- NVD CVSS -->
       {% if result.data.description %}
-        <table class="wf-table-horizontal">
-          <tr><th>NVD Vulnerability Description</th></tr>
+      <div class="rf-box">
+        <table class="rf-table">
           <tr>
-            <td> {{ result.data.description }} </td>
+            <td>
+              <span class="non-highlighted">NVD Vulnerability
+                Description</span><br/>
+              {{ result.data.description }}
+            </td>
           </tr>
         </table>
-        <br>
+      </div>
       {% endif %}
 
       <!-- Risk Rules Triggered -->
       {% if result.data.evidence %}
-        <table class="wf-table-horizontal">
-          <tr><th colspan="5">Risk Rules Triggered</th></tr>
-          <tr>
-            <td>Name</td>
-            <td>Description</td>
-            <td>Mitigation</td>
-            <td>Level</td>
-            <td>Timestamp</td>
-          </tr>
-          {% for rule in result.data.evidence %}
+      <div class="rf-box">
+        <table class="rf-table">
+          <tr><td colspan="4">Risk Rules Triggered</td></tr>
+          {% for rule in result.data.evidence|dictsortreversed:"level" %}
             <tr>
-              <td> {{ rule.rule }} </td>
-              <td> {{ rule.description }} </td>
-              <td> {{ rule.mitigation }} </td>
-              <td> {{ rule.level }} </td>
-              <td> {{ rule.timestamp }} </td>
+              <td class="rf-criticality-level-{{ rule.level }}"></td>
+              <td><span class="non-highlighted">Risk Rule</span> <br/>
+                {{ rule.rule }}
+              </td>
+              <td><span class="non-highlighted">Evidence</span> <br/>
+                {{ rule.description }}
+              </td>
+              <td>
+                <span class="non-highlighted">Timestamp</span> <br/>
+                <span title="{{ rule.timestamp }}">
+                  {{ rule.timestamp|slice:"0:10" }}
+                </span>
+              </td>
             </tr>
           {% endfor %}
         </table>
-        <br>
+      </div>
       {% endif %}
 
     {% else %} <!-- handle no data responses -->
-      <table class="wf-table-horizontal">
+      <table class="rf-table">
         <tr>
           <th>Status</th>
           <th>Message</th>
@@ -176,7 +207,6 @@ a:hover {
     {% endif %}
 
   <!------------------- For each Result END ---------------------->
-
   {% endfor %} <!-- loop for each result end -->
 </div> <!-- Main Div -->
 
