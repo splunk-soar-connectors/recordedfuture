@@ -6,9 +6,9 @@ Third-party Software Attributions:
 Library: beautifulsoup4
 Version: 4.9.1
 License: MIT
+Copyright 2004-2017 Leonard Richardson
 Copyright 2004-2019 Leonard Richardson
 Copyright 2018 Isaac Muse
-Copyright 2004-2017 Leonard Richardson
 
 Library: pudb
 Version: 2019.2
