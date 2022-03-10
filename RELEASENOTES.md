@@ -1,6 +1,20 @@
 # RELEASE NOTES
 
-## VERSION 2.1
+## VERSION 3.1
+
+Recorded Future Links have been added to the intelligence lookups. These are entities
+that have been verified to be linked together by research or technical analysis, unlike
+the related entities which have been associated with each other solely because they
+have been found in the same document(s). 
+
+The linked entities have been marked up by type and can be used without further 
+modification for downstream actions in a playbook.
+
+There are a few other improvements, such as better feedback for testing of 
+connectivity, fetching of alerts, etc.
+
+
+## VERSION 3.0
 
 This version uses Recorded Future's new extension of the SOAR API which is
 designed to do automatic threat assessments for sets of related IOCs (ex all IOCs 

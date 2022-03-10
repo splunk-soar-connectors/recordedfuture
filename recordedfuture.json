@@ -4,20 +4,26 @@
     "description": "This app implements investigative actions to perform lookups for quick reputation information, contextual threat intelligence and external threat alerts",
     "type": "reputation",
     "product_vendor": "Recorded Future, Inc",
-    "logo": "logo_recordedfuture.svg",
-    "logo_dark": "logo_recordedfuture_dark.svg",
+    "logo": "logo_recordedfuture_black.svg",
+    "logo_dark": "logo_recordedfuture_white.svg",
     "product_name": "Recorded Future App for Phantom",
     "product_version_regex": ".*",
     "publisher": "Recorded Future, Inc",
-    "license": "Copyright (c) Recorded Future, Inc, 2019-2020",
-    "app_version": "3.0.1",
-    "utctime_updated": "2022-01-07T20:44:29.000000Z",
+    "license": "Copyright (c) Recorded Future, Inc, 2019-2022",
+    "app_version": "%RELEASE%",
+    "utctime_updated": "2019-04-17T07:33:58.826014Z",
     "package_name": "phantom_recordedfuture",
     "main_module": "recordedfuture_connector.py",
     "python_version": "3",
+    "contributors": [
+        {
+            "name": "Recorded Future - Premier Integrations",
+            "email": "phantom@recordedfuture.com"
+        }
+    ],
     "latest_tested_versions": [
         "Cloud API v2 on 3/13/2020",
-        "2.1.0-rc1"
+        "%RELEASE%"
     ],
     "min_phantom_version": "4.6.19142",
     "app_wizard_version": "1.0.0",
@@ -26,7 +32,7 @@
             "description": "Recorded Future API Basename",
             "data_type": "string",
             "required": true,
-            "default": "https://api.recordedfuture.com/v2",
+            "default": "https://api.recordedfuture.com/gw/phantom",
             "order": 0
         },
         "recordedfuture_api_token": {
@@ -430,13 +436,12 @@
             "type": "investigate",
             "read_only": true,
             "parameters": {
-                "rule_name": {
-                    "description": "Alert rule name",
+                "rule_search": {
+                    "description": "Search for alert rule name and ID",
                     "data_type": "string",
-                    "required": true,
                     "primary": true,
                     "contains": [
-                        "recordedfuture alert rule name"
+                        "recordedfuture alert rule search"
                     ],
                     "order": 0
                 }
@@ -454,10 +459,10 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.parameter.rule_name",
+                    "data_path": "action_result.parameter.rule_search",
                     "data_type": "string",
                     "contains": [
-                        "recordedfuture alert rule name"
+                        "recordedfuture alert rule search"
                     ]
                 },
                 {
@@ -470,12 +475,12 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.rule.title",
+                    "data_path": "action_result.data.*.rule.name",
                     "data_type": "string",
                     "column_name": "Rule Name",
                     "column_order": 1,
                     "contains": [
-                        "recordedfuture alert rule title"
+                        "recordedfuture alert rule name"
                     ]
                 },
                 {
@@ -593,17 +598,149 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.metrics.*.type",
+                    "data_path": "action_result.data.*.recordedfutureLinks.start_date",
                     "data_type": "string",
                     "contains": [
-                        "recordedfuture metrics type"
+                        "recordedfuture research links start date"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.metrics.*.value",
-                    "data_type": "numeric",
+                    "data_path": "action_result.data.*.recordedfutureLinks.stop_date",
+                    "data_type": "string",
                     "contains": [
-                        "recordedfuture metrics value"
+                        "recordedfuture research links stop date"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.ip.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "ip",
+                        "ipv6"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.ip.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.ip.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.domain.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "domain"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.domain.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.domain.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.file.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "file",
+                        "hash",
+                        "sha256",
+                        "sha1",
+                        "md5"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.file.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.file.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.vulnerability.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "cve",
+                        "vulnerability"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.vulnerability.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.vulnerability.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.url.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "url"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.url.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.url.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.other.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links other entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.other.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.other.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
                     ]
                 },
                 {
@@ -969,7 +1106,7 @@
                     "primary": true,
                     "contains": [
                         "cve",
-                        "recordedfuture vulnerability id"
+                        "vulnerability"
                     ],
                     "order": 0
                 }
@@ -991,7 +1128,7 @@
                     "data_type": "string",
                     "contains": [
                         "cve",
-                        "recordedfuture vulnerability id"
+                        "vulnerability"
                     ]
                 },
                 {
@@ -1076,7 +1213,7 @@
                     "data_type": "string",
                     "contains": [
                         "cve",
-                        "recordedfuture vulnerability id"
+                        "vulnerability"
                     ]
                 },
                 {
@@ -1087,24 +1224,156 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.recordedfutureLinks.start_date",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links start date"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.stop_date",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links stop date"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.ip.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "ip",
+                        "ipv6"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.ip.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.ip.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.domain.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "domain"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.domain.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.domain.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.file.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "file",
+                        "hash",
+                        "sha256",
+                        "sha1",
+                        "md5"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.file.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.file.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.vulnerability.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "cve",
+                        "vulnerability"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.vulnerability.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.vulnerability.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.url.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "url"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.url.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.url.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.other.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links other entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.other.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.other.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.intelCard",
                     "data_type": "string",
                     "contains": [
                         "recordedfuture intelligence card url"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.metrics.*.type",
-                    "data_type": "string",
-                    "contains": [
-                        "recordedfuture metrics type"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.metrics.*.value",
-                    "data_type": "numeric",
-                    "contains": [
-                        "recordedfuture metrics value"
                     ]
                 },
                 {
@@ -1327,7 +1596,7 @@
                     "primary": true,
                     "contains": [
                         "cve",
-                        "recordedfuture vulnerability id"
+                        "vulnerability"
                     ],
                     "order": 0
                 }
@@ -1349,7 +1618,7 @@
                     "data_type": "string",
                     "contains": [
                         "cve",
-                        "recordedfuture vulnerability id"
+                        "vulnerability"
                     ]
                 },
                 {
@@ -1458,7 +1727,7 @@
                     "data_type": "string",
                     "contains": [
                         "cve",
-                        "recordedfuture vulnerability id"
+                        "vulnerability"
                     ]
                 },
                 {
@@ -1526,6 +1795,7 @@
                     "required": true,
                     "primary": true,
                     "contains": [
+                        "file",
                         "hash",
                         "sha256",
                         "sha1",
@@ -1550,6 +1820,7 @@
                     "data_path": "action_result.parameter.hash",
                     "data_type": "string",
                     "contains": [
+                        "file",
                         "hash",
                         "sha256",
                         "sha1",
@@ -1567,6 +1838,7 @@
                     "data_path": "action_result.data.*.entity.name",
                     "data_type": "string",
                     "contains": [
+                        "file",
                         "hash",
                         "sha256",
                         "sha1",
@@ -1584,6 +1856,152 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.recordedfutureLinks.start_date",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links start date"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.stop_date",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links stop date"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.ip.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "ip",
+                        "ipv6"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.ip.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.ip.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.domain.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "domain"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.domain.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.domain.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.file.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "file",
+                        "hash",
+                        "sha256",
+                        "sha1",
+                        "md5"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.file.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.file.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.vulnerability.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "cve",
+                        "vulnerability"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.vulnerability.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.vulnerability.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.url.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "url"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.url.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.url.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.other.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links other entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.other.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.other.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.hashAlgorithm",
                     "data_type": "string",
                     "example_values": [
@@ -1598,20 +2016,6 @@
                     "data_type": "string",
                     "contains": [
                         "recordedfuture intelligence card url"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.metrics.*.type",
-                    "data_type": "string",
-                    "contains": [
-                        "recordedfuture metrics type"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.metrics.*.value",
-                    "data_type": "numeric",
-                    "contains": [
-                        "recordedfuture metrics value"
                     ]
                 },
                 {
@@ -1825,6 +2229,7 @@
                     "required": true,
                     "primary": true,
                     "contains": [
+                        "file",
                         "hash",
                         "sha256",
                         "sha1",
@@ -1849,6 +2254,7 @@
                     "data_path": "action_result.data.*.name",
                     "data_type": "string",
                     "contains": [
+                        "file",
                         "hash",
                         "sha1",
                         "sha256",
@@ -1953,6 +2359,7 @@
                     "data_path": "action_result.parameter.hash",
                     "data_type": "string",
                     "contains": [
+                        "file",
                         "hash",
                         "sha256",
                         "sha1",
@@ -2070,24 +2477,156 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.recordedfutureLinks.start_date",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links start date"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.stop_date",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links stop date"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.ip.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "ip",
+                        "ipv6"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.ip.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.ip.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.domain.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "domain"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.domain.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.domain.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.file.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "file",
+                        "hash",
+                        "sha256",
+                        "sha1",
+                        "md5"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.file.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.file.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.vulnerability.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "cve",
+                        "vulnerability"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.vulnerability.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.vulnerability.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.url.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "url"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.url.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.url.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.other.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links other entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.other.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.other.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.intelCard",
                     "data_type": "string",
                     "contains": [
                         "recordedfuture intelligence card url"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.metrics.*.type",
-                    "data_type": "string",
-                    "contains": [
-                        "recordedfuture metrics type"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.metrics.*.value",
-                    "data_type": "numeric",
-                    "contains": [
-                        "recordedfuture metrics value"
                     ]
                 },
                 {
@@ -2513,6 +3052,7 @@
             "action": "ip intelligence",
             "identifier": "ip_intelligence",
             "description": "Get threat intelligence for an IP address",
+            "verbose": "",
             "type": "investigate",
             "read_only": true,
             "parameters": {
@@ -2568,6 +3108,152 @@
                     "data_type": "string",
                     "contains": [
                         "recordedfuture entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.start_date",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links start date"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.stop_date",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links stop date"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.ip.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "ip",
+                        "ipv6"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.ip.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.ip.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.domain.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "domain"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.domain.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.domain.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.file.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "file",
+                        "hash",
+                        "sha256",
+                        "sha1",
+                        "md5"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.file.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.file.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.vulnerability.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "cve",
+                        "vulnerability"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.vulnerability.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.vulnerability.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.url.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "url"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.url.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.url.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.other.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links other entity types"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.other.*.type",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture research links entity type"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recordedfutureLinks.entities.other.*.score",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture entity risk score"
                     ]
                 },
                 {
@@ -2631,20 +3317,6 @@
                     "data_type": "string",
                     "contains": [
                         "recordedfuture location organization"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.metrics.*.type",
-                    "data_type": "string",
-                    "contains": [
-                        "recordedfuture metrics type"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.metrics.*.value",
-                    "data_type": "numeric",
-                    "contains": [
-                        "recordedfuture metrics value"
                     ]
                 },
                 {
@@ -3041,7 +3713,7 @@
         {
             "action": "threat assessment",
             "identifier": "threat_assessment",
-            "description": "Get an indicator of the risk based on context",
+            "description": "Get an indicator of the risk for a collection of entities based on context",
             "type": "investigate",
             "read_only": true,
             "parameters": {
@@ -3087,11 +3759,12 @@
                     "order": 3
                 },
                 "hash": {
-                    "description": "Hash to query",
+                    "description": "File hash to query",
                     "data_type": "string",
                     "primary": true,
                     "allow_list": true,
                     "contains": [
+                        "file",
                         "hash",
                         "sha256",
                         "sha1",
@@ -3124,7 +3797,9 @@
                     "data_type": "string",
                     "contains": [
                         "ip",
+                        "ipv6",
                         "domain",
+                        "file",
                         "hash",
                         "sha1",
                         "md5",
@@ -3275,6 +3950,7 @@
                     "data_path": "action_result.parameter.hash",
                     "data_type": "string",
                     "contains": [
+                        "file",
                         "hash",
                         "sha256",
                         "sha1",
@@ -3375,7 +4051,7 @@
         {
             "action": "list contexts",
             "identifier": "list_contexts",
-            "description": "Get a list of possible contexts to use in threat triage",
+            "description": "Get a list of possible contexts to use in threat assessment",
             "type": "investigate",
             "read_only": true,
             "parameters": {},
@@ -3403,12 +4079,15 @@
                     "data_type": "string",
                     "contains": [
                         "ip",
+                        "ipv6",
                         "domain",
+                        "file",
                         "hash",
                         "sha1",
                         "sha256",
                         "md5",
-                        "vulnerability"
+                        "vulnerability",
+                        "cve"
                     ]
                 },
                 {
@@ -3453,37 +4132,5 @@
             },
             "versions": "EQ(*)"
         }
-    ],
-    "pip_dependencies": {
-        "wheel": [
-            {
-                "module": "beautifulsoup4",
-                "input_file": "wheels/beautifulsoup4-4.9.1-py3-none-any.whl"
-            },
-            {
-                "module": "certifi",
-                "input_file": "wheels/certifi-2021.10.8-py2.py3-none-any.whl"
-            },
-            {
-                "module": "chardet",
-                "input_file": "wheels/chardet-3.0.4-py2.py3-none-any.whl"
-            },
-            {
-                "module": "idna",
-                "input_file": "wheels/idna-2.10-py2.py3-none-any.whl"
-            },
-            {
-                "module": "requests",
-                "input_file": "wheels/requests-2.25.0-py2.py3-none-any.whl"
-            },
-            {
-                "module": "soupsieve",
-                "input_file": "wheels/soupsieve-2.3.1-py3-none-any.whl"
-            },
-            {
-                "module": "urllib3",
-                "input_file": "wheels/urllib3-1.26.7-py2.py3-none-any.whl"
-            }
-        ]
-    }
+    ]
 }
