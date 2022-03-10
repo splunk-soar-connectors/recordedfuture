@@ -1,7 +1,7 @@
 #
 # File: recordedfuture_connector.py
 #
-# Copyright (c) Recorded Future, Inc., 2019-2020
+# Copyright (c) Recorded Future, Inc., 2019-2022
 #
 # This unpublished material is proprietary to Recorded Future.
 # All rights reserved. The methods and

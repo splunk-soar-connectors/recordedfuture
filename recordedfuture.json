@@ -10,7 +10,7 @@
     "product_version_regex": ".*",
     "publisher": "Recorded Future, Inc",
     "license": "Copyright (c) Recorded Future, Inc, 2019-2022",
-    "app_version": "%RELEASE%",
+    "app_version": "3.1.0",
     "utctime_updated": "2019-04-17T07:33:58.826014Z",
     "package_name": "phantom_recordedfuture",
     "main_module": "recordedfuture_connector.py",
@@ -23,7 +23,7 @@
     ],
     "latest_tested_versions": [
         "Cloud API v2 on 3/13/2020",
-        "%RELEASE%"
+        "3.1.0"
     ],
     "min_phantom_version": "4.6.19142",
     "app_wizard_version": "1.0.0",
