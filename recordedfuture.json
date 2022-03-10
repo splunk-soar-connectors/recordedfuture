@@ -52,7 +52,7 @@
         {
             "action": "test connectivity",
             "identifier": "test_connectivity",
-            "description": "Validate the asset configuration for connectivity",
+            "description": "Validate the asset configuration for connectivity.",
             "type": "test",
             "read_only": true,
             "parameters": {},
