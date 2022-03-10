@@ -21,6 +21,7 @@ import json
 # Global imports
 import os
 import platform
+import sys
 
 # Phantom App imports
 # noinspection PyUnresolvedReferences
@@ -325,12 +326,12 @@ class RecordedfutureConnector(BaseConnector):
         try:
             self.debug_print(
                 '_make_rest_call api key fingerprint: %s'
-                % hashlib.md5(api_key).hexdigest()[:6]
+                % hashlib.md5(api_key).hexdigest()[:6]  # nosemgrep
             )
         except Exception:
             self.debug_print(
                 '_make_rest_call exception: %s'
-                % hashlib.md5(api_key.encode('utf-8')).hexdigest()[:6]
+                % hashlib.md5(api_key.encode('utf-8')).hexdigest()[:6]  # nosemgrep
             )
 
         # Make the call
@@ -986,7 +987,7 @@ if __name__ == '__main__':
             session_id = r2.cookies['sessionid']
         except Exception as e:
             print("Unable to get session id from the platform. Error: " + str(e))
-            exit(1)
+            sys.exit(1)
 
     with open(args.input_test_json) as f:
         in_json = f.read()
@@ -1004,4 +1005,4 @@ if __name__ == '__main__':
         ret_val = connector._handle_action(json.dumps(in_json), None)
         print(json.dumps(json.loads(ret_val), indent=4))
 
-    exit(0)
+    sys.exit(0)
