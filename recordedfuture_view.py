@@ -1,19 +1,17 @@
-# --
 # File: recordedfuture_view.py
 #
 # Copyright (c) Recorded Future, Inc., 2019-2022
 #
-# This unpublished material is proprietary to Recorded Future.
-# All rights reserved. The methods and
-# techniques described herein are considered trade secrets
-# and/or confidential. Reproduction or distribution, in whole
-# or in part, is forbidden except by express written permission
-# of Recorded Future.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# --
-# -----------------------------------------
-# Recorded Future App View python file
-# -----------------------------------------
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software distributed under
+# the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+# either express or implied. See the License for the specific language governing permissions
+# and limitations under the License.
 
 APP_URL = 'https://app.recordedfuture.com/live/sc/entity/%s%%3A%s'
 VULN_APP_URL = 'https://app.recordedfuture.com/live/sc/entity/%s'
