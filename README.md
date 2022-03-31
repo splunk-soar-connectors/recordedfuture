@@ -18,12 +18,12 @@ alert handling.
 
 ## Recorded Future Demo Playbooks
 
-Together with the Recorded Future App for Phantom 2.1, a new demo playbook was created and uploaded
+Together with the Recorded Future App for Phantom 3.0, a new demo playbook was created and uploaded
 to the community site. The new playbook incorporates the new assessment functionality.
 
 Four demo playbooks were released with the Recorded Future App for Phantom 2.0 to show how the
 actions in the app can be used. The playbooks are designed to operate on a Recorded Future App asset
-named "recorded-future" and Phantom SMTP asset named "smtp". If the assets are named differently,
+named "recorded_future" and Phantom SMTP asset named "smtp". If the assets are named differently,
 the playbooks will be adjusted. The email address used for the alert emails is specified in the
 linked SMTP asset.
 

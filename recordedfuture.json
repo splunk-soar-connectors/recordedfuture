@@ -25,7 +25,7 @@
         "Cloud API v2 on 3/13/2020",
         "3.1.0"
     ],
-    "min_phantom_version": "5.1.0",
+    "min_phantom_version": "5.0.0",
     "app_wizard_version": "1.0.0",
     "configuration": {
         "recordedfuture_base_url": {

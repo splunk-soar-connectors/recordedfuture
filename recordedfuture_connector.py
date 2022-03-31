@@ -2,6 +2,12 @@
 #
 # Copyright (c) Recorded Future, Inc., 2019-2022
 #
+# This unpublished material is proprietary to Recorded Future. All
+# rights reserved. The methods and techniques described herein are
+# considered trade secrets and/or confidential. Reproduction or
+# distribution, in whole or in part, is forbidden except by express
+# written permission of Recorded Future.
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -346,12 +352,17 @@ class RecordedfutureConnector(BaseConnector):
                 timeout=timeout,
                 **kwargs,
             )
+        except requests.exceptions.Timeout:
+            return RetVal(action_result.set_status(
+                phantom.APP_ERROR,
+                "Timeout error when connecting to server"),
+                resp_json)
         except Exception as err:
             error_code, error_msg = self._get_error_message_from_exception(err)
             return RetVal(
                 action_result.set_status(
                     phantom.APP_ERROR,
-                    "Error Connecting to server. Details: Error code:{0}. Error message:{1}".format(
+                    "Error Connecting to server. Error code:{0}. Error message:{1}".format(
                         error_code, error_msg
                     ),
                 ),
