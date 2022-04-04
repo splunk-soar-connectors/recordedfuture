@@ -1,4 +1,27 @@
-<html>
+<!-- File: readme.html
+
+Copyright (c) Recorded Future, Inc., 2019-2022
+
+This unpublished material is proprietary to Recorded Future. All
+rights reserved. The methods and techniques described herein are
+considered trade secrets and/or confidential. Reproduction or
+distribution, in whole or in part, is forbidden except by express
+written permission of Recorded Future.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under
+the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+either express or implied. See the License for the specific language governing permissions
+and limitations under the License.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
   <head></head>
   <body>
     <p>Recorded Future App for Phantom allows clients to work smarter,
@@ -8,7 +31,7 @@
       correlation, threat hunting, and alert handling.
     </p>
     <h2>Recorded Future Demo Playbooks</h2>
-    <p>Together with the Recorded Future App for Phantom 2.1, a new demo
+    <p>Together with the Recorded Future App for Phantom 3.0, a new demo
       playbook was created and uploaded to the community site. The new playbook
       incorporates the new assessment functionality.
     </p>
@@ -19,24 +42,24 @@
       assets are named differently, the playbooks will be adjusted. The email
       address used for the alert emails is specified in the linked SMTP asset.
     </p>
-    <p><b>Correlation Playbook</b><br/>
+    <p><strong>Correlation Playbook</strong><br/>
       This playbook shows how to obtain IP reputation and, if its risk score is
       90 or more, add the IP address to a bad IP address list maintained by
       Phantom plus forward the information to Splunk and in an email.
     </p>
-    <p><b>Enrichment Playbook</b><br/>
+    <p><strong>Enrichment Playbook</strong><br/>
       This playbook shows how to obtain intelligence of an IP address and, if
       its risk score is 90 or more, to forward this in an email as well as
       adding the IP to a bad IP address list maintained by Phantom.
     </p>
-    <p><b>Threat Hunting Playbook</b><br/>
+    <p><strong>Threat Hunting Playbook</strong><br/>
       The purpose of this playbook is to find out the IP reputation and when its
       risk score is 90 or above, to find related entities - IP addresses,
       domains, files, vulnerabilities, and/or URLs - and to search for them in
       Splunk. The results are summarised in an email and the IP address is added
       to the bad IP address list maintained by Phantom.
     </p>
-    <p><b>Handling of Leaked Credentials</b><br/>
+    <p><strong>Handling of Leaked Credentials</strong><br/>
       The purpose of this
       playbook is to demonstrate how Recorded Future Alerts can be used to
       monitor various threats such as leaked credentials. The playbook is

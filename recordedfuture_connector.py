@@ -1,50 +1,49 @@
-#
 # File: recordedfuture_connector.py
 #
-# Copyright (c) Recorded Future, Inc., 2019-2020
+# Copyright (c) Recorded Future, Inc., 2019-2022
 #
-# This unpublished material is proprietary to Recorded Future.
-# All rights reserved. The methods and
-# techniques described herein are considered trade secrets
-# and/or confidential. Reproduction or distribution, in whole
-# or in part, is forbidden except by express written permission
-# of Recorded Future.
+# This unpublished material is proprietary to Recorded Future. All
+# rights reserved. The methods and techniques described herein are
+# considered trade secrets and/or confidential. Reproduction or
+# distribution, in whole or in part, is forbidden except by express
+# written permission of Recorded Future.
 #
-# ---------------------------------------------
-# Phantom Recorded Future Connector python file
-# ---------------------------------------------
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software distributed under
+# the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+# either express or implied. See the License for the specific language governing permissions
+# and limitations under the License.
+#
+#
+# Phantom App imports
 
-# Global imports
-import os
-import requests
-import sys
-
-try:
-    import urllib
-except:
-    import urllib.request
-    import urllib.parse
-    import urllib.error
-
-import json
 import hashlib
-import platform
 # noinspection PyCompatibility
 import ipaddress
-# noinspection PyUnresolvedReferences
-from bs4 import BeautifulSoup
+import json
+# Global imports
+import os
+import platform
+import sys
 
 # Phantom App imports
 # noinspection PyUnresolvedReferences
 import phantom.app as phantom
+import requests
 # noinspection PyUnresolvedReferences
-from phantom.base_connector import BaseConnector
+from bs4 import BeautifulSoup, UnicodeDammit
 # noinspection PyUnresolvedReferences
 from phantom.action_result import ActionResult
+# noinspection PyUnresolvedReferences
+from phantom.base_connector import BaseConnector
 
 # Usage of the consts file is recommended
-from recordedfuture_consts import *
-from bs4 import UnicodeDammit
+from recordedfuture_consts import INTELLIGENCE_MAP, timeout, version
 
 
 class RetVal(tuple):
@@ -73,7 +72,12 @@ class RecordedfutureConnector(BaseConnector):
         if response.status_code == 200:
             return RetVal(phantom.APP_SUCCESS, {})
 
-        return RetVal(action_result.set_status(phantom.APP_ERROR, "Status code: {0}. Empty response and no information in the header".format(response.status_code)), None)
+        return RetVal(
+            action_result.set_status(
+                phantom.APP_ERROR, "Empty response and no information in the header"
+            ),
+            None,
+        )
 
     @staticmethod
     def _process_html_response(response, action_result):
@@ -85,7 +89,7 @@ class RecordedfutureConnector(BaseConnector):
             soup = BeautifulSoup(response.text, "html.parser")
             # Remove the script, style, footer and navigation part from the HTML message
             for element in soup(["script", "style", "footer", "nav"]):
-               element.extract()
+                element.extract()
             error_text = soup.text
             split_lines = error_text.split('\n')
             split_lines = [x.strip() for x in split_lines if x.strip()]
@@ -93,21 +97,15 @@ class RecordedfutureConnector(BaseConnector):
         except Exception as err:
             error_text = "Cannot parse error details: {0}".format(err)
 
-        try:
-            if sys.version_info[0] < 3:
-                error_text = UnicodeDammit(error_text).unicode_markup.encode('utf-8')
-            else:
-                error_text = UnicodeDammit(error_text).unicode_markup
-        except:
-            error_text = error_text
+        error_text = UnicodeDammit(error_text).unicode_markup
 
         message = "Please check the app configuration parameters. Status Code: {0}. Data from server:\n{1}\n".format(
-            status_code, error_text)
+            status_code, error_text
+        )
 
         message = message.replace('{', '{{').replace('}', '}}')
 
-        return RetVal(action_result.set_status(phantom.APP_ERROR, message),
-                      None)
+        return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
     @staticmethod
     def _create_empty_response(fields):
@@ -120,25 +118,18 @@ class RecordedfutureConnector(BaseConnector):
         the returned structure is more or less rich.
         """
         resp_json = {
-            "data": {
-                "entity": {
-                    "name": '',
-                    'type': None,
-                    'id': None
+            'data': {
+                'entity': {'name': '', 'type': None, 'id': None},
+                'timestamps': {'firstSeen': 'never', 'lastSeen': 'never'},
+                'risk': {
+                    'criticalityLabel': None,
+                    'rules': None,
+                    'evidenceDetails': [],
+                    'riskSummary': 'No information available.',
+                    'criticality': None,
+                    'riskString': '',
+                    'score': None,
                 },
-                "timestamps": {
-                    "firstSeen": "never",
-                    "lastSeen": "never"
-                },
-                "risk": {
-                    "criticalityLabel": "None",
-                    "rules": None,
-                    "evidenceDetails": [],
-                    "riskSummary": "No information available.",
-                    "criticality": None,
-                    "riskString": "",
-                    "score": None
-                }
             }
         }
         if 'intelCard' in fields:
@@ -160,10 +151,15 @@ class RecordedfutureConnector(BaseConnector):
             resp_json = resp.json()
         except Exception as err:
             error_code, error_msg = self._get_error_message_from_exception(err)
-            return RetVal(action_result.set_status(
-                phantom.APP_ERROR,
-                "Unable to parse JSON response. Error code: {0}. Error message: {1}".format(error_code, error_msg)),
-                None)
+            return RetVal(
+                action_result.set_status(
+                    phantom.APP_ERROR,
+                    "Unable to parse JSON response. Error code: {0}. Error message: {1}".format(
+                        error_code, error_msg
+                    ),
+                ),
+                None,
+            )
 
         # Please specify the status codes here
         if 200 <= resp.status_code < 399:
@@ -181,7 +177,7 @@ class RecordedfutureConnector(BaseConnector):
 
                 return RetVal(phantom.APP_SUCCESS, resp_json)
 
-        msg = "No data found"
+        msg = 'No data found'
 
         if resp_json.get('message'):
             msg = resp_json.get('message')
@@ -193,11 +189,11 @@ class RecordedfutureConnector(BaseConnector):
                 msg = resp_json.get('error').get('message')
 
         # You should process the error returned in the json
-        message = "Error from server. Status Code: {0} " \
-                  "Data from server: {1}".format(resp.status_code, self._handle_py_ver_compat_for_input_str(msg))
+        message = "Error from server. Status Code: {0} " "Data from server: {1}".format(
+            resp.status_code, UnicodeDammit(msg).unicode_markup
+        )
 
-        return RetVal(action_result.set_status(phantom.APP_ERROR, message),
-                      None)
+        return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
     def _process_response(self, resp, action_result, **kwargs):
         """Process the response.
@@ -230,19 +226,23 @@ class RecordedfutureConnector(BaseConnector):
             return self._process_empty_response(resp, action_result)
 
         # everything else is actually an error at this point
-        error_msg = self._handle_py_ver_compat_for_input_str(resp.text.replace('{', '{{').replace('}', '}}'))
-        message = "Can't process response from server. Status Code: {0} " \
-                  "Data from server: {1}".format(resp.status_code,
-                                                 error_msg)
+        error_msg = UnicodeDammit(
+            (resp.text.replace('{', '{{').replace('}', '}}'))
+        ).unicode_markup
+        message = (
+            "Can't process response from server. Status Code: {0} "
+            "Data from server: {1}".format(resp.status_code, error_msg)
+        )
 
-        return RetVal(action_result.set_status(phantom.APP_ERROR, message),
-                      None)
+        return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
     def _get_error_message_from_exception(self, e):
-        """ This method is used to get appropriate error message from the exception.
+        """This method is used to get appropriate error message from the exception.
         :param e: Exception object
         :return: error message
         """
+
+        error_code = 'Error code unavailable'
 
         try:
             if hasattr(e, 'args'):
@@ -250,43 +250,24 @@ class RecordedfutureConnector(BaseConnector):
                     error_code = e.args[0]
                     error_msg = e.args[1]
                 elif len(e.args) == 1:
-                    error_code = "Error code unavailable"
                     error_msg = e.args[0]
             else:
-                error_code = "Error code unavailable"
-                error_msg = "Unknown error occurred. Please check the asset configuration and|or action parameters."
-        except:
-            error_code = "Error code unavailable"
-            error_msg = "Unknown error occurred. Please check the asset configuration and|or action parameters."
+                error_msg = 'Unknown error occurred. Please check the asset configuration and|or action parameters.'
+        except Exception as err:
+            error_msg = "An error occurred. Cannot parse error details: {0}".format(err)
 
         try:
-            error_msg = self._handle_py_ver_compat_for_input_str(error_msg)
+            error_msg = UnicodeDammit(error_msg).unicode_markup
         except TypeError:
-            error_msg = "Error occurred while connecting to the server. Please check the asset configuration and|or the action parameters."
-        except:
-            error_msg = "Unknown error occurred. Please check the asset configuration and|or action parameters."
+            error_msg = 'Error occurred while connecting to the server. Please check the asset configuration and|or the action parameters.'
+        except Exception as err:
+            error_msg = "An error occurred. Cannot parse error details: {0}".format(err)
 
         return error_code, error_msg
 
-    def _handle_py_ver_compat_for_input_str(self, input_str):
-        """
-        This method returns the encoded|original string based on the Python version.
-        :param sys.version_info[0]: Python major version
-        :param input_str: Input string to be processed
-        :return: input_str
-        """
-
-        try:
-            if input_str and sys.version_info[0] < 3:
-                input_str = UnicodeDammit(input_str).unicode_markup.encode('utf-8')
-            elif input_str:
-                input_str = UnicodeDammit(input_str).unicode_markup
-        except:
-            self.debug_print("Error occurred while handling python 2to3 compatibility for the input string")
-
-        return input_str
-
-    def _make_rest_call(self, endpoint, action_result, method="get", **kwargs):
+    def _make_rest_call(
+        self, endpoint, action_result, params=None, method="get", **kwargs
+    ):
         """Make a REST call to Recorded Future's ConnectAPI.
 
         Parameters:
@@ -309,33 +290,40 @@ class RecordedfutureConnector(BaseConnector):
         try:
             request_func = getattr(requests, method)
         except AttributeError:
-            return RetVal(action_result.set_status(
-                phantom.APP_ERROR,
-                "Invalid method: {0}".format(method)),
-                resp_json)
+            return RetVal(
+                action_result.set_status(
+                    phantom.APP_ERROR, "Invalid method: {0}".format(method)
+                ),
+                resp_json,
+            )
+
         # Create a URL to connect to
-        url = "{}{}".format(self._handle_py_ver_compat_for_input_str(self._base_url), endpoint)
+        base_url = UnicodeDammit(self._base_url).unicode_markup
+        url = "{}{}".format(base_url, endpoint)
+
         # Create a HTTP_USER_AGENT header
         # container_id is added to track actions associated with an event in
         # order to improve the app
         platform_id = 'Phantom_%s' % self.get_product_version()
-        pdict = dict(app_name=os.path.basename(__file__),
-                     container_id=self.get_container_id(),
-                     os_id=platform.platform(),
-                     pkg_name='phantom',
-                     pkg_version=version,
-                     requests_id=requests.__version__,
-                     platform_id=platform_id)
-        user_agent_tplt = '{app_name}/{container_id} ({os_id}) ' \
-                          '{pkg_name}/{pkg_version} ' \
-                          'python-requests/{requests_id} ({platform_id})'
+
+        pdict = dict(
+            app_name=os.path.basename(__file__),
+            container_id=self.get_container_id(),
+            os_id=platform.platform(),
+            pkg_name='phantom',
+            pkg_version=version,
+            requests_id=requests.__version__,
+            platform_id=platform_id,
+        )
+        user_agent_tplt = (
+            '{app_name}/{container_id} ({os_id}) '
+            '{pkg_name}/{pkg_version} '
+            'python-requests/{requests_id} ({platform_id})'
+        )
         user_agent = user_agent_tplt.format(**pdict)
         # headers
         api_key = config.get('recordedfuture_api_token')
-        my_headers = {
-            'X-RFToken': api_key,
-            'User-Agent': user_agent
-        }
+        my_headers = {'X-RFToken': api_key, 'User-Agent': user_agent}
 
         # Ensure we log some useful data:
         # url:          shows if the url to ConnectAPI has been changed
@@ -344,11 +332,15 @@ class RecordedfutureConnector(BaseConnector):
         self.debug_print('_make_rest_call url: {}'.format(url))
         self.debug_print('_make_rest_call kwargs {}'.format(kwargs))
         try:
-            self.debug_print('_make_rest_call api key fingerprint: %s'
-                % hashlib.md5(api_key).hexdigest()[:6])
-        except:
-            self.debug_print('_make_rest_call api key fingerprint: %s'
-                 % hashlib.md5(api_key.encode('utf-8')).hexdigest()[:6])
+            self.debug_print(
+                '_make_rest_call api key fingerprint: %s'
+                % hashlib.md5(api_key).hexdigest()[:6]  # nosemgrep
+            )
+        except Exception:
+            self.debug_print(
+                '_make_rest_call exception: %s'
+                % hashlib.md5(api_key.encode('utf-8')).hexdigest()[:6]  # nosemgrep
+            )
 
         # Make the call
         try:
@@ -356,16 +348,64 @@ class RecordedfutureConnector(BaseConnector):
                 url,
                 headers=my_headers,
                 verify=config.get('recordedfuture_verify_ssl', False),
-                **kwargs)
-        except Exception as err:
-            error_code, error_msg = self._get_error_message_from_exception(err)
-
+                params=params,
+                timeout=timeout,
+                **kwargs,
+            )
+        except requests.exceptions.Timeout:
             return RetVal(action_result.set_status(
                 phantom.APP_ERROR,
-                "Error Connecting to server. Details: Error code:{0}. Error message:{1}".format(error_code, error_msg)),
+                "Timeout error when connecting to server"),
                 resp_json)
-        # Process the response
-        return self._process_response(resp, action_result, **kwargs)
+        except Exception as err:
+            error_code, error_msg = self._get_error_message_from_exception(err)
+            return RetVal(
+                action_result.set_status(
+                    phantom.APP_ERROR,
+                    "Error Connecting to server. Error code:{0}. Error message:{1}".format(
+                        error_code, error_msg
+                    ),
+                ),
+                resp_json,
+            )
+
+        if resp.status_code == 200:
+            return self._process_response(resp, action_result, **kwargs)
+        elif resp.status_code == 401:
+            return RetVal(
+                action_result.set_status(
+                    phantom.APP_ERROR,
+                    'Error Connecting to server. Details: Error code: 401 Unauthorised.',
+                ),
+                None,
+            )
+        elif resp.status_code == 403:
+            return RetVal(
+                action_result.set_status(
+                    phantom.APP_ERROR,
+                    'Error Connecting to server. Details: Error code: 403 Forbidden.',
+                ),
+                None,
+            )
+        elif resp.status_code == 400:
+            return RetVal(
+                action_result.set_status(
+                    phantom.APP_ERROR,
+                    'Error Connecting to server. Details: Error code: 400 Bad Request.',
+                ),
+                None,
+            )
+        else:
+            # XXXX _process_response is not able to handle the abort response message, can't do get on the response
+            # message = resp.get('message', '')
+            return RetVal(
+                action_result.set_status(
+                    phantom.APP_ERROR,
+                    "Error Connecting to server. Details: Error code: %s."
+                    % resp.status_code,
+                ),
+                None,
+            )
 
     def _handle_test_connectivity(self, param):
 
@@ -374,47 +414,67 @@ class RecordedfutureConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # NOTE: test connectivity does _NOT_ take any parameters
+        # it will use the RF token to verify that it works in the second part
         # i.e. the param dictionary passed to this handler will be empty.
         # Also typically it does not add any data into an action_result either.
         # The status and progress messages are more important.
 
-        self.save_progress("Connecting to endpoint")
+        params = {'output-format': 'application/json'}
 
-        # make rest call
-        my_ret_val, response = self._make_rest_call('/domain/google.com',
-                                                    action_result)
+        # make rest call - further info: https://docs.splunk.com/Documentation/Phantom/4.10/DevelopApps/Tutorial
+        my_ret_val, response = self._make_rest_call(
+            '/helo', action_result, params=params
+        )
 
         if phantom.is_fail(my_ret_val):
-            self.save_progress("Test Connectivity Failed")
+            self.save_progress('Connectivity test failed. API endpoint not reachable')
+            return action_result.get_status()
+
+        self.save_progress('Successful connection to the API')
+
+        self.save_progress('Verifying Recorded Future API token')
+
+        my_ret_val, response = self._make_rest_call('/config/info', action_result)
+
+        # this is never run as we don't take care of a non-successful reply properly
+        if phantom.is_fail(my_ret_val):
+            self.save_progress('Test Credentials Failed')
             return action_result.get_status()
 
         # Return success
-        self.save_progress("Test Connectivity Passed")
+        self.save_progress('Token is accepted by the API')
+
+        self.save_progress(
+            'Connectivity and credentials test passed. You may now close this window'
+        )
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def _handle_intelligence(self, param, path_info, fields, operation_type):
+    def _handle_intelligence(self, param, ioc, entity_type):
         """Return intelligence for an entity."""
         self.save_progress(
-            "In action handler for: {0}".format(self.get_action_identifier()))
+            "In action handler for: {0}".format(self.get_action_identifier())
+        )
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # Params for the API call
-        params = {
-            'fields': ','.join(fields)
-        }
+        params = {'entity_type': entity_type, 'ioc': ioc}
 
         # make rest call
-        my_ret_val, response = self._make_rest_call(path_info,
-                                                    action_result,
-                                                    params=params)
+        my_ret_val, response = self._make_rest_call(
+            '/lookup/intelligence', action_result, json=params, method='post'
+        )
 
-        self.debug_print('_handle_intelligence',
-                         {'path_info': path_info,
-                          'action_result': action_result,
-                          'params': params,
-                          'my_ret_val': my_ret_val,
-                          'response': response})
+        self.debug_print(
+            '_handle_intelligence',
+            {
+                'path_info': ("%s/%s", entity_type, ioc),
+                'action_result': action_result,
+                'params': params,
+                'my_ret_val': my_ret_val,
+                'response': response,
+            },
+        )
 
         if phantom.is_fail(my_ret_val):
             return action_result.get_status()
@@ -427,13 +487,11 @@ class RecordedfutureConnector(BaseConnector):
         summary = action_result.get_summary()
         if 'risk' in res:
             if 'criticalityLabel' in res['risk']:
-                summary['criticalityLabel'] = res['risk'][
-                    'criticalityLabel']
+                summary['criticalityLabel'] = res['risk']['criticalityLabel']
             if 'riskSummary' in res['risk']:
                 summary['riskSummary'] = res['risk']['riskSummary']
-        if 'timestamps' in res:
-            if 'lastSeen' in res['timestamps']:
-                summary['lastSeen'] = res['timestamps']['lastSeen']
+        if res.get('timestamps', {}).get('lastSeen', ''):
+            summary['lastSeen'] = res['timestamps']['lastSeen']
 
         action_result.set_summary(summary)
 
@@ -442,100 +500,62 @@ class RecordedfutureConnector(BaseConnector):
     def _handle_reputation(self, param, category, entity):
         """Return reputation information."""
         self.save_progress(
-            "In action handler for: {0}".format(self.get_action_identifier()))
+            "In action handler for: {0}".format(self.get_action_identifier())
+        )
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # Params for the API call
-        params = {
-            category: entity
-        }
+        params = {category: entity}
 
         # make rest call
-        my_ret_val, response = self._make_rest_call('/soar/enrichment',
-                                                    action_result,
-                                                    json=params,
-                                                    method='post')
+        my_ret_val, response = self._make_rest_call(
+            '/lookup/reputation', action_result, json=params, method='post'
+        )
 
-        self.debug_print('_handle_reputation', {'path_info': entity,
-                                                'endpoint': '/soar/enrichment',
-                                                'action_result': action_result,
-                                                'params': params,
-                                                'my_ret_val': my_ret_val,
-                                                'response': response})
+        self.debug_print(
+            '_handle_reputation',
+            {
+                'path_info': entity,
+                'endpoint': '/lookup/reputation',
+                'action_result': action_result,
+                'params': params,
+                'my_ret_val': my_ret_val,
+                'response': response,
+            },
+        )
 
         if phantom.is_fail(my_ret_val):
             return action_result.get_status()
-        if response.get('data', {}).get('results', []):
-            summary = action_result.get_summary()
-            item = response['data']['results'][0]
-            risk = item['risk']
-            rule = risk['rule']
-            if 'evidence' in rule:
-                evidence_list = rule['evidence']
-                evidence = [{
-                    'ruleid': evidence_id,
-                    'timestamp': evidence_list[evidence_id]['timestamp'],
-                    'description': evidence_list[evidence_id]['description'],
-                    'rule': evidence_list[evidence_id]['rule'],
-                    'level': evidence_list[evidence_id]['level'],
-                    'mitigation': evidence_list[evidence_id].get('mitigation', None)}
-                    for evidence_id in list(evidence_list.keys())]
-            else:
-                evidence = []
 
-            res = {
-                'id': item['entity']['id'],
-                'name': item['entity']['name'],
-                'type': item['entity']['type'],
-                'risklevel': risk['level'],
-                'riskscore': risk['score'],
-                'rulecount': rule['count'],
-                # 'maxrules': rule['maxCount'],
-                'evidence': evidence,
-                'description':
-                    item['entity'].get('description', None)
-            }
+        # the BFI returns a list of entities. In future we may add the capability for
+        # to do a reputation lookup of more than one entity
+        entity = response.pop(0)
 
-            if rule.get('maxCount'):
-                res['maxrules'] = rule['maxCount']
+        summary = action_result.get_summary()
 
-            if 'description' in item['entity']:
-                res['description'] = item['entity']['description']
-
-            # Update the summary
-            summary = action_result.get_summary()
-            summary['risk score'] = res['riskscore']
+        if entity.get('id', ''):
+            summary['risk score'] = entity.get('riskscore', '')
             summary['risk summary'] = '%s rules triggered of %s' % (
-                res['rulecount'], res['maxrules'])
-
+                entity.get('rulecount', ''),
+                entity.get('maxrules', ''),
+            )
         else:
-            res = {
-                "id": None,
-                "name": '',
-                "type": None,
-                "description": '',
-                "risklevel": None,
-                "riskscore": None,
-                "rulecount": None,
-                "maxrules": None,
-            }
             summary = action_result.get_summary()
-            summary['riskscore'] = "No information available."
+            summary['riskscore'] = 'No information available.'
 
-        action_result.add_data(res)
-        self.save_progress('Added data with keys {}', list(res.keys()))
-
+        action_result.add_data(entity)
         action_result.set_summary(summary)
+        self.save_progress('Added data with keys {}', list(entity.keys()))
 
-        # Return success, no need to set the message, only the status
-        # BaseConnector will create a textual message based off of the summary
-        # dictionary
+        # Return success, no need to set the message, only the status BaseConnector
+        # will create a textual message based off the summary dictionary
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_triage(self, param):
-        """Return threat assessment information."""
+        """Return triage information."""
         self.save_progress(
-            "In action handler for: {0}".format(self.get_action_identifier()))
+            "In action handler for: {0}".format(self.get_action_identifier())
+        )
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # Params for the API call
@@ -543,25 +563,37 @@ class RecordedfutureConnector(BaseConnector):
         params = {}
         for i in param.keys():
             if i in param_types:
-                params[i] = [self._handle_py_ver_compat_for_input_str(entry.strip()) for entry in param.get(i).split(',')
-                             if entry != 'None']
+                params[i] = [
+                    UnicodeDammit(entry.strip()).unicode_markup
+                    for entry in param.get(i).split(',')
+                    if entry != 'None'
+                ]
 
         self.save_progress('Params found to triage: %s' % params)
 
         # make rest call
         my_ret_val, response = self._make_rest_call(
-            '/soar/triage/contexts/%s?%s' % (self._handle_py_ver_compat_for_input_str(param['threat_context']),
-                                             '&format=phantom'),
+            '/lookup/triage/%s?%s'
+            % (
+                UnicodeDammit(param['threat_context']).unicode_markup,
+                '&format=phantom',
+            ),
             action_result,
             json=params,
-            method='post')
+            method='post',
+        )
 
-        self.debug_print('_handle_triage', {'path_info': 'triage',
-                                            'endpoint': '/soar/triage',
-                                            'action_result': action_result,
-                                            'params': params,
-                                            'my_ret_val': my_ret_val,
-                                            'response': response})
+        self.debug_print(
+            '_handle_triage',
+            {
+                'path_info': 'triage',
+                'endpoint': '/lookup/triage',
+                'action_result': action_result,
+                'params': params,
+                'my_ret_val': my_ret_val,
+                'response': response,
+            },
+        )
 
         self.save_progress('Obtained API response')
 
@@ -570,37 +602,21 @@ class RecordedfutureConnector(BaseConnector):
 
         # there will always be a response with data, how best represent this?
         summary = action_result.get_summary()
-        if response:
-            # restructure json
-            res = {
-                'context': response['context'],
-                'verdict': response['verdict'],
-                'assessment_riskscore': response['scores']['max'],
-                'entities': [{
-                    'id': entity['id'],
-                    'name': entity['name'],
-                    'type': entity['type'],
-                    'score': entity['score'],
-                    'evidence': entity['rule']['evidence']}
-                    for entity in response['entities']]
-            }
-            action_result.add_data(res)
-
-            # set summary
-            if response['verdict']:
-                summary['assessment'] = 'Suspected to be malicious'
-            else:
-                summary['assessment'] = 'Not found to be malicious'
-            summary['riskscore'] = response['scores']['max']
+        if response.get('verdict', ''):
+            summary['assessment'] = 'Suspected to be malicious'
+            summary['riskscore'] = response.get('triage_riskscore', '')
+        elif not response.get('entities', []):
+            summary['assessment'] = 'No information available'
         else:
-            res = {}
+            summary['assessment'] = 'Not found to be malicious'
+            summary['riskscore'] = response.get('triage_riskscore', '')
 
+        action_result.add_data(response)
         action_result.set_summary(summary)
-        self.save_progress('Added data with keys {}', res.keys())
+        self.save_progress('Added data with keys {}', response.keys())
 
-        # Return success, no need to set the message, only the status
-        # BaseConnector will create a textual message based off of the summary
-        # dictionary
+        # Return success, no need to set the message, only the status BaseConnector
+        # will create a textual message based off the summary dictionary
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_list_contexts(self, param):
@@ -608,19 +624,25 @@ class RecordedfutureConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
         self.save_progress(
-            "In action handler for: {0}".format(self.get_action_identifier()))
+            "In action handler for: {0}".format(self.get_action_identifier())
+        )
 
         # make rest call
-        my_ret_val, response = self._make_rest_call('/soar/triage/contexts',
-                                                    action_result)
+        my_ret_val, response = self._make_rest_call(
+            '/config/triage/contexts', action_result
+        )
 
-        self.debug_print('_handle_list_contexts',
-                         {'action_result': action_result,
-                          'my_ret_val': my_ret_val,
-                          'response': response})
+        self.debug_print(
+            '_handle_list_contexts',
+            {
+                'action_result': action_result,
+                'my_ret_val': my_ret_val,
+                'response': response,
+            },
+        )
 
         if phantom.is_fail(my_ret_val):
-            self.save_progress("API call to retrieve triage contexts failed.")
+            self.save_progress('API call to retrieve triage contexts failed.')
             return action_result.get_status()
 
         if response:
@@ -635,17 +657,18 @@ class RecordedfutureConnector(BaseConnector):
                 else:
                     summary_statement = summary_statement + ', ' + triage_context
 
-                action_result.add_data({
-                    "context": triage_context,
-                    "name": response[triage_context].get('name'),
-                    "datagroup": response[triage_context].get('datagroup')
-                })
+                action_result.add_data(
+                    {
+                        'context': triage_context,
+                        'name': response[triage_context].get('name'),
+                        'datagroup': response[triage_context].get('datagroup'),
+                    }
+                )
 
-            summary['contexts_available_for_threat_assessment'] = \
-                summary_statement
+            summary['contexts_available_for_threat_assessment'] = summary_statement
 
         else:
-            self.save_progress("API call failed to retrieve any information.")
+            self.save_progress('API call failed to retrieve any information.')
             summary = 'API call to retrieve triage contexts failed'
 
         action_result.set_summary(summary)
@@ -658,6 +681,7 @@ class RecordedfutureConnector(BaseConnector):
     def _parse_rule_data(self, res):
         """Reformat entities returned by the alert verb."""
         from collections import defaultdict
+
         entities = defaultdict(list)
         for ent in res.get('entities', []):
             if ent['entity'] is not None:
@@ -671,35 +695,37 @@ class RecordedfutureConnector(BaseConnector):
     def _handle_alert_data_lookup(self, param):
         """Implement lookup of alerts issued for an alert rule."""
         self.save_progress(
-            "In action handler for: {0}".format(self.get_action_identifier()))
+            "In action handler for: {0}".format(self.get_action_identifier())
+        )
 
         # Add an action result object to self (BaseConnector) to represent
         # the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # Required values can be accessed directly
-        rule_id = self._handle_py_ver_compat_for_input_str(param['rule_id'])
-        timeframe = self._handle_py_ver_compat_for_input_str(param['timeframe'])
+        rule_id = UnicodeDammit(param['rule_id']).unicode_markup
+        timeframe = UnicodeDammit(param['timeframe']).unicode_markup
         assert rule_id is not None
         assert timeframe is not None
 
         # Prepare the REST call
-        params = {
-            'alertRule': rule_id,
-            'triggered': timeframe
-        }
+        params = {'triggered': timeframe}
 
         # Make rest call
-        my_ret_val, response = self._make_rest_call('/alert/search',
-                                                    action_result,
-                                                    params=params)
+        my_ret_val, response = self._make_rest_call(
+            f'/alert/rule/{rule_id}', action_result, params=params
+        )
 
-        self.debug_print('_handle_alert_data_lookup',
-                         {'path_info': '/alert/search',
-                          'action_result': action_result,
-                          'params': params,
-                          'my_ret_val': my_ret_val,
-                          'response': response})
+        self.debug_print(
+            '_handle_alert_data_lookup',
+            {
+                'path_info': f'/alert/rule/{rule_id}',
+                'action_result': action_result,
+                'params': params,
+                'my_ret_val': my_ret_val,
+                'response': response,
+            },
+        )
 
         # Something went wrong
         if phantom.is_fail(my_ret_val):
@@ -707,17 +733,17 @@ class RecordedfutureConnector(BaseConnector):
 
         # Setup summary
         summary = action_result.get_summary()
-        summary['total_number_of_alerts'] = response['counts']['total']
-        summary['returned_number_of_alerts'] = response['counts']['returned']
+        summary['total_number_of_alerts'] = response['counts'].get('total', 0)
+        summary['returned_number_of_alerts'] = response['counts'].get('returned', 0)
 
         # No results can be non existing rule id or just that, no results...
         if response['counts']['total'] == 0:
             action_result.set_summary(summary)
-            return action_result.set_status(phantom.APP_SUCCESS,
-                                            'No alerts triggered from rule %s '
-                                            'within timerange "%s"'
-                                            % (rule_id,
-                                               timeframe))
+            return action_result.set_status(
+                phantom.APP_SUCCESS,
+                'No alerts triggered from rule %s '
+                'within timerange "%s"' % (rule_id, timeframe),
+            )
 
         # Add info about the rule to summary and action_result['data']
         summary['rule_name'] = response['data']['results'][0]['rule']['name']
@@ -731,12 +757,16 @@ class RecordedfutureConnector(BaseConnector):
             self.save_progress('In alert loop: %s' % alert)
             url2 = '/alert/%s' % alert['id']
             ret_val2, response2 = self._make_rest_call(url2, action_result)
-            self.debug_print('_handle_alert_data_lookup',
-                             {'path_info': url2,
-                              'action_result': action_result,
-                              'params': None,
-                              'my_ret_val': ret_val2,
-                              'response': response2})
+            self.debug_print(
+                '_handle_alert_data_lookup',
+                {
+                    'path_info': url2,
+                    'action_result': action_result,
+                    'params': params,
+                    'my_ret_val': ret_val2,
+                    'response': response2,
+                },
+            )
 
             entities = self._parse_rule_data(response2['data'])
             self.save_progress('ENTITIES: %s' % entities)
@@ -747,15 +777,17 @@ class RecordedfutureConnector(BaseConnector):
                 'triggered': response2['data']['triggered'],
                 'alertUrl': response2['data']['url'],
                 'content': response2['data'],
-                'entities': entities
+                'entities': entities,
             }
             alerts.append({'alert': current_alert})
-            self.save_progress('Alert: "%s" triggered "%s"'
-                               % (response2['data']['title'],
-                                  response2['data']['triggered']))
+            self.save_progress(
+                'Alert: "%s" triggered "%s"'
+                % (response2['data']['title'], response2['data']['triggered'])
+            )
 
-        action_result.add_data({'rule': response['data']['results'][0]['rule'],
-                                'alerts': alerts})
+        action_result.add_data(
+            {'rule': response['data']['results'][0]['rule'], 'alerts': alerts}
+        )
 
         # Return success, no need to set the message, only the status
         return action_result.set_status(phantom.APP_SUCCESS)
@@ -763,29 +795,39 @@ class RecordedfutureConnector(BaseConnector):
     def _handle_rule_id_lookup(self, param):
         """Make a freetext search for alert rules."""
         self.save_progress(
-            "In action handler for: {0}".format(self.get_action_identifier()))
+            "In action handler for: {0}".format(self.get_action_identifier())
+        )
 
         # Add an action result object to self (BaseConnector) to represent
         # the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
 
+        self.save_progress('DEBUG: started fetching rules')
+
         # Prepare the REST call
-        params = {
-            'freetext': self._handle_py_ver_compat_for_input_str(param['rule_name']),
-            'limit': 100
-        }
+        if not UnicodeDammit(param.get('rule_search', '')).unicode_markup:
+            params = {'limit': 100}
+        else:
+            params = {
+                'freetext': UnicodeDammit(param.get('rule_search', '')).unicode_markup,
+                'limit': 100,
+            }
 
         # make rest call
-        my_ret_val, response = self._make_rest_call('/alert/rule',
-                                                    action_result,
-                                                    params=params)
+        my_ret_val, response = self._make_rest_call(
+            '/config/alert/rules', action_result, params=params
+        )
 
-        self.debug_print('_handle_rule_id_lookup',
-                         {'path_info': '/alert/rule',
-                          'action_result': action_result,
-                          'params': params,
-                          'my_ret_val': my_ret_val,
-                          'response': response})
+        self.debug_print(
+            '_handle_rule_id_lookup',
+            {
+                'path_info': 'config/alert/rules',
+                'action_result': action_result,
+                'params': params,
+                'my_ret_val': my_ret_val,
+                'response': response,
+            },
+        )
 
         # Handle failure
         if phantom.is_fail(my_ret_val):
@@ -793,15 +835,14 @@ class RecordedfutureConnector(BaseConnector):
 
         # Now post process the data
         rule_ids = []
-        for result in list(response['data'].values()):
-            for rule in result:
-                action_result.add_data({'rule': rule})
-                rule_ids.append(rule['id'])
+        for result in response['data']['results']:
+            action_result.add_data({'id': result['id'], 'name': result['title']})
+            rule_ids.append(result['id'])
 
         # Summary
         summary = action_result.get_summary()
-        summary['total_number_of_rules'] = response['counts']['total']
         summary['returned_number_of_rules'] = response['counts']['returned']
+        summary['total_number_of_rules'] = response['counts']['total']
         summary['rule_id_list'] = ','.join(rule_ids)
         action_result.set_summary(summary)
 
@@ -822,8 +863,10 @@ class RecordedfutureConnector(BaseConnector):
             entity_type, operation_type = action_id.split('_')
         else:
             entity_type, operation_type = None, None
-        self.debug_print('DEBUG: entity_type, operation_type = %s, %s'
-                         % (entity_type, operation_type))
+        self.debug_print(
+            'DEBUG: entity_type, operation_type = %s, %s'
+            % (entity_type, operation_type)
+        )
 
         # Switch depending on action
         if action_id == 'test_connectivity':
@@ -832,33 +875,27 @@ class RecordedfutureConnector(BaseConnector):
         elif operation_type == 'intelligence':
             omap = INTELLIGENCE_MAP
             path_info_tmplt, fields, tag, do_quote = omap[entity_type]
-            param_tag = self._handle_py_ver_compat_for_input_str(param[tag])
-            if do_quote:
-                if sys.version_info[0] < 3:
-                    path_info = path_info_tmplt % urllib.quote_plus(param_tag)
-                else:
-                    path_info = path_info_tmplt % urllib.parse.quote_plus(param_tag)
-            else:
-                path_info = path_info_tmplt % param_tag
-            my_ret_val = self._handle_intelligence(param, path_info, fields,
-                                                   operation_type)
+            param_tag = UnicodeDammit(param[tag]).unicode_markup
+            my_ret_val = self._handle_intelligence(param, param_tag, entity_type)
         elif operation_type == 'reputation':
             # phantom entity type file has to be changed to hash
             if entity_type == 'file':
                 tag = 'hash'
             else:
                 tag = entity_type
-            param_tag = self._handle_py_ver_compat_for_input_str(param[tag])
+            param_tag = UnicodeDammit(param[tag]).unicode_markup
             my_ret_val = self._handle_reputation(param, tag, param_tag)
 
         elif action_id == 'threat_assessment':
             # todo: need to check the in-parameters
             my_ret_val = self._handle_triage(param)
+
         elif action_id == 'list_contexts':
             # todo: need to check the in-parameters
             my_ret_val = self._handle_list_contexts(param)
 
         elif action_id == 'rule_id_lookup':
+            self.debug_print('DEBUG: started fetching rules')
             my_ret_val = self._handle_rule_id_lookup(param)
 
         elif action_id == 'alert_data_lookup':
@@ -867,7 +904,7 @@ class RecordedfutureConnector(BaseConnector):
         return my_ret_val
 
     def _is_ip(self, input_ip_address):
-        """ Function that checks given address and return True if address is valid IPv4 or IPV6 address.
+        """Function that checks given address and return True if address is valid IPv4 or IPV6 address.
 
         :param input_ip_address: IP address
         :return: status (success/failure)
@@ -916,8 +953,9 @@ class RecordedfutureConnector(BaseConnector):
 
 if __name__ == '__main__':
     # noinspection PyUnresolvedReferences
-    import pudb
     import argparse
+
+    import pudb
 
     pudb.set_trace()
 
@@ -937,13 +975,13 @@ if __name__ == '__main__':
         # User specified a username but not a password, so ask
         import getpass
 
-        password = getpass.getpass("Password: ")
+        password = getpass.getpass('Password: ')
 
     if username and password:
-        login_url = BaseConnector._get_phantom_base_url() + "login"
+        login_url = BaseConnector._get_phantom_base_url() + 'login'
         try:
-            print("Accessing the Login page")
-            r = requests.get(login_url, verify=False)
+            print('Accessing the Login page')
+            r = requests.get(login_url, verify=True, timeout=33)
             csrftoken = r.cookies['csrftoken']
 
             data = dict()
@@ -955,14 +993,14 @@ if __name__ == '__main__':
             headers['Cookie'] = 'csrftoken=' + csrftoken
             headers['Referer'] = login_url
 
-            print("Logging into Platform to get the session id")
-            r2 = requests.post(login_url, verify=False,
-                               data=data, headers=headers)
+            print('Logging into Platform to get the session id')
+            r2 = requests.post(
+                login_url, verify=True, data=data, headers=headers, timeout=33
+            )
             session_id = r2.cookies['sessionid']
         except Exception as e:
-            print("Unable to get session id from the platform. Error: " + str(
-                e))
-            exit(1)
+            print("Unable to get session id from the platform. Error: " + str(e))
+            sys.exit(1)
 
     with open(args.input_test_json) as f:
         in_json = f.read()
@@ -980,4 +1018,4 @@ if __name__ == '__main__':
         ret_val = connector._handle_action(json.dumps(in_json), None)
         print(json.dumps(json.loads(ret_val), indent=4))
 
-    exit(0)
+    sys.exit(0)
