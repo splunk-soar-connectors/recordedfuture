@@ -1,0 +1,21 @@
+Splunk SOAR Recorded Future
+Copyright (c) Recorded Future, Inc, 2019-2022
+
+Third-party Software Attributions:
+
+Library: beautifulsoup4
+Version: 4.9.1
+License: MIT
+Copyright 2004-2017 Leonard Richardson
+Copyright 2004-2019 Leonard Richardson
+Copyright 2018 Isaac Muse
+
+Library: pudb
+Version: 2019.2
+License: MIT
+Copyright 2009 Andreas Kloeckner and contributors
+
+Library: requests
+Version: 2.25.0
+License: Apache 2.0
+Kenneth Reitz

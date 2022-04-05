@@ -9,100 +9,32 @@
 
 {% block widget_content %} <!-- Main Start Block -->
 
-<!--
-File: reputation_results.html
+<!-- File: reputation_results.html
 
-Recorded Future App View html template file
+Copyright (c) Recorded Future, Inc, 2019-2022
 
-Copyright (c) Recorded Future, Inc., 2019-2020
+This unpublished material is proprietary to Recorded Future. All
+rights reserved. The methods and techniques described herein are
+considered trade secrets and/or confidential. Reproduction or
+distribution, in whole or in part, is forbidden except by express
+written permission of Recorded Future.
 
-This unpublished material is proprietary to Recorded Future.
-All rights reserved. The methods and
-techniques described herein are considered trade secrets
-and/or confidential. Reproduction or distribution, in whole
-or in part, is forbidden except by express written permission
-of Recorded Future.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under
+the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+either express or implied. See the License for the specific language governing permissions
+and limitations under the License.
 -->
 
 <!--
 Style elements are defined in a separate file, named below,
 and will be merged during compilation:
        recordedfuture_style.css          -->
-<style>
-  a:hover {
-    text-decoration: underline;
-  }
-
-  .rf-widget {
-    overflow: auto;
-    width: 100%;
-    height: 100%;
-    padding-left:10px;
-    padding-right:10px;
-  }
-
-  .rf-box {
-    width: 98%;
-    padding: 5px 10px 5px 10px;
-    margin: 0 5px;
-    font-size: 12px;
-  }
-
-  .highlighted {
-    font-weight: bold;
-  }
-
-  .non-highlighted {
-    font-size: xx-small;
-  }
-
-  .rf-box th {
-    text-align: left;
-  }
-
-  .rf-table {
-    width: 98%;
-    border-collapse: collapse;
-    margin: 5px 5px 5px 0;
-    padding: 10px;
-    font-size: 12px;
-  }
-
-  td.rf-criticality-level-3, td.rf-criticality-level-4,
-  td.rf-criticality-level-5 {
-    background: #cf0a2c;
-    width: 0 !important;
-    padding: 0 2px 0 3px !important;
-  }
-  td.rf-criticality-level-2 {
-    background: #ffce00;
-    width: 0 !important;
-    padding: 0 2px 0 3px !important;
-  }
-  td.rf-criticality-level-1 {
-    background: #cccccc;
-    width: 0 !important;
-    padding: 0 2px 0 3px !important;
-  }
-
-  .rf-table td {
-    vertical-align: text-top;
-    padding: 10px;
-  }
-
-  td.rf-timestamp {
-    min-width: 13ex !important;
-  }
-
-  .rf-hover-info {
-    font-weight: normal;
-  }
-
-  .rf-hover-info:hover {
-    font-weight: bold;
-  }
-</style>
-
 
 <div class="rf-widget">
   <!-- Main Div -->
@@ -116,19 +48,19 @@ and will be merged during compilation:
       <table class="rf-table">
         <tr>
           <td colspan="3">{% if result.param.domain %}
-            <span class="non-highlighted">Domain</span> <br/>
+            <span class="non-highlighted">Domain Reputation</span> <br/>
             <a href="javascript:;" onclick="context_menu(this, [{'contains': ['domain'], 'value': '{{ result.param.domain }}' }], 0, {{ container.id }}, null, false);">{{ result.param.domain }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
             {% elif result.param.ip %}
-            <span class="non-highlighted">IP</span> <br/>
+            <span class="non-highlighted">IP Reputation</span> <br/>
             <a href="javascript:;" onclick="context_menu(this, [{'contains': ['ip'], 'value': '{{ result.param.ip }}' }], 0, {{ container.id }}, null, false);">{{ result.param.ip }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
             {% elif result.param.hash %}
-            <span class="non-highlighted">Hash</span> <br/>
+            <span class="non-highlighted">Hash Reputation</span> <br/>
             <a href="javascript:;" onclick="context_menu(this, [{'contains': ['hash'], 'value': '{{ result.param.hash }}' }], 0, {{ container.id }}, null, false);">{{ result.param.hash }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
             {% elif result.param.url %}
-            <span class="non-highlighted">URL</span> <br/>
+            <span class="non-highlighted">URL Reputation</span> <br/>
             <a href="javascript:;" onclick="context_menu(this, [{'contains': ['url'], 'value': '{{ result.param.url }}' }], 0, {{ container.id }}, null, false);">{{ result.param.url }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
             {% elif result.param.vulnerability %}
-            <span class="non-highlighted">Vulnerability</span> <br/>
+            <span class="non-highlighted">Vulnerability Reputation</span> <br/>
             <a href="javascript:;" onclick="context_menu(this, [{'contains': ['vulnerability'], 'value': '{{ result.param.vulnerability }}' }], 0, {{ container.id }}, null, false);">{{ result.param.vulnerability }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
             {% endif %}
           </td>
@@ -137,8 +69,7 @@ and will be merged during compilation:
           <td><span class="non-highlighted">Risk Score</span> <br/>
             {{ result.data.riskscore }}</td>
           <td>
-            <span class="non-highlighted">Number of triggered Risk
-              Rules</span><br/>
+            <span class="non-highlighted">Number of triggered Risk Rules</span><br/>
             {{ result.data.rulecount }} of {{ result.data.maxrules }} rules triggered</td>
           <td>
             <span class="non-highlighted">Intelligence Card</span> <br/>

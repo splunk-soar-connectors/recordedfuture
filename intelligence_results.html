@@ -9,100 +9,32 @@
 
 {% block widget_content %} <!-- Main Start Block -->
 
-<!--
-File: intelligence_results.html
+<!-- File: intelligence_results.html
 
-Recorded Future App View html template file
+Copyright (c) Recorded Future, Inc, 2019-2022
 
-Copyright (c) Recorded Future, Inc., 2019-2020
+This unpublished material is proprietary to Recorded Future. All
+rights reserved. The methods and techniques described herein are
+considered trade secrets and/or confidential. Reproduction or
+distribution, in whole or in part, is forbidden except by express
+written permission of Recorded Future.
 
-This unpublished material is proprietary to Recorded Future.
-All rights reserved. The methods and
-techniques described herein are considered trade secrets
-and/or confidential. Reproduction or distribution, in whole
-or in part, is forbidden except by express written permission
-of Recorded Future.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under
+the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+either express or implied. See the License for the specific language governing permissions
+and limitations under the License.
 -->
 
 <!--
 Style elements are defined in a separate file, named below,
 and will be merged during compilation:
        recordedfuture_style.css          -->
-<style>
-  a:hover {
-    text-decoration: underline;
-  }
-
-  .rf-widget {
-    overflow: auto;
-    width: 100%;
-    height: 100%;
-    padding-left:10px;
-    padding-right:10px;
-  }
-
-  .rf-box {
-    width: 98%;
-    padding: 5px 10px 5px 10px;
-    margin: 0 5px;
-    font-size: 12px;
-  }
-
-  .highlighted {
-    font-weight: bold;
-  }
-
-  .non-highlighted {
-    font-size: xx-small;
-  }
-
-  .rf-box th {
-    text-align: left;
-  }
-
-  .rf-table {
-    width: 98%;
-    border-collapse: collapse;
-    margin: 5px 5px 5px 0;
-    padding: 10px;
-    font-size: 12px;
-  }
-
-  td.rf-criticality-level-3, td.rf-criticality-level-4,
-  td.rf-criticality-level-5 {
-    background: #cf0a2c;
-    width: 0 !important;
-    padding: 0 2px 0 3px !important;
-  }
-  td.rf-criticality-level-2 {
-    background: #ffce00;
-    width: 0 !important;
-    padding: 0 2px 0 3px !important;
-  }
-  td.rf-criticality-level-1 {
-    background: #cccccc;
-    width: 0 !important;
-    padding: 0 2px 0 3px !important;
-  }
-
-  .rf-table td {
-    vertical-align: text-top;
-    padding: 10px;
-  }
-
-  td.rf-timestamp {
-    min-width: 13ex !important;
-  }
-
-  .rf-hover-info {
-    font-weight: normal;
-  }
-
-  .rf-hover-info:hover {
-    font-weight: bold;
-  }
-</style>
-
 
 <div class="rf-widget">
   <!-- Main Div -->
@@ -117,33 +49,28 @@ and will be merged during compilation:
           <tr>
             <td colspan="5">
               {% if result.param.ip %}
-              <span class="highlighted">{{ result.data.risk.criticalityLabel }}</span>
-              <span> IP </span>
+              <span class="non-highlighted">IP Intelligence</span><br>
               <a href="javascript:;" onclick="context_menu(this, [{'contains': ['ip'], 'value': '{{ result.param.ip }}' }], 0, {{ container.id }}, null, false);"><span class="highlighted">{{ result.param.ip }}</span>&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
               </a>
             {% endif %}
             {% if result.param.domain %}
-              <span class="highlighted">{{ result.data.risk.criticalityLabel }}</span>
-              <span> Domain </span>
+              <span class="non-highlighted">Domain Intelligence</span><br>
               <a href="javascript:;" onclick="context_menu(this, [{'contains': ['domain'], 'value': '{{ result.param.domain }}' }], 0, {{ container.id }}, null, false);"><span class="highlighted">{{ result.param.domain }}</span>&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
               </a>
             {% endif %}
             {% if result.param.hash %}
-              <span class="highlighted">{{ result.data.risk.criticalityLabel }}</span>
-              <span> Hash ({{ result.data.hashAlgorithm }}) </span>
-              <a href="javascript:;" onclick="context_menu(this, [{'contains': ['hash'], 'value': '{{ result.param.hash }}' }], 0, {{ container.id }}, null, false);"><span class="highlighted">{{ result.param.hash }}</span>&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
+              <span class="non-highlighted">File Intelligence</span><br>
+              <a href="javascript:;" onclick="context_menu(this, [{'contains': ['file'], 'value': '{{ result.param.hash }}' }], 0, {{ container.id }}, null, false);"><span class="highlighted">{{ result.param.hash }}</span>&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
               </a>
             {% endif %}
             {% if result.param.url %}
-              <span class="highlighted">{{ result.data.risk.criticalityLabel }}</span>
-              <span> URL </span>
+              <span class="non-highlighted">URL Intelligence</span><br>
               <a href="javascript:;" onclick="context_menu(this, [{'contains': ['url'], 'value': '{{ result.param.url }}' }], 0, {{ container.id }}, null, false);"><span class="highlighted">{{ result.param.url }}</span>&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
               </a>
             {% endif %}
             {% if result.param.vulnerability %}
-              <span class="highlighted">{{ result.data.risk.criticalityLabel }}</span>
-              <span> Vulnerability </span>
-              <a href="javascript:;" onclick="context_menu(this, [{'contains': ['vulnerability'], 'value': '{{ result.param.vulnerability }}' }], 0, {{ container.id }}, null, false);"><span class="highlighted">{{ result.param.vulnerability }}</span>&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
+              <span class="non-highlighted">Vulnerability Intelligence</span><br>
+              <a href="javascript:;" onclick="context_menu(this, [{'contains': ['cve','recordedfuture vulnerability id','vulnerability'], 'value': '{{ result.param.vulnerability }}' }], 0, {{ container.id }}, null, false);"><span class="highlighted">{{ result.param.vulnerability }}</span>&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
               </a>
             {% endif %}
             </td>
@@ -154,7 +81,7 @@ and will be merged during compilation:
               {{ result.data.risk.score }}
             </td>
             <td>
-              <span class="non-highlighted">Summary</span> <br/>
+              <span class="non-highlighted">Risk Rules Triggered</span> <br/>
               {{ result.data.risk.riskSummary }}
             </td>
             <td class="rf-timestamp">
@@ -172,159 +99,200 @@ and will be merged during compilation:
             <td>
               <span class="non-highlighted">Intelligence Card</span> <br/>
               {% if result.data.intelCard %}
-                <a href="{{ result.data.intelCard }}" target="new">Open</a>
+                <a href="{{ result.data.intelCard }}" target="new">Open
+                  <img </a>
               {% elif result.intelCard %}
                 <a href="{{ result.intelCard }}" target="new">Open</a>
               {% endif %}
             </td>
           </tr>
+          {% if result.data.mitreTags %}
+            <tr>
+              <td colspan="5">
+                <span class="non-highlighted">MITRE ATT@CK</span><br>
+                {{ result.data.mitreTags }}
+              </td>
+            </tr>
+          {% endif %}
         </table>
       </div>
 
       <!-- NVD CVSS -->
       {% if result.data.nvdDescription %}
-      <div class="rf-box">
-        <table class="rf-table">
-          <tr>
-            <td>
-              <span class="non-highlighted">NVD Vulnerability
-                Description</span><br/>
-              {{ result.data.nvdDescription }}
-            </td>
-          </tr>
-        </table>
-      </div>
+        <div class="rf-box">
+          <table class="rf-table">
+            <tr>
+              <td>
+                <span class="non-highlighted">NVD Vulnerability
+                  Description</span><br/>
+                {{ result.data.nvdDescription }}
+              </td>
+            </tr>
+          </table>
+        </div>
       {% endif %}
 
       <!-- Risk Rules Triggered -->
       {% if result.data.risk.evidenceDetails %}
-      <div class="rf-box">
-        <table class="rf-table">
-        <tr><td colspan="4">Triggered Risk Rules</td></tr>
-        {% for rule in result.data.risk.evidenceDetails|dictsortreversed:"criticality" %}
-        <tr>
-          <td class="rf-criticality-level-{{ rule.criticality }}"></td>
-          <td>
-            <span class="non-highlighted">Risk Rule</span> <br/>
-            {{ rule.rule }}
-          </td>
-          <td>
-            <span class="non-highlighted">Evidence</span> <br/>
-            {{ rule.evidenceString }}
-          </td>
-          <td class="rf-timestamp">
-            <span class="non-highlighted">Timestamp</span> <br/>
-            <span title="{{ rule.timestamp }}">
-              {{ rule.timestampShort }}
-            </span>
-          </td>
-        </tr>
-        {% endfor %}
-      </table>
-      </div>
+        <div class="rf-box">
+          <table class="rf-table">
+            <tr><td colspan="4">Triggered Risk Rules</td></tr>
+            {% for rule in result.data.risk.evidenceDetails|dictsortreversed:"criticality" %}
+              <tr>
+                <td class="rf-criticality-level-{{ rule.criticality }}"></td>
+                <td>
+                  <span class="non-highlighted">Risk Rule</span> <br/>
+                  {{ rule.rule }}
+                </td>
+                <td>
+                  <span class="non-highlighted">Evidence</span> <br/>
+                  {{ rule.evidenceString }}
+                </td>
+                <td class="rf-timestamp">
+                  <span class="non-highlighted">Timestamp</span> <br/>
+                  <span title="{{ rule.timestamp }}">
+                    {{ rule.timestampShort }}
+                  </span>
+                </td>
+              </tr>
+            {% endfor %}
+          </table>
+        </div>
       {% endif %}
 
       <!-- NVD CVSS -->
       {% if result.data.cvss %}
-      <div class="rf-box">
-        <table class="rf-table">
-          <tr><td colspan="9">CVSS Vulnerability Metrics</td></tr>
-          <tr>
-            <td>
-              <span class="non-highlighted">Access Vector</span><br/>
-              {{ result.data.cvss.accessVector }}
-            </td>
-            <td>
-              <span class="non-highlighted">Availability</span><br/>
-              {{ result.data.cvss.availability }}
-            </td>
-            <td>
-              <span class="non-highlighted">Score</span><br/>
-              {{ result.data.cvss.score }}
-            </td>
-            <td>
-              <span class="non-highlighted">Access Complexity</span><br/>
-              {{ result.data.cvss.accessComplexity }}
-            </td>
-            <td>
-              <span class="non-highlighted">Authentication</span><br/>
-              {{ result.data.cvss.authentication }}
-            </td>
-            <td>
-              <span class="non-highlighted">Confidentiality</span><br/>
-              {{ result.data.cvss.confidentiality }}
-            </td>
-            <td>
-              <span class="non-highlighted">Integrity</span><br/>
-              {{ result.data.cvss.integrity }}
-            </td>
-            <td>
-              <span class="non-highlighted">Published</span><br/>
-              <span title="{{ result.data.cvss.published }}">
-                {{ result.data.cvss.publishedShort }}
-              </span>
-            </td>
-            <td>
-              <span class="non-highlighted">Last Modified</span><br/>
-              <span title="{{result.data.cvss.lastModified}}">
-                {{ result.data.cvss.lastModifiedShort }}
-              </span>
-            </td>
-          </tr>
-        </table>
-      </div>
+        <div class="rf-box">
+          <table class="rf-table">
+            <tr><td colspan="9">CVSS Vulnerability Metrics</td></tr>
+            <tr>
+              <td>
+                <span class="non-highlighted">Access Vector</span><br/>
+                {{ result.data.cvss.accessVector }}
+              </td>
+              <td>
+                <span class="non-highlighted">Availability</span><br/>
+                {{ result.data.cvss.availability }}
+              </td>
+              <td>
+                <span class="non-highlighted">Score</span><br/>
+                {{ result.data.cvss.score }}
+              </td>
+              <td>
+                <span class="non-highlighted">Access Complexity</span><br/>
+                {{ result.data.cvss.accessComplexity }}
+              </td>
+              <td>
+                <span class="non-highlighted">Authentication</span><br/>
+                {{ result.data.cvss.authentication }}
+              </td>
+              <td>
+                <span class="non-highlighted">Confidentiality</span><br/>
+                {{ result.data.cvss.confidentiality }}
+              </td>
+              <td>
+                <span class="non-highlighted">Integrity</span><br/>
+                {{ result.data.cvss.integrity }}
+              </td>
+              <td>
+                <span class="non-highlighted">Published</span><br/>
+                <span title="{{ result.data.cvss.published }}">
+                  {{ result.data.cvss.publishedShort }}
+                </span>
+              </td>
+              <td>
+                <span class="non-highlighted">Last Modified</span><br/>
+                <span title="{{result.data.cvss.lastModified}}">
+                  {{ result.data.cvss.lastModifiedShort }}
+                </span>
+              </td>
+            </tr>
+          </table>
+        </div>
       {% endif %}
 
       <!-- Threat Lists -->
       {% if result.data.threatLists %}
-      <div class="rf-box">
-        <table class="rf-table">
-          <tr><td colspan="2">Threat Lists</td></tr>
-          {% for threatList in result.data.threatLists %}
-          <tr>
-            <td style="min-width: 20ex;">
-              <span class="non-highlighted">Threatlist Name</span> <br/>
-              {{ threatList.name }} </td>
-            <td>
-              <span class="non-highlighted">Description</span> <br/>
-              {{ threatList.description}}
-            </td>
-          </tr>
-          {% endfor %}
-        </table>
-      </div>
+        <div class="rf-box">
+          <table class="rf-table">
+            <tr><td colspan="2">Threat Lists</td></tr>
+            {% for threatList in result.data.threatLists %}
+            <tr>
+              <td style="min-width: 20ex;">
+                <span class="non-highlighted">Threatlist Name</span> <br/>
+                {{ threatList.name }} </td>
+              <td>
+                <span class="non-highlighted">Description</span> <br/>
+                {{ threatList.description}}
+              </td>
+            </tr>
+            {% endfor %}
+          </table>
+          </div>
       {% endif %}
 
       <!-- Location -->
       {% if result.data.location %}
-      <div class="rf-box">
-        <table class="rf-table">
-          <tr><td colspan="5">ASN and Geolocation</td></tr>
-          <tr>
-            <td>
-              <span class="non-highlighted">AS Number</span> <br/>
-              {{ result.data.location.asn }}
-            </td>
-            <td>
-              <span class="non-highlighted">AS Name</span> <br/>
-              {{ result.data.location.organization }}
-            </td>
-            <td>
-              <span class="non-highlighted">IP Range</span> <br/>
-              {{ result.data.location.cidr.name }}
-            </td>
-            <td>
-              <span class="non-highlighted">Geolocation (city)</span> <br/>
-              {{ result.data.location.location.city }}
-            </td>
-            <td>
-              <span class="non-highlighted">Geolocation (country)</span> <br/>
-              {{ result.data.location.location.country }}
-            </td>
-          </tr>
-        </table>
-      </div>
+        <div class="rf-box">
+          <table class="rf-table">
+            <tr><td colspan="5">ASN and Geolocation</td></tr>
+            <tr>
+              <td>
+                <span class="non-highlighted">AS Number</span> <br/>
+                {{ result.data.location.asn }}
+              </td>
+              <td>
+                <span class="non-highlighted">AS Name</span> <br/>
+                {{ result.data.location.organization }}
+              </td>
+              <td>
+                <span class="non-highlighted">IP Range</span> <br/>
+                {{ result.data.location.cidr.name }}
+              </td>
+              <td>
+                <span class="non-highlighted">Geolocation (city)</span> <br/>
+                {{ result.data.location.location.city }}
+              </td>
+              <td>
+                <span class="non-highlighted">Geolocation (country)</span> <br/>
+                {{ result.data.location.location.country }}
+              </td>
+            </tr>
+          </table>
+        </div>
       {% endif %}
+
+      {% if result.data.recordedfutureLinks %}
+        <div class="rf-box">
+          <table class="rf-table">
+            <tr>
+              <td>Recorded Future Research and Technical Links</td>
+            </tr>
+            {% for entity_type, entities in result.data.recordedfutureLinks.entities.items %}
+              <tr>
+                <td>
+                  <strong>{{ entity_type|upper }}</strong> <br>
+                  {% for entity in entities|dictsortreversed:"score" %}
+                    {% if entity_type == 'other' %}
+                      {{ entity.name }} ({{ entity.type|title }})
+                      <br>
+                    {% else %}
+                      Risk: {{ entity.score }}&nbsp;&nbsp; |&nbsp;&nbsp;
+                      <a href="javascript:;" onclick="context_menu(this, [{'contains': ['{{ entity_type }}'], 'value': '{{ entity.name }}' }], 0, {{ container.id }}, null, false);">
+                        {{ entity.name }}
+                        &nbsp;
+                        <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                      </a>
+                      <br>
+                    {% endif %}
+                  {% endfor %}
+                </td>
+              </tr>
+            {% endfor %}
+          </table>
+        </div>
+      {% endif %}
+
     {% else %} <!-- handle no data responses -->
       <table class="rf-table">
         <tr>
