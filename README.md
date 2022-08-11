@@ -10,27 +10,7 @@ Minimum Product Version: 5\.1\.0
 
 This app implements investigative actions to perform lookups for quick reputation information, contextual threat intelligence and external threat alerts
 
-[comment]: # " File: README.md"
-[comment]: # ""
-[comment]: # "Copyright (c) Recorded Future, Inc, 2019-2022"
-[comment]: # ""
-[comment]: # "This unpublished material is proprietary to Recorded Future. All"
-[comment]: # "rights reserved. The methods and techniques described herein are"
-[comment]: # "considered trade secrets and/or confidential. Reproduction or"
-[comment]: # "distribution, in whole or in part, is forbidden except by express"
-[comment]: # "written permission of Recorded Future."
-[comment]: # ""
-[comment]: # "Licensed under the Apache License, Version 2.0 (the 'License');"
-[comment]: # "you may not use this file except in compliance with the License."
-[comment]: # "You may obtain a copy of the License at"
-[comment]: # ""
-[comment]: # "    http://www.apache.org/licenses/LICENSE-2.0"
-[comment]: # ""
-[comment]: # "Unless required by applicable law or agreed to in writing, software distributed under"
-[comment]: # "the License is distributed on an 'AS IS' BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,"
-[comment]: # "either express or implied. See the License for the specific language governing permissions"
-[comment]: # "and limitations under the License."
-[comment]: # ""
+
 Recorded Future App for Phantom allows clients to work smarter, respond faster, and strengthen their
 defenses through automation and orchestration. The Recorded Future App provides a number of actions
 that enable the creation of Playbooks to do automated enrichment, correlation, threat hunting, and
@@ -43,7 +23,7 @@ to the community site. The new playbook incorporates the new assessment function
 
 Four demo playbooks were released with the Recorded Future App for Phantom 2.0 to show how the
 actions in the app can be used. The playbooks are designed to operate on a Recorded Future App asset
-named "recorded-future" and Phantom SMTP asset named "smtp". If the assets are named differently,
+named "recorded_future" and Phantom SMTP asset named "smtp". If the assets are named differently,
 the playbooks will be adjusted. The email address used for the alert emails is specified in the
 linked SMTP asset.
 
@@ -92,8 +72,8 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 [domain reputation](#action-domain-reputation) - Get a quick indicator of the risk associated with a domain  
 [ip intelligence](#action-ip-intelligence) - Get threat intelligence for an IP address  
 [ip reputation](#action-ip-reputation) - Get a quick indicator of the risk associated with an IP address  
-[threat assessment](#action-threat-assessment) - Get an indicator of the risk for a collection of entities based on context  
-[list contexts](#action-list-contexts) - Get a list of possible contexts to use in threat assessment  
+[threat assessment](#action-threat-assessment) - Get an indicator of the risk based on context  
+[list contexts](#action-list-contexts) - Get a list of possible contexts to use in threat triage  
 
 ## action: 'test connectivity'
 Validate the asset configuration for connectivity
@@ -177,15 +157,15 @@ Read only: **True**
 #### Action Parameters
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
-**rule\_search** |  optional  | Search for alert rule name and ID | string |  `recordedfuture alert rule search` 
+**rule\_name** |  required  | Alert rule name | string |  `recordedfuture alert rule name` 
 
 #### Action Output
 DATA PATH | TYPE | CONTAINS
 --------- | ---- | --------
 action\_result\.status | string |  `recordedfuture result status` 
-action\_result\.parameter\.rule\_search | string |  `recordedfuture alert rule search` 
+action\_result\.parameter\.rule\_name | string |  `recordedfuture alert rule name` 
 action\_result\.data\.\*\.rule\.id | string |  `recordedfuture alert rule id` 
-action\_result\.data\.\*\.rule\.name | string |  `recordedfuture alert rule name` 
+action\_result\.data\.\*\.rule\.title | string |  `recordedfuture alert rule title` 
 action\_result\.summary\.returned\_number\_of\_rules | numeric |  `recordedfuture alerts number of rules` 
 action\_result\.summary\.rule\_id\_list | string |  `recordedfuture alerts rule ids` 
 action\_result\.summary\.total\_number\_of\_rules | numeric |  `recordedfuture rules count total` 
@@ -212,26 +192,8 @@ action\_result\.parameter\.url | string |  `url`
 action\_result\.data\.\*\.entity\.id | string |  `recordedfuture entity id` 
 action\_result\.data\.\*\.entity\.name | string |  `url` 
 action\_result\.data\.\*\.entity\.type | string |  `recordedfuture entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.start\_date | string |  `recordedfuture research links start date` 
-action\_result\.data\.\*\.recordedfutureLinks\.stop\_date | string |  `recordedfuture research links stop date` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.ip\.\*\.name | string |  `ip`  `ipv6` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.ip\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.ip\.\*\.score | string |  `recordedfuture entity risk score` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.domain\.\*\.name | string |  `domain` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.domain\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.domain\.\*\.score | string |  `recordedfuture entity risk score` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.file\.\*\.name | string |  `file`  `hash`  `sha256`  `sha1`  `md5` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.file\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.file\.\*\.score | string |  `recordedfuture entity risk score` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.vulnerability\.\*\.name | string |  `cve`  `vulnerability` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.vulnerability\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.vulnerability\.\*\.score | string |  `recordedfuture entity risk score` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.url\.\*\.name | string |  `url` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.url\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.url\.\*\.score | string |  `recordedfuture entity risk score` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.other\.\*\.name | string |  `recordedfuture research links other entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.other\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.other\.\*\.score | string |  `recordedfuture entity risk score` 
+action\_result\.data\.\*\.metrics\.\*\.type | string |  `recordedfuture metrics type` 
+action\_result\.data\.\*\.metrics\.\*\.value | numeric |  `recordedfuture metrics value` 
 action\_result\.data\.\*\.risk\.criticality | numeric |  `recordedfuture risk criticality` 
 action\_result\.data\.\*\.risk\.criticalityLabel | string |  `recordedfuture risk criticality label` 
 action\_result\.data\.\*\.risk\.evidenceDetails\.\*\.criticality | numeric |  `recordedfuture risk criticality` 
@@ -297,13 +259,13 @@ Read only: **True**
 #### Action Parameters
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
-**vulnerability** |  required  | CVE vulnerability identifier to look up | string |  `cve`  `vulnerability` 
+**vulnerability** |  required  | CVE vulnerability identifier to look up | string |  `cve`  `recordedfuture vulnerability id` 
 
 #### Action Output
 DATA PATH | TYPE | CONTAINS
 --------- | ---- | --------
 action\_result\.status | string |  `recordedfuture result status` 
-action\_result\.parameter\.vulnerability | string |  `cve`  `vulnerability` 
+action\_result\.parameter\.vulnerability | string |  `cve`  `recordedfuture vulnerability id` 
 action\_result\.data\.\*\.cvss\.accessComplexity | string |  `cvss access complexity` 
 action\_result\.data\.\*\.cvss\.accessVector | string |  `cvss access vector` 
 action\_result\.data\.\*\.cvss\.authentication | string |  `cvss authentication` 
@@ -315,29 +277,11 @@ action\_result\.data\.\*\.cvss\.published | string |  `cvss published`
 action\_result\.data\.\*\.cvss\.score | numeric |  `cvss score` 
 action\_result\.data\.\*\.entity\.description | string |  `recordedfuture entity description` 
 action\_result\.data\.\*\.entity\.id | string |  `recordedfuture entity id` 
-action\_result\.data\.\*\.entity\.name | string |  `cve`  `vulnerability` 
+action\_result\.data\.\*\.entity\.name | string |  `cve`  `recordedfuture vulnerability id` 
 action\_result\.data\.\*\.entity\.type | string |  `recordedfuture entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.start\_date | string |  `recordedfuture research links start date` 
-action\_result\.data\.\*\.recordedfutureLinks\.stop\_date | string |  `recordedfuture research links stop date` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.ip\.\*\.name | string |  `ip`  `ipv6` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.ip\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.ip\.\*\.score | string |  `recordedfuture entity risk score` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.domain\.\*\.name | string |  `domain` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.domain\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.domain\.\*\.score | string |  `recordedfuture entity risk score` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.file\.\*\.name | string |  `file`  `hash`  `sha256`  `sha1`  `md5` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.file\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.file\.\*\.score | string |  `recordedfuture entity risk score` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.vulnerability\.\*\.name | string |  `cve`  `vulnerability` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.vulnerability\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.vulnerability\.\*\.score | string |  `recordedfuture entity risk score` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.url\.\*\.name | string |  `url` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.url\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.url\.\*\.score | string |  `recordedfuture entity risk score` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.other\.\*\.name | string |  `recordedfuture research links other entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.other\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.other\.\*\.score | string |  `recordedfuture entity risk score` 
 action\_result\.data\.\*\.intelCard | string |  `recordedfuture intelligence card url` 
+action\_result\.data\.\*\.metrics\.\*\.type | string |  `recordedfuture metrics type` 
+action\_result\.data\.\*\.metrics\.\*\.value | numeric |  `recordedfuture metrics value` 
 action\_result\.data\.\*\.nvdDescription | string |  `nvd description` 
 action\_result\.data\.\*\.relatedEntities\.\*\.entities\.\*\.count | numeric |  `recordedfuture related entities count` 
 action\_result\.data\.\*\.relatedEntities\.\*\.entities\.\*\.entity\.description | string |  `recordedfuture entity description` 
@@ -375,13 +319,13 @@ Read only: **True**
 #### Action Parameters
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
-**vulnerability** |  required  | CVE vulnerability identifier to look up | string |  `cve`  `vulnerability` 
+**vulnerability** |  required  | CVE vulnerability identifier to look up | string |  `cve`  `recordedfuture vulnerability id` 
 
 #### Action Output
 DATA PATH | TYPE | CONTAINS
 --------- | ---- | --------
 action\_result\.status | string |  `recordedfuture result status` 
-action\_result\.data\.\*\.name | string |  `cve`  `vulnerability` 
+action\_result\.data\.\*\.name | string |  `cve`  `recordedfuture vulnerability id` 
 action\_result\.data\.\*\.id | string |  `recordedfuture entity id` 
 action\_result\.data\.\*\.type | string |  `recordedfuture entity type` 
 action\_result\.data\.\*\.description | string |  `recordedfuture evidence description` 
@@ -396,7 +340,7 @@ action\_result\.data\.\*\.evidence\.\*\.ruleid | string |  `recordedfuture risk 
 action\_result\.data\.\*\.evidence\.\*\.rule | string |  `recordedfuture risk rule` 
 action\_result\.data\.\*\.evidence\.\*\.mitigation | string |  `recordedfuture evidence mitigation` 
 action\_result\.message | string |  `recordedfuture result message` 
-action\_result\.parameter\.vulnerability | string |  `cve`  `vulnerability` 
+action\_result\.parameter\.vulnerability | string |  `cve`  `recordedfuture vulnerability id` 
 action\_result\.summary\.riskscore | numeric |  `recordedfuture risk score` 
 action\_result\.summary\.type | string |  `recordedfuture entity type` 
 action\_result\.summary\.risklevel | numeric |  `recordedfuture risk level` 
@@ -412,38 +356,20 @@ Read only: **True**
 #### Action Parameters
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
-**hash** |  required  | File hash to query | string |  `file`  `hash`  `sha256`  `sha1`  `md5` 
+**hash** |  required  | File hash to query | string |  `hash`  `sha256`  `sha1`  `md5` 
 
 #### Action Output
 DATA PATH | TYPE | CONTAINS
 --------- | ---- | --------
 action\_result\.status | string |  `recordedfuture result status` 
-action\_result\.parameter\.hash | string |  `file`  `hash`  `sha256`  `sha1`  `md5` 
+action\_result\.parameter\.hash | string |  `hash`  `sha256`  `sha1`  `md5` 
 action\_result\.data\.\*\.entity\.id | string |  `recordedfuture entity id` 
-action\_result\.data\.\*\.entity\.name | string |  `file`  `hash`  `sha256`  `sha1`  `md5` 
+action\_result\.data\.\*\.entity\.name | string |  `hash`  `sha256`  `sha1`  `md5` 
 action\_result\.data\.\*\.entity\.type | string |  `recordedfuture entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.start\_date | string |  `recordedfuture research links start date` 
-action\_result\.data\.\*\.recordedfutureLinks\.stop\_date | string |  `recordedfuture research links stop date` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.ip\.\*\.name | string |  `ip`  `ipv6` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.ip\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.ip\.\*\.score | string |  `recordedfuture entity risk score` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.domain\.\*\.name | string |  `domain` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.domain\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.domain\.\*\.score | string |  `recordedfuture entity risk score` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.file\.\*\.name | string |  `file`  `hash`  `sha256`  `sha1`  `md5` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.file\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.file\.\*\.score | string |  `recordedfuture entity risk score` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.vulnerability\.\*\.name | string |  `cve`  `vulnerability` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.vulnerability\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.vulnerability\.\*\.score | string |  `recordedfuture entity risk score` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.url\.\*\.name | string |  `url` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.url\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.url\.\*\.score | string |  `recordedfuture entity risk score` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.other\.\*\.name | string |  `recordedfuture research links other entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.other\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.other\.\*\.score | string |  `recordedfuture entity risk score` 
 action\_result\.data\.\*\.hashAlgorithm | string |  `recordedfuture hash algorithm` 
 action\_result\.data\.\*\.intelCard | string |  `recordedfuture intelligence card url` 
+action\_result\.data\.\*\.metrics\.\*\.type | string |  `recordedfuture metrics type` 
+action\_result\.data\.\*\.metrics\.\*\.value | numeric |  `recordedfuture metrics value` 
 action\_result\.data\.\*\.relatedEntities\.\*\.entities\.\*\.count | numeric |  `recordedfuture related entities count` 
 action\_result\.data\.\*\.relatedEntities\.\*\.entities\.\*\.entity\.id | string |  `recordedfuture entity id` 
 action\_result\.data\.\*\.relatedEntities\.\*\.entities\.\*\.entity\.name | string |  `recordedfuture entity name` 
@@ -479,13 +405,13 @@ Read only: **True**
 #### Action Parameters
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
-**hash** |  required  | File hash to query | string |  `file`  `hash`  `sha256`  `sha1`  `md5` 
+**hash** |  required  | File hash to query | string |  `hash`  `sha256`  `sha1`  `md5` 
 
 #### Action Output
 DATA PATH | TYPE | CONTAINS
 --------- | ---- | --------
 action\_result\.status | string |  `recordedfuture result status` 
-action\_result\.data\.\*\.name | string |  `file`  `hash`  `sha1`  `sha256`  `md5` 
+action\_result\.data\.\*\.name | string |  `hash`  `sha1`  `sha256`  `md5` 
 action\_result\.data\.\*\.id | string |  `recordedfuture entity id` 
 action\_result\.data\.\*\.type | string |  `recordedfuture entity type` 
 action\_result\.data\.\*\.riskscore | numeric |  `recordedfuture risk score` 
@@ -498,7 +424,7 @@ action\_result\.data\.\*\.evidence\.\*\.description | string |  `recordedfuture 
 action\_result\.data\.\*\.evidence\.\*\.rule | string |  `recorded future risk rule` 
 action\_result\.data\.\*\.evidence\.\*\.level | numeric |  `recordedfuture risk rule level` 
 action\_result\.message | string |  `action result message` 
-action\_result\.parameter\.hash | string |  `file`  `hash`  `sha256`  `sha1`  `md5` 
+action\_result\.parameter\.hash | string |  `hash`  `sha256`  `sha1`  `md5` 
 action\_result\.summary\.riskscore | numeric |  `recordedfuture risk score` 
 action\_result\.summary\.type | string |  `recordedfuture entity type` 
 action\_result\.summary\.risklevel | numeric |  `recordedfuture risk level` 
@@ -524,27 +450,9 @@ action\_result\.parameter\.domain | string |  `domain`
 action\_result\.data\.\*\.entity\.id | string |  `recordedfuture entity id` 
 action\_result\.data\.\*\.entity\.name | string |  `domain` 
 action\_result\.data\.\*\.entity\.type | string |  `recordedfuture entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.start\_date | string |  `recordedfuture research links start date` 
-action\_result\.data\.\*\.recordedfutureLinks\.stop\_date | string |  `recordedfuture research links stop date` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.ip\.\*\.name | string |  `ip`  `ipv6` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.ip\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.ip\.\*\.score | string |  `recordedfuture entity risk score` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.domain\.\*\.name | string |  `domain` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.domain\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.domain\.\*\.score | string |  `recordedfuture entity risk score` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.file\.\*\.name | string |  `file`  `hash`  `sha256`  `sha1`  `md5` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.file\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.file\.\*\.score | string |  `recordedfuture entity risk score` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.vulnerability\.\*\.name | string |  `cve`  `vulnerability` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.vulnerability\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.vulnerability\.\*\.score | string |  `recordedfuture entity risk score` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.url\.\*\.name | string |  `url` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.url\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.url\.\*\.score | string |  `recordedfuture entity risk score` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.other\.\*\.name | string |  `recordedfuture research links other entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.other\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.other\.\*\.score | string |  `recordedfuture entity risk score` 
 action\_result\.data\.\*\.intelCard | string |  `recordedfuture intelligence card url` 
+action\_result\.data\.\*\.metrics\.\*\.type | string |  `recordedfuture metrics type` 
+action\_result\.data\.\*\.metrics\.\*\.value | numeric |  `recordedfuture metrics value` 
 action\_result\.data\.\*\.relatedEntities\.\*\.entities\.\*\.count | numeric |  `recordedfuture related entities count` 
 action\_result\.data\.\*\.relatedEntities\.\*\.entities\.\*\.entity\.id | string |  `recordedfuture entity id` 
 action\_result\.data\.\*\.relatedEntities\.\*\.entities\.\*\.entity\.name | string |  `recordedfuture entity name` 
@@ -630,26 +538,6 @@ action\_result\.parameter\.ip | string |  `ip`  `ipv6`
 action\_result\.data\.\*\.entity\.id | string |  `recordedfuture entity id` 
 action\_result\.data\.\*\.entity\.name | string |  `ip`  `ipv6` 
 action\_result\.data\.\*\.entity\.type | string |  `recordedfuture entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.start\_date | string |  `recordedfuture research links start date` 
-action\_result\.data\.\*\.recordedfutureLinks\.stop\_date | string |  `recordedfuture research links stop date` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.ip\.\*\.name | string |  `ip`  `ipv6` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.ip\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.ip\.\*\.score | string |  `recordedfuture entity risk score` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.domain\.\*\.name | string |  `domain` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.domain\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.domain\.\*\.score | string |  `recordedfuture entity risk score` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.file\.\*\.name | string |  `file`  `hash`  `sha256`  `sha1`  `md5` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.file\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.file\.\*\.score | string |  `recordedfuture entity risk score` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.vulnerability\.\*\.name | string |  `cve`  `vulnerability` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.vulnerability\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.vulnerability\.\*\.score | string |  `recordedfuture entity risk score` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.url\.\*\.name | string |  `url` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.url\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.url\.\*\.score | string |  `recordedfuture entity risk score` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.other\.\*\.name | string |  `recordedfuture research links other entity types` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.other\.\*\.type | string |  `recordedfuture research links entity type` 
-action\_result\.data\.\*\.recordedfutureLinks\.entities\.other\.\*\.score | string |  `recordedfuture entity risk score` 
 action\_result\.data\.\*\.intelCard | string |  `recordedfuture intelligence card url` 
 action\_result\.data\.\*\.location\.asn | string |  `recordedfuture location asn` 
 action\_result\.data\.\*\.location\.cidr\.id | string |  `recordedfuture location cidr id` 
@@ -659,6 +547,8 @@ action\_result\.data\.\*\.location\.location\.city | string |  `recordedfuture l
 action\_result\.data\.\*\.location\.location\.continent | string |  `recordedfuture location continent` 
 action\_result\.data\.\*\.location\.location\.country | string |  `recordedfuture location country` 
 action\_result\.data\.\*\.location\.organization | string |  `recordedfuture location organization` 
+action\_result\.data\.\*\.metrics\.\*\.type | string |  `recordedfuture metrics type` 
+action\_result\.data\.\*\.metrics\.\*\.value | numeric |  `recordedfuture metrics value` 
 action\_result\.data\.\*\.relatedEntities\.\*\.entities\.\*\.count | numeric |  `recordedfuture related entities count` 
 action\_result\.data\.\*\.relatedEntities\.\*\.entities\.\*\.entity\.id | string |  `recordedfuture entity id` 
 action\_result\.data\.\*\.relatedEntities\.\*\.entities\.\*\.entity\.name | string |  `recordedfuture entity name` 
@@ -722,7 +612,7 @@ summary\.total\_objects | numeric |  `recordedfuture total objects`
 summary\.total\_objects\_successful | numeric |  `recordedfuture total objects successful`   
 
 ## action: 'threat assessment'
-Get an indicator of the risk for a collection of entities based on context
+Get an indicator of the risk based on context
 
 Type: **investigate**  
 Read only: **True**
@@ -734,14 +624,14 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 **ip** |  optional  | IP to query | string |  `ip`  `ipv6` 
 **domain** |  optional  | Domain to query | string |  `domain` 
 **url** |  optional  | URL to query | string |  `url` 
-**hash** |  optional  | File hash to query | string |  `file`  `hash`  `sha256`  `sha1`  `md5` 
+**hash** |  optional  | Hash to query | string |  `hash`  `sha256`  `sha1`  `md5` 
 
 #### Action Output
 DATA PATH | TYPE | CONTAINS
 --------- | ---- | --------
 action\_result\.status | string |  `action result status` 
 action\_result\.data\.\*\.entities\.\*\.id | string |  `recorded future entity id` 
-action\_result\.data\.\*\.entities\.\*\.name | string |  `ip`  `ipv6`  `domain`  `file`  `hash`  `sha1`  `md5`  `sha256`  `url` 
+action\_result\.data\.\*\.entities\.\*\.name | string |  `ip`  `domain`  `hash`  `sha1`  `md5`  `sha256`  `url` 
 action\_result\.data\.\*\.entities\.\*\.type | string |  `recordedfuture entity type` 
 action\_result\.data\.\*\.verdict | boolean |  `recordedfuture threat assessment verdict` 
 action\_result\.data\.\*\.risklevel | numeric |  `recordedfuture threat assessment risk level` 
@@ -759,7 +649,7 @@ action\_result\.parameter\.threat\_context | string |  `recordedfuture threat as
 action\_result\.parameter\.ip | string |  `ip`  `ipv6` 
 action\_result\.parameter\.domain | string |  `domain` 
 action\_result\.parameter\.url | string |  `url` 
-action\_result\.parameter\.hash | string |  `file`  `hash`  `sha256`  `sha1`  `md5` 
+action\_result\.parameter\.hash | string |  `hash`  `sha256`  `sha1`  `md5` 
 action\_result\.summary\.riskscore | numeric |  `recordedfuture threat assessment risk score` 
 action\_result\.summary\.type | string |  `recordedfuture entity type` 
 action\_result\.summary\.risklevel | numeric |  `recordedfuture risk level` 
@@ -772,7 +662,7 @@ action\_result\.summary\.riskscore | string |  `recordedfuture threat assessment
 action\_result\.summary\.assessment | string |  `recordedfuture threat assessment summary`   
 
 ## action: 'list contexts'
-Get a list of possible contexts to use in threat assessment
+Get a list of possible contexts to use in threat triage
 
 Type: **investigate**  
 Read only: **True**
@@ -785,7 +675,7 @@ DATA PATH | TYPE | CONTAINS
 --------- | ---- | --------
 action\_result\.status | string |  `recordedfuture result string` 
 action\_result\.data\.\*\.context | string |  `recordedfuture threat assessment context` 
-action\_result\.data\.\*\.name | string |  `ip`  `ipv6`  `domain`  `file`  `hash`  `sha1`  `sha256`  `md5`  `vulnerability`  `cve` 
+action\_result\.data\.\*\.name | string |  `ip`  `domain`  `hash`  `sha1`  `sha256`  `md5`  `vulnerability` 
 action\_result\.message | string |  `recordedfuture threat assessment result message` 
 action\_result\.summary\.contexts\_available\_for\_threat\_assessment | string |  `recordedfuture threat assessment contexts` 
 summary\.total\_objects | numeric |  `recordedfuture threat assessment total objects` 

@@ -1,7 +1,6 @@
 # File: recordedfuture_connector.py
 #
-# Copyright (c) Recorded Future, Inc, 2019-2022
-
+# Copyright (c) Recorded Future, Inc., 2019-2022
 #
 # This unpublished material is proprietary to Recorded Future. All
 # rights reserved. The methods and techniques described herein are
@@ -31,6 +30,8 @@ import json
 import os
 import platform
 import sys
+import time
+from math import ceil
 
 # Phantom App imports
 # noinspection PyUnresolvedReferences
@@ -44,7 +45,7 @@ from phantom.action_result import ActionResult
 from phantom.base_connector import BaseConnector
 
 # Usage of the consts file is recommended
-from recordedfuture_consts import INTELLIGENCE_MAP, timeout, version
+from recordedfuture_consts import INTELLIGENCE_MAP, MAX_CONTAINERS, timeout, version
 
 
 class RetVal(tuple):
@@ -397,8 +398,6 @@ class RecordedfutureConnector(BaseConnector):
                 None,
             )
         else:
-            # XXXX _process_response is not able to handle the abort response message, can't do get on the response
-            # message = resp.get('message', '')
             return RetVal(
                 action_result.set_status(
                     phantom.APP_ERROR,
@@ -679,21 +678,106 @@ class RecordedfutureConnector(BaseConnector):
         # dictionary
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def _parse_rule_data(self, res):
-        """Reformat entities returned by the alert verb."""
-        from collections import defaultdict
+    def _on_poll(self, param):
+        """Entry point for obtaining alerts and rules."""
+        # new containers and artifacts will be stored in containers[]
 
-        entities = defaultdict(list)
-        for ent in res.get('entities', []):
-            if ent['entity'] is not None:
-                entities[ent['entity']['type']].append(ent['entity']['name'])
-            for doc in ent.get('documents'):
-                for ref in doc.get('references'):
-                    for entity in ref.get('entities'):
-                        entities[entity['type']].append(entity['name'])
-        return entities
+        self.save_progress(
+            "In action handler for: {0}".format(self.get_action_identifier())
+        )
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        config = self.get_config()
 
-    def _handle_alert_data_lookup(self, param):
+        containers = self._on_poll_alerts(param, config, action_result)
+
+        for container in containers:
+
+            ret_val, msg, cid = self.save_container(container)
+
+            if phantom.is_fail(ret_val):
+                self.save_progress("Error saving containers: {}".format(msg))
+                self.debug_print("Error saving containers: {} -- CID: {}".format(msg, cid))
+                return action_result.set_status(phantom.APP_ERROR, "Error while trying to add the containers")
+
+            # Always update the alerts with new status to ensure that they are not left in limbo
+            # description has string in the format -> "Container created from alert {alert_id}"
+            # we get alert_id from it.
+            params = [{
+               'id': container['description'].split(' ')[4],
+               'status': 'Pending'
+            }]
+            my_ret_val, response = self._make_rest_call(
+                '/alert/update', action_result, json=params, method='post'
+            )
+
+            # Something went wrong
+            if phantom.is_fail(my_ret_val):
+                return action_result.get_status()
+
+            self._state['start_time'] = time.time()
+
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _on_poll_alerts(self, param, config, action_result):
+        """Polling for triggered alerts given a list of rule IDs."""
+
+        # obtain the list of rule ids to use to obtain alerts
+        list_of_rules = config.get('on_poll_alert_ruleids')
+        if not list_of_rules:
+            self.save_progress("Need to specify Alert Rule IDs use for polling")
+            return action_result.set_status(phantom.APP_ERROR)
+        rule_list = [x.strip() for x in list_of_rules.split(',')]
+
+        if self.is_poll_now():
+            param['max_count'] = param.get('container_count', MAX_CONTAINERS)
+            timeframe = ""
+        else:
+            # Different number of max containers if first run
+            if self._state.get('first_run', True):
+                # set the config to _not_ first run hereafter
+                self._state['first_run'] = False
+                param['max_count'] = config.get('first_max_count', MAX_CONTAINERS)
+                self.save_progress("First time Ingestion detected.")
+                timeframe = ""
+            else:
+                param['max_count'] = config.get('max_count', MAX_CONTAINERS)
+                # calculate time since last fetch
+                interval = ceil((time.time() - self._state.get('start_time')) / 3600) + 3
+                timeframe = f'-{interval}h to now'
+
+        # Asset Settings in Asset Configuration allows a negative number
+        if int(param['max_count']) <= 0:
+            param['max_count'] = MAX_CONTAINERS
+
+        # Prepare the REST call to get all alerts within the timeframe and with status New
+        params = {
+            'triggered': timeframe,
+            'rules': rule_list,
+            'severity': config.get('on_poll_alert_severity'),
+            'limit': param.get('max_count', 100)
+        }
+
+        # Make the rest call
+        my_ret_val, containers = self._make_rest_call(
+            '/alert/on_poll',
+            action_result,
+            json=params,
+            method='post',
+        )
+        # Something went wrong
+        if phantom.is_fail(my_ret_val):
+            return action_result.get_status()
+
+        # sort the containers to get the oldest first
+        containers.sort(key=lambda k: k['triggered'], reverse=False)
+
+        # if necessary truncate the list of containers TODO need to fix other issue first
+        # if len(containers) > param['max_count'] + 1:
+        #     containers = containers[0:param['max_count'] + 1]
+
+        return containers
+
+    def _handle_alert_search(self, param):
         """Implement lookup of alerts issued for an alert rule."""
         self.save_progress(
             "In action handler for: {0}".format(self.get_action_identifier())
@@ -718,7 +802,7 @@ class RecordedfutureConnector(BaseConnector):
         )
 
         self.debug_print(
-            '_handle_alert_data_lookup',
+            '_handle_alert_search',
             {
                 'path_info': f'/alert/rule/{rule_id}',
                 'action_result': action_result,
@@ -735,7 +819,7 @@ class RecordedfutureConnector(BaseConnector):
         # Setup summary
         summary = action_result.get_summary()
         summary['total_number_of_alerts'] = response['counts'].get('total', 0)
-        summary['returned_number_of_alerts'] = response['counts'].get('returned', 0)
+        summary['alerts_returned'] = response['counts'].get('returned', 0)
 
         # No results can be non existing rule id or just that, no results...
         if response['counts']['total'] == 0:
@@ -756,10 +840,10 @@ class RecordedfutureConnector(BaseConnector):
         alerts = []
         for alert in response['data']['results']:
             self.save_progress('In alert loop: %s' % alert)
-            url2 = '/alert/%s' % alert['id']
+            url2 = '/alert/lookup/%s' % alert['id']
             ret_val2, response2 = self._make_rest_call(url2, action_result)
             self.debug_print(
-                '_handle_alert_data_lookup',
+                '_handle_alert_search',
                 {
                     'path_info': url2,
                     'action_result': action_result,
@@ -768,22 +852,15 @@ class RecordedfutureConnector(BaseConnector):
                     'response': response2,
                 },
             )
-
-            entities = self._parse_rule_data(response2['data'])
-            self.save_progress('ENTITIES: %s' % entities)
+            # Something went wrong
+            if phantom.is_fail(ret_val2):
+                return action_result.get_status()
 
             # Add the response into the data section
-            current_alert = {
-                'alertTitle': response2['data']['title'],
-                'triggered': response2['data']['triggered'],
-                'alertUrl': response2['data']['url'],
-                'content': response2['data'],
-                'entities': entities,
-            }
-            alerts.append({'alert': current_alert})
+            alerts.append(response2)
             self.save_progress(
                 'Alert: "%s" triggered "%s"'
-                % (response2['data']['title'], response2['data']['triggered'])
+                % (response2['title'], response2['triggered'])
             )
 
         action_result.add_data(
@@ -793,7 +870,103 @@ class RecordedfutureConnector(BaseConnector):
         # Return success, no need to set the message, only the status
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def _handle_rule_id_lookup(self, param):
+    def _handle_alert_lookup(self, param):
+        """Implement lookup of alerts issued for an alert rule."""
+        self.save_progress(
+            "In action handler for: {0}".format(self.get_action_identifier())
+        )
+
+        # Add an action result object to self (BaseConnector) to represent
+        # the action for this param
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        # Required values can be accessed directly
+        alert_id = UnicodeDammit(param['alert_id']).unicode_markup
+
+        # Make rest call
+        my_ret_val, response = self._make_rest_call(
+            f'/alert/lookup/{alert_id}', action_result
+        )
+
+        self.debug_print(
+            '_handle_alert_lookup',
+            {
+                'path_info': f'/alert/lookup/{alert_id}',
+                'action_result': action_result,
+                'my_ret_val': my_ret_val,
+                'response': response,
+            },
+        )
+
+        # Something went wrong
+        if phantom.is_fail(my_ret_val):
+            return action_result.get_status()
+
+        # Setup summary
+        action_result.add_data(response)
+        summary = action_result.get_summary()
+
+        # Add info about the rule to summary and action_result['data'] TODO format date
+        summary['alert_title'] = response.get('title', '')
+        summary['triggered'] = response.get('triggered', '')
+        action_result.set_summary(summary)
+
+        # Return success, no need to set the message, only the status
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _handle_alert_update(self, param):
+        """Implement lookup of alerts issued for an alert rule."""
+
+        self.save_progress(
+            "In action handler for: {0}".format(self.get_action_identifier())
+        )
+
+        # Add an action result object to self (BaseConnector) to represent
+        # the action for this param
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        params = [{
+           'id': UnicodeDammit(param.get('alert_id', '')).unicode_markup,
+           'status': UnicodeDammit(param.get('alert_status', '')).unicode_markup,
+           'note': UnicodeDammit(param.get('alert_note', '')).unicode_markup
+        }]
+
+        # Make rest call
+        my_ret_val, response = self._make_rest_call(
+            '/alert/update', action_result, json=params, method='post'
+        )
+
+        self.debug_print(
+            '_handle_alert_update',
+            {
+                'path_info': 'alert/update',
+                'action_result': action_result,
+                'params': params,
+                'my_ret_val': my_ret_val,
+                'response': response,
+            },
+        )
+
+        # Something went wrong
+        if phantom.is_fail(my_ret_val):
+            return action_result.get_status()
+
+        # Setup response including summary
+        res = response.get('success', '')
+        action_result.add_data(res[0])
+        summary = action_result.get_summary()
+
+        if response.get('success', ''):
+            summary['update'] = 'Successful'
+        else:
+            summary['update'] = 'Not successful'
+            summary['reason'] = response['error'].get('reason', '')
+        action_result.set_summary(summary)
+
+        # Return success, no need to set the message, only the status
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _handle_alert_rule_search(self, param):
         """Make a freetext search for alert rules."""
         self.save_progress(
             "In action handler for: {0}".format(self.get_action_identifier())
@@ -820,7 +993,7 @@ class RecordedfutureConnector(BaseConnector):
         )
 
         self.debug_print(
-            '_handle_rule_id_lookup',
+            '_handle_alert_rule_search',
             {
                 'path_info': 'config/alert/rules',
                 'action_result': action_result,
@@ -842,7 +1015,7 @@ class RecordedfutureConnector(BaseConnector):
 
         # Summary
         summary = action_result.get_summary()
-        summary['returned_number_of_rules'] = response['counts']['returned']
+        summary['rules_returned'] = response['counts']['returned']
         summary['total_number_of_rules'] = response['counts']['total']
         summary['rule_id_list'] = ','.join(rule_ids)
         action_result.set_summary(summary)
@@ -895,12 +1068,21 @@ class RecordedfutureConnector(BaseConnector):
             # todo: need to check the in-parameters
             my_ret_val = self._handle_list_contexts(param)
 
-        elif action_id == 'rule_id_lookup':
+        elif action_id == 'alert_rule_search':
             self.debug_print('DEBUG: started fetching rules')
-            my_ret_val = self._handle_rule_id_lookup(param)
+            my_ret_val = self._handle_alert_rule_search(param)
 
-        elif action_id == 'alert_data_lookup':
-            my_ret_val = self._handle_alert_data_lookup(param)
+        elif action_id == 'alert_search':
+            my_ret_val = self._handle_alert_search(param)
+
+        elif action_id == 'alert_lookup':
+            my_ret_val = self._handle_alert_lookup(param)
+
+        elif action_id == 'alert_update':
+            my_ret_val = self._handle_alert_update(param)
+
+        elif action_id == 'on_poll':
+            my_ret_val = self._on_poll(param)
 
         return my_ret_val
 
@@ -915,7 +1097,7 @@ class RecordedfutureConnector(BaseConnector):
 
         try:
             ipaddress.ip_address(ip_address_input)
-        except:
+        except ValueError:
             return False
 
         return True
@@ -982,7 +1164,7 @@ if __name__ == '__main__':
         login_url = BaseConnector._get_phantom_base_url() + 'login'
         try:
             print('Accessing the Login page')
-            r = requests.get(login_url, verify=True, timeout=33)
+            r = requests.get(login_url, verify=False, timeout=timeout)
             csrftoken = r.cookies['csrftoken']
 
             data = dict()
@@ -996,7 +1178,7 @@ if __name__ == '__main__':
 
             print('Logging into Platform to get the session id')
             r2 = requests.post(
-                login_url, verify=True, data=data, headers=headers, timeout=33
+                login_url, verify=False, data=data, headers=headers, timeout=timeout
             )
             session_id = r2.cookies['sessionid']
         except Exception as e:

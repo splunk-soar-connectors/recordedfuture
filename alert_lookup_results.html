@@ -1,0 +1,229 @@
+{% extends 'widgets/widget_template.html' %}
+{% load custom_template %}
+
+{% block custom_title_prop %}{% if title_logo %}style="background-size: auto 60%; background-position: 50%; background-repeat: no-repeat; background-image: url('/app_resource/{{ title_logo }}');"{% endif %}{% endblock %}
+{% block title1 %}{{ title1 }}{% endblock %}
+{% block title2 %}{{ title2 }}{% endblock %}
+{% block custom_tools %}
+{% endblock %}
+
+{% block widget_content %} <!-- Main Start Block -->
+
+<!-- File: alert_search_results.html
+
+Copyright (c) Recorded Future, Inc., 2019-2022
+
+This unpublished material is proprietary to Recorded Future. All
+rights reserved. The methods and techniques described herein are
+considered trade secrets and/or confidential. Reproduction or
+distribution, in whole or in part, is forbidden except by express
+written permission of Recorded Future.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under
+the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+either express or implied. See the License for the specific language governing permissions
+and limitations under the License.
+-->
+
+<!--
+Style elements are defined in a separate file, named below,
+and will be merged during compilation:
+       recordedfuture_style.css          -->
+<style>
+
+  /*  ||  RECORDED FUTURE COLOR */
+
+  :root{
+    --RecordedFutureBlue: #2673B3;
+    --CriticalityHigh: #cf0a2c;
+    --CriticalityModerate: #FFCE00;
+    --CriticalityLow: #e1e6eb;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .rf-widget {
+    overflow: auto;
+    width: 100%;
+    height: 100%;
+    padding-left:10px;
+    padding-right:10px;
+  }
+
+  .rf-box {
+    width: 750px;
+    padding: 5px;
+    margin: 0 5px;
+    font-size: 12px;
+  }
+
+  .highlighted {
+    font-weight: 700;
+  }
+
+  .non-highlighted {
+    font-size: x-small;
+  }
+
+  .rf-box th {
+    text-align: left;
+  }
+
+  .rf-table {
+    width: 98%;
+    border-collapse: collapse;
+    margin: 5px 5px 5px 0;
+    padding: 10px;
+    font-size: 12px;
+  }
+
+  td.rf-criticality-level-3, td.rf-criticality-level-4,
+  td.rf-criticality-level-5 {
+    background: var(--CriticalityHigh);
+    width: 0 !important;
+    padding: 0 2px 0 3px !important;
+  }
+  td.rf-criticality-level-2 {
+    background: var(--CriticalityModerate);
+    width: 0 !important;
+    padding: 0 2px 0 3px !important;
+  }
+  td.rf-criticality-level-1 {
+    background: var(--CriticalityLow);
+    width: 0 !important;
+    padding: 0 2px 0 3px !important;
+  }
+
+  .rf-table td {
+    vertical-align: text-top;
+    padding: 10px;
+  }
+
+  td.rf-timestamp {
+    min-width: 13ex !important;
+  }
+
+  .rf-hover-info {
+    font-weight: normal;
+  }
+
+  .rf-hover-info:hover {
+    font-weight: bold;
+  }
+
+</style>
+
+
+<div class="rf-widget"> <!-- Main Div -->
+  <!------------------- For each Result ---------------------->
+  {% for result in results %}
+    {% if not result.data %}
+      <h4>No data found</h4>
+    {% else %}
+      {% for alert in result.data %}
+        <div class="rf-box">
+          <table class="rf-table">
+            <tr>
+              <td colspan="3">
+                <span class="non-highlighted">Alert (Alert ID)</span><br/>
+                {{ alert.title }}
+                (<a href="javascript:;" onclick="context_menu(this, [{'contains': ['recordedfuture alert id'], 'value': '{{ alert.id }}' }], 0, {{ container.id }}, null, false);">
+                  <span class="highlighted">{{ alert.id }})</span>&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                </a>
+              </td>
+              <td>
+                <span class="non-highlighted">Links to Recorded Future</span><br/>
+                <a href="{{ alert.url }}" target="new" >Alert</a> /
+                <a href="{{ alert.rule.url }}" target="new">Alert Rule</a>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span class="non-highlighted">Triggered</span><br/>
+                {{ alert.triggered|slice:"0:10"  }}
+              </td>
+              <td>
+                <span class="non-highlighted">Status</span><br/>
+                {{ alert.review.status }}
+              </td>
+              <td>
+                <span class="non-highlighted">Assignee</span><br/>
+                {{ alert.review.assignee }}
+              </td>
+              <td>
+                <span class="non-highlighted">Alerting Rule (Rule ID)</span><br/>
+                {{ alert.rule.name }}
+                (<a href="javascript:;" onclick="context_menu(this, [{'contains': ['recordedfuture alert rule id'], 'value': '{{ alert.rule.id }}' }], 0, {{ container.id }}, null, false);">
+                <span class="highlighted">{{ alert.rule.id }})</span>&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="3">
+                <span class="non-highlighted">Note</span><br/>
+                {{ alert.review.note  }}
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Risk Rules Triggered -->
+        {% if result.data.evidence %}
+        <div class="rf-box">
+          <table class="rf-table">
+            <tr><td colspan="4">Risk Rules Triggered</td></tr>
+            {% for rule in result.data.evidence|dictsortreversed:"level" %}
+            <tr>
+              <td class="rf-criticality-level-{{ rule.level }}"></td>
+              <td><span class="non-highlighted">Risk Rule</span> <br/>
+                {{ rule.rule }}
+              </td>
+              <td><span class="non-highlighted">Evidence</span> <br/>
+                {{ rule.description }}
+              </td>
+              <td>
+                <span class="non-highlighted">Timestamp</span> <br/>
+                <span title="{{ rule.timestamp }}">{{ rule.timestamp|slice:"0:10" }}</span>
+              </td>
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
+        {% endif %}
+
+        {% if alert.entities %}
+          {% for entity_type, entities in alert.entities.items %}
+            <div class="rf-box">
+              <table class="rf-table">
+                <tr><td colspan="5">{{ entity_type|upper }} Entities</td></tr>
+                {% for entity in entities %}
+                  <tr>
+                    <td>
+                      <span class="non-highlighted">Entity</span>:
+                      <a href="javascript:;" onclick="context_menu(this, [{'contains': ['{{ entity_type }}'], 'value': '{{ entity.entity }}' }], 0, {{ container.id }}, null, false);">
+                        <span class="highlighted">{{ entity.entity }}</span>&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a><br/>
+                      <span class="non-highlighted">Source</span>: {{ entity.source }}<br/>
+                      <span class="non-highlighted">Authors</span>: {{ entity.authors }}<br/>
+                      <span class="non-highlighted">Title</span>: {{ entity.title }}<br/>
+                      <span class="non-highlighted">SourceURL</span>: {{ entity.sourceUrl }}<br/>
+                      <span class="non-highlighted">Fragment</span>: {{ entity.fragment }}<br/>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </table>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+</div> <!-- Main Div -->
+
+{% endblock %} <!-- Main Start Block -->

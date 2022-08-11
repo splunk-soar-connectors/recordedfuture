@@ -1,6 +1,6 @@
 <!-- File: readme.html
 
-Copyright (c) Recorded Future, Inc, 2019-2022
+Copyright (c) Recorded Future, Inc., 2019-2022
 
 This unpublished material is proprietary to Recorded Future. All
 rights reserved. The methods and techniques described herein are
@@ -30,41 +30,16 @@ and limitations under the License.
       enable the creation of Playbooks to do automated enrichment,
       correlation, threat hunting, and alert handling.
     </p>
-    <h2>Recorded Future Demo Playbooks</h2>
-    <p>Together with the Recorded Future App for Phantom 3.0, a new demo
-      playbook was created and uploaded to the community site. The new playbook
-      incorporates the new assessment functionality.
+    <h1>Ingest alerts into events</h1>
+    <p>With alerting rules set up in your Recorded Future enterprise, triggered alerts
+      can now be ingested in Splunk SOAR as events.The ingestion configuration is set
+      per asset under the tabs "Asset Settings" and "Ingest Settings". </p>
+    <p>"Asset Settings" defines a list of rule IDs, what severity to apply
+    to the new events and set the limits for the number of events created by the ingestion.
     </p>
-    <p>Four demo playbooks were released with the Recorded Future App
-      for Phantom 2.0 to show how the actions in the app can be used.
-      The playbooks are designed to operate on a Recorded Future App asset
-      named "recorded-future" and Phantom SMTP asset named "smtp". If the
-      assets are named differently, the playbooks will be adjusted. The email
-      address used for the alert emails is specified in the linked SMTP asset.
-    </p>
-    <p><strong>Correlation Playbook</strong><br/>
-      This playbook shows how to obtain IP reputation and, if its risk score is
-      90 or more, add the IP address to a bad IP address list maintained by
-      Phantom plus forward the information to Splunk and in an email.
-    </p>
-    <p><strong>Enrichment Playbook</strong><br/>
-      This playbook shows how to obtain intelligence of an IP address and, if
-      its risk score is 90 or more, to forward this in an email as well as
-      adding the IP to a bad IP address list maintained by Phantom.
-    </p>
-    <p><strong>Threat Hunting Playbook</strong><br/>
-      The purpose of this playbook is to find out the IP reputation and when its
-      risk score is 90 or above, to find related entities - IP addresses,
-      domains, files, vulnerabilities, and/or URLs - and to search for them in
-      Splunk. The results are summarised in an email and the IP address is added
-      to the bad IP address list maintained by Phantom.
-    </p>
-    <p><strong>Handling of Leaked Credentials</strong><br/>
-      The purpose of this
-      playbook is to demonstrate how Recorded Future Alerts can be used to
-      monitor various threats such as leaked credentials. The playbook is
-      designed to be scheduled, polling for new alerts each time it is run. If
-      an alert is found the information is forwarded via an email.
-    </p>
+    <p><img src="/app_resource/recordedfuture_6efe0e1b-76ac-4ffd-8fa0-ac58fd6efd77/img/recorded_future_asset_settings.png"
+           style="{border-style: solid;}"/></p>
+    <p>The scheduling of the ingestion is set under "Ingest Settings"</p>
+    <p><img src="/app_resource/recordedfuture_6efe0e1b-76ac-4ffd-8fa0-ac58fd6efd77/img/recorded_future_asset_ingest.png"/></p>
   </body>
 </html>
