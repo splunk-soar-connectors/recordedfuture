@@ -11,7 +11,7 @@
     "product_name": "Recorded Future App for Phantom",
     "product_vendor": "Recorded Future, Inc",
     "product_version_regex": ".*",
-    "min_phantom_version": "5.0.0",
+    "min_phantom_version": "5.3.0",
     "python_version": "3",
     "latest_tested_versions": [
         "Cloud API v2 on 3/13/2020",
@@ -193,6 +193,26 @@
                 {
                     "data_path": "action_result.message",
                     "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
+                    ]
                 }
             ],
             "render": {
@@ -730,6 +750,26 @@
                     "data_type": "string",
                     "contains": [
                         "recordedfuture result message"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 }
             ],
