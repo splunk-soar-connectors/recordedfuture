@@ -45,7 +45,7 @@ from phantom.action_result import ActionResult
 from phantom.base_connector import BaseConnector
 
 # Usage of the consts file is recommended
-from recordedfuture_consts import INTELLIGENCE_MAP, MAX_CONTAINERS, timeout, version
+from recordedfuture_consts import *
 
 
 class RetVal(tuple):
@@ -71,7 +71,7 @@ class RecordedfutureConnector(BaseConnector):
     @staticmethod
     def _process_empty_response(response, action_result):
         """Process an empty result."""
-        if response.status_code == 200:
+        if response.status_code == 200 or response.status_code == 204:
             return RetVal(phantom.APP_SUCCESS, {})
 
         return RetVal(
@@ -1107,6 +1107,10 @@ class RecordedfutureConnector(BaseConnector):
         # Load the state in initialize, use it to store data
         # that needs to be accessed across actions
         self._state = self.load_state()
+        if not isinstance(self._state, dict):
+            self.debug_print("Resetting the state file with the default format")
+            self._state = {"app_version": self.get_app_json().get("app_version")}
+            return self.set_status(phantom.APP_ERROR, RF_STATE_FILE_CORRUPT_ERR)
 
         # get the asset config
         config = self.get_config()

@@ -13,6 +13,7 @@
     "product_version_regex": ".*",
     "min_phantom_version": "5.3.0",
     "python_version": "3",
+    "fips_compliant": false,
     "latest_tested_versions": [
         "Cloud API v2 on 3/13/2020",
         "3.1.0"
@@ -28,20 +29,20 @@
     ],
     "configuration": {
         "recordedfuture_base_url": {
-            "description": "Recorded Future API Basename",
+            "description": "Recorded Future API basename",
             "data_type": "string",
             "required": true,
             "default": "https://api.recordedfuture.com/gw/phantom",
             "order": 0
         },
         "recordedfuture_api_token": {
-            "description": "Recorded Future API Token",
+            "description": "Recorded Future API token",
             "data_type": "password",
             "required": true,
             "order": 2
         },
         "recordedfuture_verify_ssl": {
-            "description": "Verify SSL Certificates",
+            "description": "Verify SSL certificates",
             "data_type": "boolean",
             "default": true,
             "order": 4
@@ -64,18 +65,22 @@
             "order": 3,
             "description": "Severity to apply to the alert event",
             "default": "Medium",
-            "value_list": ["High", "Medium", "Low"]
+            "value_list": [
+                "High",
+                "Medium",
+                "Low"
+            ]
         },
         "max_count": {
             "data_type": "numeric",
             "order": 5,
-            "description": "Max events to ingest for Scheduled Polling",
+            "description": "Max events to ingest for scheduled polling",
             "default": 100
         },
         "first_max_count": {
             "data_type": "numeric",
             "order": 7,
-            "description": "Max events to ingest for Scheduled Polling first time",
+            "description": "Max events to ingest for scheduled polling first time",
             "default": 100
         }
     },
@@ -112,8 +117,12 @@
                     "description": "New alert status",
                     "data_type": "string",
                     "required": true,
-                    "primary": false,
-                    "value_list": ["New", "Pending", "Resolved", "Dismissed"],
+                    "value_list": [
+                        "New",
+                        "Pending",
+                        "Resolved",
+                        "Dismissed"
+                    ],
                     "allow_list": true,
                     "order": 1
                 },
@@ -121,7 +130,6 @@
                     "description": "Text to be added to the alert",
                     "data_type": "string",
                     "required": true,
-                    "primary": false,
                     "allow_list": true,
                     "order": 2
                 }
@@ -247,8 +255,7 @@
                     "data_type": "string",
                     "required": true,
                     "default": "-24h to now",
-                    "order": 1,
-                    "primary": false
+                    "order": 1
                 }
             },
             "output": [
@@ -798,7 +805,8 @@
                         "recordedfuture alert id"
                     ],
                     "allow_list": true,
-                    "order": 0}
+                    "order": 0
+                }
             },
             "output": [
                 {
@@ -4628,11 +4636,11 @@
                     "description": "Context to use",
                     "data_type": "string",
                     "required": true,
-                    "primary": false,
                     "order": 0,
                     "contains": [
                         "recordedfuture threat assessment context"
-                    ]
+                    ],
+                    "primary": true
                 },
                 "ip": {
                     "description": "IP to query",
@@ -4789,11 +4797,7 @@
                     "data_path": "action_result.data.*.entities.*.evidence.*.level",
                     "data_type": "numeric",
                     "example_values": [
-                        1,
-                        2,
-                        3,
-                        4,
-                        5
+                        1
                     ],
                     "contains": [
                         "recordedfuture risk rule level"
@@ -5053,20 +5057,24 @@
             "parameters": {
                 "start_time": {
                     "data_type": "numeric",
-                    "description": "Parameter ignored for this app"
+                    "description": "Parameter ignored for this app",
+                    "order": 0
                 },
                 "end_time": {
                     "data_type": "numeric",
-                    "description": "Parameter ignored for this app"
+                    "description": "Parameter ignored for this app",
+                    "order": 1
                 },
                 "container_count": {
                     "description": "Maximum number of events to query for",
                     "data_type": "numeric",
-                    "default": 100
+                    "default": 100,
+                    "order": 2
                 },
                 "artifact_count": {
                     "description": "Parameter ignored in this app",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "order": 3
                 }
             },
             "output": [],
@@ -5088,7 +5096,7 @@
             },
             {
                 "module": "certifi",
-                "input_file": "wheels/shared/certifi-2021.10.8-py2.py3-none-any.whl"
+                "input_file": "wheels/py3/certifi-2022.6.15-py3-none-any.whl"
             },
             {
                 "module": "chardet",
@@ -5104,11 +5112,11 @@
             },
             {
                 "module": "soupsieve",
-                "input_file": "wheels/py3/soupsieve-2.3.1-py3-none-any.whl"
+                "input_file": "wheels/py3/soupsieve-2.3.2.post1-py3-none-any.whl"
             },
             {
                 "module": "urllib3",
-                "input_file": "wheels/shared/urllib3-1.26.9-py2.py3-none-any.whl"
+                "input_file": "wheels/shared/urllib3-1.26.12-py2.py3-none-any.whl"
             }
         ]
     }
