@@ -32,6 +32,7 @@ def format_result(result, all_data=False):
         retval['data'] = data[0]
 
     try:
+        # assemble the string needed for an URL to Recorded Future portal
         if (
             data and 'risk' in retval['data'] and retval['data']['risk']['score'] is not None
         ):
@@ -49,6 +50,7 @@ def format_result(result, all_data=False):
             for rule in retval['data']['risk']['evidenceDetails']:
                 rule['timestampShort'] = rule['timestamp'][:10]
 
+        # add cvss info only if present (should only be applicable by vulnerabilities)
         if data and 'cvss' in retval['data'] and 'published' in retval['data']['cvss']:
             retval['data']['cvss']['publishedShort'] = retval['data']['cvss'][
                 'published'
@@ -57,6 +59,7 @@ def format_result(result, all_data=False):
                 'lastModified'
             ][:10]
 
+        # format date and time to be shorter and easier to read
         retval['data']['timestamps']['firstSeenShort'] = retval['data']['timestamps'][
             'firstSeen'
         ][:10]
@@ -66,6 +69,7 @@ def format_result(result, all_data=False):
     except Exception:
         retval['data'] = None
 
+    # set summary, status and message for the action
     summary = result.get_summary()
     if summary:
         retval['summary'] = summary
@@ -186,7 +190,37 @@ def format_alert_result(result):
     return format_result(result)
 
 
-def alert_data_results(provides, all_app_runs, context):
+def alert_lookup_results(provides, all_app_runs, context):
+    """Setup the view for an alert."""
+    context['results'] = results = []
+
+    for summary, action_results in all_app_runs:
+
+        for result in action_results:
+            formatted = {'param': result.get_param(), 'data': result.get_data()}
+            if not formatted:
+                continue
+            results.append(formatted)
+
+    return 'alert_lookup_results.html'
+
+
+def alert_update_results(provides, all_app_runs, context):
+    """Setup the view for an alert."""
+    context['results'] = results = []
+
+    for summary, action_results in all_app_runs:
+
+        for result in action_results:
+            formatted = {'param': result.get_param(), 'data': result.get_data()}
+            if not formatted:
+                continue
+            results.append(formatted)
+
+    return 'alert_update_results.html'
+
+
+def alert_search_results(provides, all_app_runs, context):
     """Setup the view for alert results."""
     context['results'] = results = []
 
@@ -198,10 +232,10 @@ def alert_data_results(provides, all_app_runs, context):
                 continue
             results.append(formatted)
 
-    return 'alert_data_results.html'
+    return 'alert_search_results.html'
 
 
-def alert_rules_results(provides, all_app_runs, context):
+def alert_rule_search_results(provides, all_app_runs, context):
     """Render the list of Alert Rules that match the search."""
     context['results'] = results = []
 
@@ -213,7 +247,7 @@ def alert_rules_results(provides, all_app_runs, context):
                 continue
             results.append(formatted)
 
-    return 'alert_rules_results.html'
+    return 'alert_rule_search_results.html'
 
 
 def format_threat_assessment_result(result, all_data=False):

@@ -9,7 +9,7 @@
 
 {% block widget_content %} <!-- Main Start Block -->
 
-<!-- File: threat_assessment_results.html
+<!-- File: alert_lookup_results.html
 
 Copyright (c) Recorded Future, Inc, 2019-2022
 
@@ -121,75 +121,41 @@ and will be merged during compilation:
 
 </style>
 
+<!-- needs to be modified from scratch  -->
+
 <div class="rf-widget">
   <!-- Main Div -->
   {% for result in results %} <!-- loop for each result -->
-
+    {% for alert_update in result.data %} <!-- loop for each result -->
     <!------------------- For each Result ---------------------->
 
-    <div class="rf-box">
-      {% if result.data %} <!-- else case will handle errors and no data found responses -->
+      <div class="rf-box">
         <table class="rf-table">
           <tr>
-            <td colspan="4">
-              {{ result.data.context|title }} Threat Assessment:
-              {% if result.data.verdict %}
-                <span class="highlighted">Suspected Malicious</span>
-                {% else %}
-                <span class="highlighted">Non-malicious</span>
-              {% endif %}
-              with score: {{ result.data.triage_riskscore }}
+            <td>
+              <span class="non-highlighted">Alert Title (ID)</span><br/>
+              {{ alert_update.title }}
+              (<a href="javascript:;" onclick="context_menu(this, [{'contains': ['recordedfuture alert id'], 'value': '{{ result.param.alert_id }}' }], 0, {{ container.id }}, null, false);">
+                <span class="highlighted">{{ result.param.alert_id }})</span>&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
+              </a>
             </td>
           </tr>
-          <!-- Entities and their evidence -->
-            {% for entry in result.data.entities %} <!-- loop for each result -->
-              {% if entry.riskscore %}
-                {% if entry.evidence %}
-                  <td colspan="4">
-                    {{ entry.type }}
-                    <span class="highlighted">{{ entry.name }}</span>
-                    riskscore
-                    <span class="highlighted">{{ entry.riskscore }}</span>
-                  </td>
-                </tr>
-                {% for evidence in entry.evidence %}
-                  <tr>
-                    <td class="rf-criticality-level-{{ evidence.level }}"></td>
-                    <td>
-                      <span class="non-highlighted">Rule</span> <br/>
-                      {{ evidence.rule }}
-                    </td>
-                    <td>
-                      <span class="non-highlighted">Evidence</span> <br/>
-                      {{ evidence.description }}
-                    </td>
-                    <td>
-                      <span class="non-highlighted">Timestamp</span> <br/>
-                      <span title="{{ evidence.timestamp }}">
-                        {{ evidence.timestamp|slice:"0:10" }}
-                      </span>
-                    </td>
-                  </tr>
-                {% endfor %}
-              {% endif %}
-            {% endif %}
-          {% endfor %}
-        </table>
-      {% else %} <!-- handle no data responses -->
-        <table class="rf-table">
           <tr>
-            <th>Status</th>
-            <th>Message</th>
+            <td>
+              <span class="non-highlighted">Status</span><br/>
+              {{ alert_update.status }}
+            </td>
           </tr>
           <tr>
-            <td>{{ result.status }}</td>
-            <td>{{ result.message }}</td>
+            <td colspan="2">
+              <span class="non-highlighted">Note</span><br/>
+              {{ alert_update.note.text }}
+            </td>
           </tr>
         </table>
-      {% endif %}
-    </div>
-    <!------------------- For each Result END ---------------------->
-  {% endfor %} <!-- loop for each result end -->
+      </div>
+    {% endfor %}
+  {% endfor %}
 </div> <!-- Main Div -->
 
 {% endblock %} <!-- Main Start Block -->

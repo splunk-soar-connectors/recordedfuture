@@ -1,5 +1,23 @@
 # RELEASE NOTES
 
+## VERSION 4.0
+
+This version adds on_poll functionality to the Recorded Future integration app for 
+Splunk (SOAR) to enable download and processing of Recorded Future alerts. 
+
+There are two new actions: alert lookup and alert update. 
+
+Two actions have changed name to better describe their functionality: 
+1. from alert rule lookup to alert rule search
+2. alert data lookup to alert search
+
+The Recored Future alert structure has been cleaned up to provide better visibility 
+of the information included. 
+
+Entities within the alerts have been marked up by type so that the relevant data is 
+easier to find when writing playbooks. 
+
+
 ## VERSION 3.1
 
 Recorded Future Links have been added to the intelligence lookups. These are entities
