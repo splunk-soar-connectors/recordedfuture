@@ -11,7 +11,7 @@
 
 <!-- File: threat_assessment_results.html
 
-Copyright (c) Recorded Future, Inc, 2019-2022
+Copyright (c) Recorded Future, Inc., 2019-2022
 
 This unpublished material is proprietary to Recorded Future. All
 rights reserved. The methods and techniques described herein are
@@ -35,6 +35,91 @@ and limitations under the License.
 Style elements are defined in a separate file, named below,
 and will be merged during compilation:
        recordedfuture_style.css          -->
+<style>
+
+  /*  ||  RECORDED FUTURE COLOR */
+
+  :root{
+    --RecordedFutureBlue: #2673B3;
+    --CriticalityHigh: #cf0a2c;
+    --CriticalityModerate: #FFCE00;
+    --CriticalityLow: #e1e6eb;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .rf-widget {
+    overflow: auto;
+    width: 100%;
+    height: 100%;
+    padding-left:10px;
+    padding-right:10px;
+  }
+
+  .rf-box {
+    width: 750px;
+    padding: 5px;
+    margin: 0 5px;
+    font-size: 12px;
+  }
+
+  .highlighted {
+    font-weight: 700;
+  }
+
+  .non-highlighted {
+    font-size: x-small;
+  }
+
+  .rf-box th {
+    text-align: left;
+  }
+
+  .rf-table {
+    width: 98%;
+    border-collapse: collapse;
+    margin: 5px 5px 5px 0;
+    padding: 10px;
+    font-size: 12px;
+  }
+
+  td.rf-criticality-level-3, td.rf-criticality-level-4,
+  td.rf-criticality-level-5 {
+    background: var(--CriticalityHigh);
+    width: 0 !important;
+    padding: 0 2px 0 3px !important;
+  }
+  td.rf-criticality-level-2 {
+    background: var(--CriticalityModerate);
+    width: 0 !important;
+    padding: 0 2px 0 3px !important;
+  }
+  td.rf-criticality-level-1 {
+    background: var(--CriticalityLow);
+    width: 0 !important;
+    padding: 0 2px 0 3px !important;
+  }
+
+  .rf-table td {
+    vertical-align: text-top;
+    padding: 10px;
+  }
+
+  td.rf-timestamp {
+    min-width: 13ex !important;
+  }
+
+  .rf-hover-info {
+    font-weight: normal;
+  }
+
+  .rf-hover-info:hover {
+    font-weight: bold;
+  }
+
+</style>
 
 <div class="rf-widget">
   <!-- Main Div -->

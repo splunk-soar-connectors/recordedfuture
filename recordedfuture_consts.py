@@ -1,7 +1,6 @@
 # File: recordedfuture_consts.py
 #
-# Copyright (c) Recorded Future, Inc, 2019-2022
-
+# Copyright (c) Recorded Future, Inc., 2019-2022
 #
 # This unpublished material is proprietary to Recorded Future. All
 # rights reserved. The methods and techniques described herein are
@@ -21,11 +20,12 @@
 # and limitations under the License.
 
 # Define your constants here
-version = '3.1.0'
-buildid = '264'
+version = '4.0.0'
+buildid = '305'
 
 # timeout for our http requests to bfi_phantom
-timeout = 33
+timeout = 63
+MAX_CONTAINERS = 100
 
 # These dicts map which path_info, which fields, what the Recorded Future
 # category is called and whether to quote the entity or not.
@@ -100,3 +100,7 @@ INTELLIGENCE_MAP = {
         True,
     ),
 }
+RF_STATE_FILE_CORRUPT_ERR = (
+    "Error occurred while loading the state file due to its unexpected format. "
+    "Resetting the state file with the default format. Please try again."
+)
