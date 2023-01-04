@@ -1,7 +1,6 @@
 # File: recordedfuture_consts.py
 #
-# Copyright (c) Recorded Future, Inc, 2019-2022
-
+# Copyright (c) Recorded Future, Inc, 2019-2023
 #
 # This unpublished material is proprietary to Recorded Future. All
 # rights reserved. The methods and techniques described herein are
@@ -21,8 +20,8 @@
 # and limitations under the License.
 
 # Define your constants here
-version = '4.0.0'
-buildid = '305'
+version = '4.0.1'
+buildid = '306'
 
 # timeout for our http requests to bfi_phantom
 timeout = 63

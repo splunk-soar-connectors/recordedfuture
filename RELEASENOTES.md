@@ -1,5 +1,10 @@
 # RELEASE NOTES
 
+## VERSION 4.0.1
+
+This version fixes the error that occurs when use scheduled pulling of events.
+As well changed the name of the app from "Recorded Future" to "Recorded Future For Splunk SOAR"
+
 ## VERSION 4.0
 
 This version adds on_poll functionality to the Recorded Future integration app for 

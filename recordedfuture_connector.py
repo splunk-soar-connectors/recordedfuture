@@ -1,7 +1,6 @@
 # File: recordedfuture_connector.py
 #
-# Copyright (c) Recorded Future, Inc, 2019-2022
-
+# Copyright (c) Recorded Future, Inc, 2019-2023
 #
 # This unpublished material is proprietary to Recorded Future. All
 # rights reserved. The methods and techniques described herein are
@@ -715,7 +714,7 @@ class RecordedfutureConnector(BaseConnector):
             if phantom.is_fail(my_ret_val):
                 return action_result.get_status()
 
-            self._state['start_time'] = time.time()
+        self._state['start_time'] = time.time()
 
         return action_result.set_status(phantom.APP_SUCCESS)
 

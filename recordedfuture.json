@@ -1,11 +1,11 @@
 {
     "appid": "6efe0e1b-76ac-4ffd-8fa0-ac58fd6efd77",
-    "name": "Recorded Future",
+    "name": "Recorded Future For Splunk SOAR",
     "description": "This app implements investigative actions to perform lookups for quick reputation information, contextual threat intelligence and external threat alerts",
     "publisher": "Recorded Future, Inc",
     "type": "reputation",
     "main_module": "recordedfuture_connector.py",
-    "app_version": "4.0.0",
+    "app_version": "4.0.1",
     "utctime_updated": "2022-05-30T07:33:58.826014Z",
     "package_name": "phantom_recordedfuture",
     "product_name": "Recorded Future App for Phantom",
@@ -20,7 +20,7 @@
     ],
     "logo": "logo_recordedfuture.svg",
     "logo_dark": "logo_recordedfuture_dark.svg",
-    "license": "Copyright (c) Recorded Future, Inc, 2019-2022",
+    "license": "Copyright (c) Recorded Future, Inc, 2019-2023",
     "contributors": [
         {
             "name": "Recorded Future - Premier Integrations",
