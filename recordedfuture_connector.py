@@ -152,12 +152,12 @@ class RecordedfutureConnector(BaseConnector):
         try:
             resp_json = resp.json()
         except Exception as err:
-            error_code, error_msg = self._get_error_message_from_exception(err)
+            error_code, error_message = self._get_error_message_from_exception(err)
             return RetVal(
                 action_result.set_status(
                     phantom.APP_ERROR,
                     "Unable to parse JSON response. Error code: {0}. Error message: {1}".format(
-                        error_code, error_msg
+                        error_code, error_message
                     ),
                 ),
                 None,
@@ -360,12 +360,12 @@ class RecordedfutureConnector(BaseConnector):
                 "Timeout error when connecting to server"),
                 resp_json)
         except Exception as err:
-            error_code, error_msg = self._get_error_message_from_exception(err)
+            error_code, error_message = self._get_error_message_from_exception(err)
             return RetVal(
                 action_result.set_status(
                     phantom.APP_ERROR,
                     "Error Connecting to server. Error code:{0}. Error message:{1}".format(
-                        error_code, error_msg
+                        error_code, error_message
                     ),
                 ),
                 resp_json,
