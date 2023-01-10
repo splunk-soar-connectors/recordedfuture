@@ -1,6 +1,6 @@
 # RELEASE NOTES
 
-## VERSION 4.0.1
+## VERSION 4.1.0
 
 This version fixes the error that occurs when use scheduled pulling of events.
 As well changed the name of the app from "Recorded Future" to "Recorded Future For Splunk SOAR"
