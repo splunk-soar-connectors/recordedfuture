@@ -11,7 +11,7 @@
     "product_name": "Recorded Future App for Phantom",
     "product_vendor": "Recorded Future, Inc",
     "product_version_regex": ".*",
-    "min_phantom_version": "5.3.5",
+    "min_phantom_version": "5.4.0",
     "python_version": "3",
     "fips_compliant": false,
     "latest_tested_versions": [
