@@ -1,7 +1,6 @@
 # File: recordedfuture_connector.py
 #
-# Copyright (c) Recorded Future, Inc, 2019-2022
-
+# Copyright (c) Recorded Future, Inc, 2019-2023
 #
 # This unpublished material is proprietary to Recorded Future. All
 # rights reserved. The methods and techniques described herein are
@@ -153,12 +152,12 @@ class RecordedfutureConnector(BaseConnector):
         try:
             resp_json = resp.json()
         except Exception as err:
-            error_code, error_msg = self._get_error_message_from_exception(err)
+            error_code, error_message = self._get_error_message_from_exception(err)
             return RetVal(
                 action_result.set_status(
                     phantom.APP_ERROR,
                     "Unable to parse JSON response. Error code: {0}. Error message: {1}".format(
-                        error_code, error_msg
+                        error_code, error_message
                     ),
                 ),
                 None,
@@ -361,12 +360,12 @@ class RecordedfutureConnector(BaseConnector):
                 "Timeout error when connecting to server"),
                 resp_json)
         except Exception as err:
-            error_code, error_msg = self._get_error_message_from_exception(err)
+            error_code, error_message = self._get_error_message_from_exception(err)
             return RetVal(
                 action_result.set_status(
                     phantom.APP_ERROR,
                     "Error Connecting to server. Error code:{0}. Error message:{1}".format(
-                        error_code, error_msg
+                        error_code, error_message
                     ),
                 ),
                 resp_json,
@@ -715,7 +714,7 @@ class RecordedfutureConnector(BaseConnector):
             if phantom.is_fail(my_ret_val):
                 return action_result.get_status()
 
-            self._state['start_time'] = time.time()
+        self._state['start_time'] = time.time()
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
