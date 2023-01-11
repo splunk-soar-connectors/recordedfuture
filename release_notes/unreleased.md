@@ -1,3 +1,1 @@
 **Unreleased**
-* Fixed the bug when scheduled pulling for events was not working.
-* Change the name of the app from "Recorded Future" to "Recorded Future For Splunk SOAR"
