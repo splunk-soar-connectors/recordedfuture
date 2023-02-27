@@ -1,0 +1,429 @@
+{% extends 'widgets/widget_template.html' %}
+{% load custom_template %}
+
+{% block custom_title_prop %}{% if title_logo %}style="background-size: auto 60%; background-position: 50%; background-repeat: no-repeat; background-image: url('/app_resource/{{ title_logo }}');"{% endif %}{% endblock %}
+{% block title1 %}{{ title1 }}{% endblock %}
+{% block title2 %}{{ title2 }}{% endblock %}
+{% block custom_tools %}
+{% endblock %}
+
+{% block widget_content %} <!-- Main Start Block -->
+
+<!-- File: playbook_alert_details_results.html
+
+Copyright (c) Recorded Future, Inc., 2019-2023
+
+This unpublished material is proprietary to Recorded Future. All
+rights reserved. The methods and techniques described herein are
+considered trade secrets and/or confidential. Reproduction or
+distribution, in whole or in part, is forbidden except by express
+written permission of Recorded Future.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under
+the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+either express or implied. See the License for the specific language governing permissions
+and limitations under the License.
+-->
+
+<!--
+Style elements are defined in a separate file, named below,
+and will be merged during compilation:
+       recordedfuture_style.css          -->
+<style>
+
+  /*  ||  RECORDED FUTURE COLOR */
+
+  :root{
+    --RecordedFutureBlue: #2673B3;
+    --CriticalityHigh: #cf0a2c;
+    --CriticalityModerate: #FFCE00;
+    --CriticalityLow: #e1e6eb;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .rf-widget {
+    overflow: auto;
+    width: 100%;
+    height: 100%;
+    padding-left:10px;
+    padding-right:10px;
+  }
+
+  .rf-box {
+    width: 750px;
+    padding: 5px;
+    margin: 0 5px;
+    font-size: 12px;
+  }
+
+  .highlighted {
+    font-weight: 700;
+  }
+
+  .non-highlighted {
+    font-size: x-small;
+  }
+
+  .rf-box th {
+    text-align: left;
+  }
+
+  .rf-table {
+    width: 98%;
+    border-collapse: collapse;
+    margin: 5px 5px 5px 0;
+    padding: 10px;
+    font-size: 12px;
+  }
+
+  td.rf-criticality-level-3, td.rf-criticality-level-4,
+  td.rf-criticality-level-5 {
+    background: var(--CriticalityHigh);
+    width: 0 !important;
+    padding: 0 2px 0 3px !important;
+  }
+  td.rf-criticality-level-2 {
+    background: var(--CriticalityModerate);
+    width: 0 !important;
+    padding: 0 2px 0 3px !important;
+  }
+  td.rf-criticality-level-1 {
+    background: var(--CriticalityLow);
+    width: 0 !important;
+    padding: 0 2px 0 3px !important;
+  }
+
+  .rf-table td {
+    vertical-align: text-top;
+    padding: 10px;
+  }
+
+  td.rf-timestamp {
+    min-width: 13ex !important;
+  }
+
+  .rf-hover-info {
+    font-weight: normal;
+  }
+
+  .rf-hover-info:hover {
+    font-weight: bold;
+  }
+  .rf-full-width-box {
+    width: 100%;
+    border-bottom: 1px solid #3c444d;
+    padding: 5px;
+    margin: 0 5px;
+    font-size: 12px;
+  }
+  .rf-circle {
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+  }
+  .rf-alert-panel {
+    width: 96%;
+    margin-left: 2%;
+    border: 1px solid #3c444d;
+    padding: 10px;
+  }
+  .rf-chip-box {
+    border-radius: 10px;
+    background-color: darkred;
+    padding: 3px;
+    text-align: center;
+  }
+  .rf-priority-level-High {
+    background: var(--CriticalityHigh);
+  }
+  .rf-priority-level-Moderate {
+    background: var(--CriticalityModerate);
+  }
+  .rf-priority-level-Informational {
+    background: var(--CriticalityLow);
+  }
+  .rf-criticality-level-High {
+    background: var(--CriticalityHigh);
+  }
+  .rf-criticality-level-Medium {
+    background: var(--CriticalityModerate);
+  }
+  .rf-criticality-level-Low {
+    background: var(--CriticalityLow);
+  }
+  .rf-playbook-alert-screenshot {
+    margin-bottom: 20px;
+    width: 100%;
+    height: 720px;
+  }
+  .rf-playbook-alert-data-row {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    gap: 20px;
+    margin-bottom: 5px;
+  }
+  .rf-playbook-alert-dns-data-row {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    gap: 5px;
+  }
+  .rf-playbook-alert-panel-title {
+    margin-left: 2%;
+  }
+  .rf-playbook-alert-whois-data-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .rf-playbook-alert-data-row-title {
+    width: 10%;
+  }
+  .rf-playbook-alert-evidence-data-row-title {
+    width: 20%;
+  }
+</style>
+
+<!-- needs to be modified from scratch  -->
+
+<div class="rf-widget">
+  <!-- Main Div -->
+  {% for result in results %} <!-- loop for each result -->
+    <!------------------- For each Result ---------------------->
+      {% if result.data.category == "domain_abuse" %}
+        <h3 class="rf-playbook-alert-panel-title">Domain abuse</h3>
+        <div class="rf-alert-panel">
+          <div class="rf-playbook-alert-data-row" style="margin-bottom: 10px">
+            <div class="rf-playbook-alert-data-row-title">Subject</div>
+            <div class="rf-playbook-alert-data-row" style="gap: 5px; margin: 0">
+              <h5>{{ result.data.panel_status.entity_name }}</h5>
+                  <div class="rf-circle rf-criticality-level-{{result.data.panel_status.entity_criticality}}"></div>
+              <div>{{ result.data.panel_status.risk_score }}</div>
+            </div>
+          </div>
+          <div class="rf-playbook-alert-data-row" style="margin-bottom: 10px">
+            <div class="rf-playbook-alert-data-row-title">Assessments</div>
+            {% for context in result.data.panel_status.context_list %}
+              <div class="rf-chip-box rf-playbook-alert-data-row" style="gap: 5px; margin: 0">{{ context.context }}</div>
+            {% endfor %}
+          </div>
+          <div class="rf-playbook-alert-data-row" style="align-items: flex-start">
+            <div class="rf-playbook-alert-data-row-title">Targets</div>
+            <div style="display: block;">
+              {% for target in result.data.panel_status.targets %}
+                <div style="margin-bottom: 5px;">{{ target }}</div>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="rf-playbook-alert-data-row">
+            <div class="rf-playbook-alert-data-row-title">Status</div>
+            <div>{{ result.data.panel_status.status }}</div>
+          </div>
+          <div class="rf-playbook-alert-data-row">
+            <div class="rf-playbook-alert-data-row-title">Priority</div>
+            <div class="rf-playbook-alert-data-row" style="gap: 5px; margin: 0">
+              <div class="rf-circle rf-priority-level-{{result.data.panel_status.priority}}"></div>
+              <div>{{ result.data.panel_status.priority }}</div>
+            </div>
+          </div>
+          <div class="rf-playbook-alert-data-row">
+            <div class="rf-playbook-alert-data-row-title">Created</div>
+            <div>{{ result.data.panel_status.created }}</div>
+          </div>
+        </div>
+        <h3 class="rf-playbook-alert-panel-title">Evidence summary</h3>
+        <div class="rf-alert-panel">
+          <h5 style="margin-bottom: 10px">{{ result.data.panel_evidence_summary.explanation }}</h5>
+          <p><span style="font-weight: 700">{{ result.data.panel_status.entity_name}}</span> has recently resolved to IPs and/or mail servers:</p>
+          {% for resolved_record in result.data.panel_evidence_summary.resolved_record_list %}
+            <div class="rf-playbook-alert-data-row">
+              <div class="rf-playbook-alert-evidence-data-row-title">{{ resolved_record.entity }}</div>
+              <div class="rf-playbook-alert-data-row" style="gap: 5px; margin: 0">
+                <div class="rf-circle rf-criticality-level-{{resolved_record.criticality}}"></div>
+                <div>{{ resolved_record.risk_score }}</div>
+              </div>
+              {% for context in resolved_record.context_list %}
+                <div class="rf-chip-box">{{ context.context }}</div>
+              {% endfor %}
+            </div>
+          {% endfor %}
+          <div>
+            {% for image in result.data.images %}
+              <img class="rf-playbook-alert-screenshot" src="data:image/jpeg;base64, {{image}}" alt="">
+            {% endfor %}
+          </div>
+        </div>
+        <h3 class="rf-playbook-alert-panel-title">DNS Records</h3>
+        <div class="rf-alert-panel">
+          <h5>IP Addresses</h5>
+          {% for ip in result.data.panel_evidence_dns.ip_list %}
+            <div class="rf-playbook-alert-data-row">
+              <div>{{ ip.record_type }}</div>
+              <div class="rf-playbook-alert-dns-data-row">
+                <div>{{ ip.entity }}</div>
+                <div class="rf-circle rf-criticality-level-{{ip.criticality}}"></div>
+                <div>{{ ip.risk_score }}</div>
+              </div>
+            </div>
+          {% endfor %}
+          <h5>Mail Server</h5>
+          {% for mx in result.data.panel_evidence_dns.mx_list %}
+            <div class="rf-playbook-alert-whois-data-row">
+              <div>{{ mx.record_type }}</div>
+              <div class="rf-playbook-alert-dns-data-row">
+                <div>{{ mx.entity }}</div>
+                <div class="rf-circle rf-criticality-level-{{mx.criticality}}"></div>
+                <div>{{ mx.risk_score }}</div>
+              </div>
+            </div>
+          {% endfor %}
+          <h5>Name Server</h5>
+          {% for ns in result.data.panel_evidence_dns.ns_list %}
+            <div class="rf-playbook-alert-whois-data-row">
+              <div>{{ ns.record_type }}</div>
+              <div class="rf-playbook-alert-dns-data-row">
+                <div>{{ ns.entity }}</div>
+                <div class="rf-circle rf-criticality-level-{{ns.criticality}}"></div>
+                <div>{{ ns.risk_score }}</div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+        <h3 class="rf-playbook-alert-panel-title">Whois Record Data</h3>
+        <div class="rf-alert-panel">
+          {% for contact in result.data.panel_evidence_whois.body %}
+            {% if contact.value.type %}
+              <h5 style="margin-top: 20px; margin-bottom: 0">{{ contact.value.type }}</h5>
+              {% if contact.value.telephone %}
+                <div class="rf-playbook-alert-whois-data-row">
+                  <div class="rf-playbook-alert-whois-data-row-title">Telephone</div>
+                  <div>{{ contact.value.telephone }}</div>
+                </div>
+              {% endif %}
+              {% if contact.value.street1 %}
+                <div class="rf-playbook-alert-whois-data-row">
+                  <div class="rf-playbook-alert-whois-data-row-title">Street 1</div>
+                  <div>{{ contact.value.street1 }}</div>
+                </div>
+              {% endif %}
+              {% if contact.value.state %}
+                <div class="rf-playbook-alert-whois-data-row">
+                  <div class="rf-playbook-alert-whois-data-row-title">State</div>
+                  <div>{{ contact.value.state }}</div>
+                </div>
+              {% endif %}
+              {% if contact.value.postalCode %}
+                <div class="rf-playbook-alert-whois-data-row">
+                  <div class="rf-playbook-alert-whois-data-row-title">Postal code</div>
+                  <div>{{ contact.value.postalCode }}</div>
+                </div>
+              {% endif %}
+              {% if contact.value.name %}
+                <div class="rf-playbook-alert-whois-data-row">
+                  <div class="rf-playbook-alert-whois-data-row-title">Name</div>
+                  <div>{{ contact.value.name }}</div>
+                </div>
+              {% endif %}
+              {% if contact.value.countryCode %}
+                <div class="rf-playbook-alert-whois-data-row">
+                  <div class="rf-playbook-alert-whois-data-row-title">Country Code</div>
+                  <div>{{ contact.value.countryCode }}</div>
+                </div>
+              {% endif %}
+              {% if contact.value.country %}
+                <div class="rf-playbook-alert-whois-data-row">
+                  <div class="rf-playbook-alert-whois-data-row-title">Country</div>
+                  <div>{{ contact.value.country }}</div>
+                </div>
+              {% endif %}
+              {% if contact.value.city %}
+                <div class="rf-playbook-alert-whois-data-row">
+                  <div class="rf-playbook-alert-whois-data-row-title">City</div>
+                  <div>{{ contact.value.city }}</div>
+                </div>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% else %}
+        <h3 class="rf-playbook-alert-panel-title">Vulnerability</h3>
+        <div class="rf-alert-panel">
+          <div class="rf-playbook-alert-data-row" style="margin-bottom: 10px">
+            <div class="rf-playbook-alert-data-row-title">Subject</div>
+            <div class="rf-playbook-alert-data-row" style="gap: 5px; margin: 0">
+              <h5>{{ result.data.panel_status.entity_name }}</h5>
+              <div class="rf-circle rf-criticality-level-{{result.data.panel_status.entity_criticality}}"></div>
+              <div>{{ result.data.panel_status.risk_score }}</div>
+            </div>
+          </div>
+          <div class="rf-playbook-alert-data-row" style="margin-bottom: 10px">
+            <div class="rf-chip-box rf-playbook-alert-data-row" style="gap: 5px; margin: 0">{{ result.data.panel_status.lifecycle_stage }}</div>
+          </div>
+          <div class="rf-playbook-alert-data-row" style="align-items: flex-start">
+            <div class="rf-playbook-alert-data-row-title">Targets</div>
+            <div style="display: block;">
+              {% for target in result.data.panel_status.targets %}
+                <div style="margin-bottom: 5px;">{{ target.name }}</div>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="rf-playbook-alert-data-row">
+            <div class="rf-playbook-alert-data-row-title">Status</div>
+            <div>{{ result.data.panel_status.status }}</div>
+          </div>
+          <div class="rf-playbook-alert-data-row">
+            <div class="rf-playbook-alert-data-row-title">Priority</div>
+            <div class="rf-playbook-alert-data-row" style="gap: 5px; margin: 0">
+              <div class="rf-circle rf-priority-level-{{result.data.panel_status.priority}}"></div>
+              <div>{{ result.data.panel_status.priority }}</div>
+            </div>
+          </div>
+          <div class="rf-playbook-alert-data-row">
+            <div class="rf-playbook-alert-data-row-title">Created</div>
+            <div>{{ result.data.panel_status.created }}</div>
+          </div>
+        </div>
+        <h3 class="rf-playbook-alert-panel-title">Evidence summary</h3>
+        <div class="rf-alert-panel">
+            <div class="rf-chip-box" style="width: fit-content; margin: 0">{{ result.data.panel_status.lifecycle_stage }}</div>
+          <div style="display: block;">
+              {% for target in result.data.panel_status.targets %}
+                <div style="margin-bottom: 5px;">{{ target.name }}</div>
+              {% endfor %}
+            </div>
+          {% for risk_rule in result.data.panel_evidence_summary.risk_rules %}
+            <div class="rf-playbook-alert-data-row">
+              <p><strong>{{ risk_rule.rule }}</strong> {{ risk_rule.description }}
+            </div>
+          {% endfor %}
+        </div>
+        <h3 class="rf-playbook-alert-panel-title">Affected products</h3>
+        <div class="rf-alert-panel">
+          {% for product in result.data.panel_evidence_summary.affected_products %}
+            <div class="rf-playbook-alert-data-row">
+              <div>{{ product.name }}</div>
+            </div>
+          {% endfor %}
+        </div>
+        <h3 class="rf-playbook-alert-panel-title">Insikt Group Notes</h3>
+        <div class="rf-alert-panel">
+          {% for insikt_note in result.data.panel_evidence_summary.insikt_notes %}
+            <h4>{{ insikt_note.title }}</h4>
+            <p>{{ insikt_note.fragment }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+  {% endfor %}
+</div> <!-- Main Div -->
+
+{% endblock %} <!-- Main Start Block -->

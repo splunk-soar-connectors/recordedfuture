@@ -21,26 +21,37 @@
 #
 #
 # Phantom App imports
-
+import base64
 import hashlib
+
 # noinspection PyCompatibility
 import ipaddress
 import json
+
 # Global imports
 import os
 import platform
 import sys
 import time
+import uuid
+from html import escape
 from math import ceil
+from typing import Literal
+from datetime import datetime
 
 # Phantom App imports
 # noinspection PyUnresolvedReferences
 import phantom.app as phantom
+import phantom.vault as vault
+
 import requests
+
 # noinspection PyUnresolvedReferences
 from bs4 import BeautifulSoup, UnicodeDammit
+
 # noinspection PyUnresolvedReferences
 from phantom.action_result import ActionResult
+
 # noinspection PyUnresolvedReferences
 from phantom.base_connector import BaseConnector
 
@@ -355,10 +366,12 @@ class RecordedfutureConnector(BaseConnector):
                 **kwargs,
             )
         except requests.exceptions.Timeout:
-            return RetVal(action_result.set_status(
-                phantom.APP_ERROR,
-                "Timeout error when connecting to server"),
-                resp_json)
+            return RetVal(
+                action_result.set_status(
+                    phantom.APP_ERROR, "Timeout error when connecting to server"
+                ),
+                resp_json,
+            )
         except Exception as err:
             error_code, error_message = self._get_error_message_from_exception(err)
             return RetVal(
@@ -371,7 +384,7 @@ class RecordedfutureConnector(BaseConnector):
                 resp_json,
             )
 
-        if resp.status_code == 200:
+        if resp.status_code in [200, 201]:
             return self._process_response(resp, action_result, **kwargs)
         elif resp.status_code == 401:
             return RetVal(
@@ -551,6 +564,162 @@ class RecordedfutureConnector(BaseConnector):
         # will create a textual message based off the summary dictionary
         return action_result.set_status(phantom.APP_SUCCESS)
 
+    def _handle_list_actions(self, param, action: str):
+        if action == 'search':
+            return self._handle_list_search(param)
+        if action == 'details':
+            return self._handle_list_details(param, info_type='info')
+        if action == 'entities':
+            return self._handle_list_details(param, info_type='entities')
+        if action == 'status':
+            return self._handle_list_details(param, info_type='status')
+        if action == 'create':
+            return self._handle_list_create(param)
+        if action == 'add-entity':
+            return self._handle_manage_list_entities(param, action='add')
+        if action == 'remove-entity':
+            return self._handle_manage_list_entities(param, action='remove')
+
+    def _get_list_action_result(self, action_result, my_ret_val, response_obj):
+        if phantom.is_fail(my_ret_val):
+            return action_result.get_status()
+
+        summary = action_result.get_summary()
+        action_result.add_data(response_obj)
+        action_result.set_summary(summary)
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _handle_list_search(self, param):
+        """Find lists"""
+        self.save_progress(
+            "In action handler for: {0}".format(self.get_action_identifier())
+        )
+        action_result = self.add_action_result(ActionResult(param))
+        params = {'limit': param.get('limit', 25)}
+        entity_types = param.get('entity_types', '')
+        list_name = param.get('list_name', '')
+        if entity_types:
+            params['type'] = UnicodeDammit(escape(entity_types)).unicode_markup
+        if list_name:
+            params['name'] = UnicodeDammit(escape(list_name)).unicode_markup
+
+        my_ret_val, response = self._make_rest_call(
+            '/list/search', action_result, json=params, method='post'
+        )
+
+        self.debug_print(
+            '_handle_list_search',
+            {
+                'endpoint': '/list/search',
+                'action_result': action_result,
+                'param': param,
+                'params': params,
+                'my_ret_val': my_ret_val,
+                'response': response,
+            },
+        )
+
+        return self._get_list_action_result(
+            action_result=action_result,
+            my_ret_val=my_ret_val,
+            response_obj=response,
+        )
+
+    def _handle_list_create(self, param):
+        """Create new list"""
+        self.save_progress(
+            "In action handler for: {0}".format(self.get_action_identifier())
+        )
+        action_result = self.add_action_result(ActionResult(param))
+        params = {
+            'name': UnicodeDammit(param['list_name']).unicode_markup,
+            'type': UnicodeDammit(param['entity_types']).unicode_markup,
+        }
+        my_ret_val, response = self._make_rest_call(
+            '/list/create', action_result, json=params, method='post'
+        )
+        self.debug_print(
+            '_handle_list_create',
+            {
+                'endpoint': '/list/create',
+                'action_result': action_result,
+                'params': params,
+                'my_ret_val': my_ret_val,
+                'response': response,
+            },
+        )
+        return self._get_list_action_result(
+            action_result=action_result,
+            my_ret_val=my_ret_val,
+            response_obj=response,
+        )
+
+    def _handle_list_details(
+        self, param, info_type: Literal["info", "status", "entities"]
+    ):
+        """Get list details"""
+        self.save_progress(
+            "In action handler for: {0}".format(self.get_action_identifier())
+        )
+        action_result = self.add_action_result(ActionResult(param))
+        list_id = UnicodeDammit(param["list_id"]).unicode_markup
+        my_ret_val, response = self._make_rest_call(
+            f'/list/{list_id}/{info_type}', action_result, method='get'
+        )
+        self.debug_print(
+            '_handle_list_details',
+            {
+                'endpoint': f'/list/{list_id}/{info_type}',
+                'action_result': action_result,
+                'my_ret_val': my_ret_val,
+                'response': response,
+            },
+        )
+        return self._get_list_action_result(
+            action_result=action_result, my_ret_val=my_ret_val, response_obj=response
+        )
+
+    def _handle_manage_list_entities(self, param, action: Literal["add", "remove"]):
+        """Add/remove entity to list"""
+        self.save_progress(
+            "In action handler for: {0}".format(self.get_action_identifier())
+        )
+        action_result = self.add_action_result(ActionResult(param))
+        list_id = UnicodeDammit(param['list_id']).unicode_markup
+        entity_id = param.get('entity_id')
+        entity_name = param.get('entity_name')
+        entity_type = param.get('entity_type')
+
+        data = {
+            'name': UnicodeDammit(escape(entity_name)).unicode_markup
+            if entity_name
+            else None,
+            'type': UnicodeDammit(escape(entity_type)).unicode_markup
+            if entity_type
+            else None,
+            'id': UnicodeDammit(escape(entity_id)).unicode_markup
+            if entity_id
+            else None,
+        }
+        my_ret_val, response = self._make_rest_call(
+            f'/list/{list_id}/entity/{action}', action_result, json=data, method='post'
+        )
+        self.debug_print(
+            '_handle_manage_list_entities',
+            {
+                'endpoint': f'/list/{list_id}/entity/{action}',
+                'action_result': action_result,
+                'my_ret_val': my_ret_val,
+                'response': response,
+                'data': data,
+            },
+        )
+        return self._get_list_action_result(
+            action_result=action_result,
+            my_ret_val=my_ret_val,
+            response_obj=response,
+        )
+
     def _handle_triage(self, param):
         """Return triage information."""
         self.save_progress(
@@ -678,6 +847,76 @@ class RecordedfutureConnector(BaseConnector):
         # dictionary
         return action_result.set_status(phantom.APP_SUCCESS)
 
+    def _add_screenshots_to_container(self, container, screenshots):
+        for screenshot in screenshots:
+            file_name = f'{uuid.uuid4()}.png'
+            file_path = os.path.join('/opt/splunk-soar/vault/tmp', file_name)
+            with open(file_path, "wb") as screenshot_file:
+                screenshot_file.write(base64.b64decode(screenshot))
+
+            success, message, vault_id = vault.vault_add(
+                container=container,
+                file_location=file_path,
+                file_name=file_name,
+                metadata=None,
+                trace=True
+            )
+            self.debug_print(
+                f"Add screenshot - {message} - {container}"
+            )
+
+    def _on_poll_playbook_alerts(self, param, config, action_result):
+        """Polling for triggered playbook alerts"""
+
+        if self.is_poll_now():
+            param['max_count'] = param.get('container_count', MAX_CONTAINERS)
+            from_date = None
+        else:
+            if not config.get("on_poll_playbook_alert_type"):
+                return []
+            # Different number of max containers if first run
+            if self._state.get('first_run', True):
+                # set the config to _not_ first run hereafter
+                self._state['first_run'] = False
+                param['max_count'] = config.get('first_max_count', MAX_CONTAINERS)
+                self.save_progress("First time Ingestion detected.")
+                from_date = config.get("on_poll_playbook_alert_start_time")
+            else:
+                param['max_count'] = config.get('max_count', MAX_CONTAINERS)
+                from_date = self._state.get("last_playbook_alerts_fetch_time") or config.get("on_poll_playbook_alert_start_time")
+
+        # Asset Settings in Asset Configuration allows a negative number
+        if int(param['max_count']) <= 0:
+            param['max_count'] = MAX_CONTAINERS
+
+        # Prepare the REST call to get all alerts within the timeframe and with status New
+        params = {
+            'from_date': from_date,
+            'state': self._state,
+            'limit': param.get('max_count', 100),
+            'categories': [
+                el.strip()
+                for el in config.get("on_poll_playbook_alert_type", "").split(",")
+                if el.strip()
+            ],
+            'priorities': [el.strip() for el in config["on_poll_playbook_alert_priority"].split(",")]
+            if config.get("on_poll_playbook_alert_priority")
+            else None,
+        }
+
+        # Make the rest call
+        my_ret_val, containers = self._make_rest_call(
+            '/playbook_alert/on_poll',
+            action_result,
+            json=params,
+            method='post',
+        )
+        # Something went wrong
+        if phantom.is_fail(my_ret_val):
+            return action_result.get_status()
+
+        return containers
+
     def _on_poll(self, param):
         """Entry point for obtaining alerts and rules."""
         # new containers and artifacts will be stored in containers[]
@@ -688,24 +927,45 @@ class RecordedfutureConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
         config = self.get_config()
 
-        containers = self._on_poll_alerts(param, config, action_result)
-
+        containers = self._on_poll_playbook_alerts(param, config, action_result)
         for container in containers:
+            screenshots = container.pop("images", [])
+            ret_val, msg, cid = self.save_container(container)
+            self._add_screenshots_to_container(cid, screenshots)
+            if phantom.is_fail(ret_val):
+                self.save_progress("Error saving containers: {}".format(msg))
+                self.debug_print(
+                    "Error saving containers: {} -- CID: {}".format(msg, cid)
+                )
+                return action_result.set_status(
+                    phantom.APP_ERROR, "Error while trying to add the containers"
+                )
 
+        action_result.set_status(phantom.APP_SUCCESS)
+        self._state['last_playbook_alerts_fetch_time'] = datetime.now().isoformat()
+
+        if not config.get('on_poll_alert_ruleids'):
+            return action_result.get_status()
+
+        containers = self._on_poll_alerts(param, config, action_result)
+        for container in containers:
             ret_val, msg, cid = self.save_container(container)
 
             if phantom.is_fail(ret_val):
                 self.save_progress("Error saving containers: {}".format(msg))
-                self.debug_print("Error saving containers: {} -- CID: {}".format(msg, cid))
-                return action_result.set_status(phantom.APP_ERROR, "Error while trying to add the containers")
+                self.debug_print(
+                    "Error saving containers: {} -- CID: {}".format(msg, cid)
+                )
+                return action_result.set_status(
+                    phantom.APP_ERROR, "Error while trying to add the containers"
+                )
 
             # Always update the alerts with new status to ensure that they are not left in limbo
             # description has string in the format -> "Container created from alert {alert_id}"
             # we get alert_id from it.
-            params = [{
-               'id': container['description'].split(' ')[4],
-               'status': 'Pending'
-            }]
+            params = [
+                {'id': container['description'].split(' ')[4], 'status': 'Pending'}
+            ]
             my_ret_val, response = self._make_rest_call(
                 '/alert/update', action_result, json=params, method='post'
             )
@@ -742,7 +1002,9 @@ class RecordedfutureConnector(BaseConnector):
             else:
                 param['max_count'] = config.get('max_count', MAX_CONTAINERS)
                 # calculate time since last fetch
-                interval = ceil((time.time() - self._state.get('start_time')) / 3600) + 3
+                interval = (
+                    ceil((time.time() - self._state.get('start_time')) / 3600) + 3
+                )
                 timeframe = f'-{interval}h to now'
 
         # Asset Settings in Asset Configuration allows a negative number
@@ -754,7 +1016,7 @@ class RecordedfutureConnector(BaseConnector):
             'triggered': timeframe,
             'rules': rule_list,
             'severity': config.get('on_poll_alert_severity'),
-            'limit': param.get('max_count', 100)
+            'limit': param.get('max_count', 100),
         }
 
         # Make the rest call
@@ -925,11 +1187,13 @@ class RecordedfutureConnector(BaseConnector):
         # the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        params = [{
-           'id': UnicodeDammit(param.get('alert_id', '')).unicode_markup,
-           'status': UnicodeDammit(param.get('alert_status', '')).unicode_markup,
-           'note': UnicodeDammit(param.get('alert_note', '')).unicode_markup
-        }]
+        params = [
+            {
+                'id': UnicodeDammit(param.get('alert_id', '')).unicode_markup,
+                'status': UnicodeDammit(param.get('alert_status', '')).unicode_markup,
+                'note': UnicodeDammit(param.get('alert_note', '')).unicode_markup,
+            }
+        ]
 
         # Make rest call
         my_ret_val, response = self._make_rest_call(
@@ -1023,6 +1287,180 @@ class RecordedfutureConnector(BaseConnector):
         # Return success, no need to set the message, only the status
         return action_result.set_status(phantom.APP_SUCCESS)
 
+    def _handle_playbook_alerts_search(self, param):
+        self.save_progress(
+            "In action handler for: {0}".format(self.get_action_identifier())
+        )
+
+        # Add an action result object to self (BaseConnector) to represent
+        # the action for this param
+        action_result = self.add_action_result(ActionResult(param))
+        params = {
+            'categories': [
+                category.strip()
+                for category in param['category'].split(",")
+            ]
+            if 'category' in param
+            else None,
+            'statuses': [RF_PLAYBOOK_STATUS_MAP.get(param['status'])]
+            if 'status' in param
+            else None,
+            'priorities': [UnicodeDammit(param['priority']).unicode_markup]
+            if 'priority' in param
+            else None,
+            'limit': param.get('limit', 100),
+            'from_date': UnicodeDammit(param.get('from_date', '')).unicode_markup,
+            'last_updated_date': UnicodeDammit(
+                param.get('last_updated_date', '')
+            ).unicode_markup,
+        }
+        params = {key: value for key, value in params.items() if value}
+        # make rest call
+        my_ret_val, response = self._make_rest_call(
+            '/playbook_alert/search', action_result, json=params, method="post"
+        )
+
+        self.debug_print(
+            '_handle_playbook_alert_search',
+            {
+                'path_info': '/playbook_alert/search',
+                'action_result': action_result,
+                'params': params,
+                'my_ret_val': my_ret_val,
+                'response': response,
+            },
+        )
+
+        # Handle failure
+        if phantom.is_fail(my_ret_val):
+            return action_result.get_status()
+
+        # Summary
+        summary = action_result.get_summary()
+        action_result.add_data(response)
+        action_result.set_summary(summary)
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _handle_playbook_alert_details(self, param):
+        self.save_progress(
+            "In action handler for: {0}".format(self.get_action_identifier())
+        )
+
+        # Add an action result object to self (BaseConnector) to represent
+        # the action for this param
+        action_result = self.add_action_result(ActionResult(param))
+
+        # make rest call
+        my_ret_val, response = self._make_rest_call(
+            f'/playbook_alert/{param["alert_id"]}',
+            action_result,
+        )
+
+        self.debug_print(
+            '_handle_playbook_alert_details',
+            {
+                'path_info': f'/playbook_alert/domain_abuse/{param["alert_id"]}',
+                'action_result': action_result,
+                'my_ret_val': my_ret_val,
+                'response': response,
+            },
+        )
+
+        # Handle failure
+        if phantom.is_fail(my_ret_val):
+            return action_result.get_status()
+
+        # Summary
+        summary = action_result.get_summary()
+        action_result.add_data(response)
+        action_result.set_summary(summary)
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _handle_playbook_alert_update(self, param):
+        self.save_progress(
+            'In action handler for: {0}'.format(self.get_action_identifier())
+        )
+
+        # Add an action result object to self (BaseConnector) to represent
+        # the action for this param
+        action_result = self.add_action_result(ActionResult(param))
+
+        params = {
+            'priority': UnicodeDammit(param.get('priority', '')).unicode_markup,
+            'status': UnicodeDammit(RF_PLAYBOOK_STATUS_MAP.get(param.get('status'), '')).unicode_markup,
+            'log_message': UnicodeDammit(param.get('log_message', '')).unicode_markup,
+        }
+        params = {key: value for key, value in params.items() if value}
+
+        # make rest call
+        my_ret_val, response = self._make_rest_call(
+            f'/playbook_alert/{param["alert_id"]}',
+            json=params,
+            action_result=action_result,
+            method="put",
+        )
+
+        self.debug_print(
+            '_handle_playbook_alert_update',
+            {
+                'path_info': f'/playbook_alert/{param["alert_id"]}',
+                'action_result': action_result,
+                'my_ret_val': my_ret_val,
+                'response': response,
+            },
+        )
+        # Handle failure
+        if phantom.is_fail(my_ret_val):
+            return action_result.get_status()
+
+        # Summary
+        summary = action_result.get_summary()
+        action_result.add_data(response)
+        action_result.set_summary(summary)
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _handle_entities_search(self, param):
+        self.save_progress(
+            "In action handler for: {0}".format(self.get_action_identifier())
+        )
+
+        # Add an action result object to self (BaseConnector) to represent
+        # the action for this param
+        action_result = self.add_action_result(ActionResult(param))
+        params = {
+            'name': UnicodeDammit(param['name']).unicode_markup,
+            'type': UnicodeDammit(param['entity_type']).unicode_markup
+            if 'entity_type' in param
+            else None,
+            'limit': param.get('limit', 10),
+        }
+        params = {key: value for key, value in params.items() if value}
+        # make rest call
+        my_ret_val, response = self._make_rest_call(
+            '/entity/search', action_result, json=params, method="post"
+        )
+
+        self.debug_print(
+            '_handle_entities_search',
+            {
+                'path_info': '/entity/search',
+                'action_result': action_result,
+                'params': params,
+                'my_ret_val': my_ret_val,
+                'response': response,
+            },
+        )
+
+        # Handle failure
+        if phantom.is_fail(my_ret_val):
+            return action_result.get_status()
+
+        # Summary
+        summary = action_result.get_summary()
+        action_result.add_data(response)
+        action_result.set_summary(summary)
+        return action_result.set_status(phantom.APP_SUCCESS)
+
     def handle_action(self, param):
         """Handle a call to the app, switch depending on action."""
         my_ret_val = phantom.APP_SUCCESS
@@ -1083,6 +1521,21 @@ class RecordedfutureConnector(BaseConnector):
 
         elif action_id == 'on_poll':
             my_ret_val = self._on_poll(param)
+
+        elif entity_type == 'list':
+            my_ret_val = self._handle_list_actions(param, operation_type)
+
+        elif action_id == 'playbook_alerts_search':
+            my_ret_val = self._handle_playbook_alerts_search(param)
+
+        elif action_id == 'update_playbook_alert':
+            my_ret_val = self._handle_playbook_alert_update(param)
+
+        elif action_id == 'playbook_alert_details':
+            my_ret_val = self._handle_playbook_alert_details(param)
+
+        elif action_id == 'entity_search':
+            my_ret_val = self._handle_entities_search(param)
 
         return my_ret_val
 

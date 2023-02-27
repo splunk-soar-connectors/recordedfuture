@@ -86,6 +86,16 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 [threat assessment](#action-threat-assessment) - Get an indicator of the risk for a collection of entities based on context  
 [list contexts](#action-list-contexts) - Get a list of possible contexts to use in threat assessment  
 [on poll](#action-on-poll) - Ingest alerts from Recorded Future  
+[list_search](#action-list-search) - Find lists based on a query
+[list_create](#action-list-create) - Create new list
+[list_add-entity](#action-list-add-entity) - Add new entity to list
+[list_remove-entity](#action-list-remove-entity) - Remove entity from list
+[list_details](#action-list-details) - Get list details
+[list_status](#action-list-status) - Get list status info
+[list_entities](#action-list-entities) - Get list entities
+[playbook_alerts_search](#action-playbook-alerts-search) - Search Playbook alerts
+[update_playbook_alert](#action-update-playbook-alert) - Update Playbook alert
+[playbook_alert_details](#action-playbook-alert-details) - Get Playbook alert details
 
 ## action: 'test connectivity'
 Validate the asset configuration for connectivity
@@ -1022,3 +1032,278 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 
 #### Action Output
 No Output
+
+## action: 'list search'
+Find lists based on a query
+
+Type: **investigate**  
+Read only: **True**
+
+#### Action Parameters
+| PARAMETER        | REQUIRED | DESCRIPTION                          | TYPE    | CONTAINS |
+|------------------|----------|--------------------------------------|---------|----------|
+| **list_name**    | optional | List Name                            | string  |          |
+| **entity_types** | optional | Entity Types                         | string  |          |
+| **limit**        | optional | Limit number of records in response. | numeric |          |
+
+#### Action Output
+| DATA PATH                              | TYPE   | CONTAINS               |
+|----------------------------------------|--------|------------------------|
+| action\_result\.status                 | string | `action result status` |
+| action_result.data.*.id                | string |                        |
+| action_result.data.*.name              | string |                        |
+| action_result.data.*.type              | string |                        |
+| action_result.data.*.owner_name        | string |                        |
+| action_result.data.*.organisation_name | string |                        |
+| action_result.data.*.organisation_id   | string |                        |
+| action_result.data.*.created           | string |                        |
+| action_result.data.*.updated           | string |                        |
+
+## action: 'create list'
+Create new list
+
+Type: **investigate**  
+Read only: **True**
+
+#### Action Parameters
+| PARAMETER        | REQUIRED | DESCRIPTION  | TYPE   | CONTAINS |
+|------------------|----------|--------------|--------|----------|
+| **list_name**    | required | List Name    | string |          |
+| **entity_types** | required | Entity Types | string |          |
+
+#### Action Output
+| DATA PATH                              | TYPE   | CONTAINS               |
+|----------------------------------------|--------|------------------------|
+| action\_result\.status                 | string | `action result status` |
+| action_result.data.*.id                | string |                        |
+| action_result.data.*.name              | string |                        |
+| action_result.data.*.type              | string |                        |
+| action_result.data.*.owner_name        | string |                        |
+| action_result.data.*.organisation_name | string |                        |
+| action_result.data.*.organisation_id   | string |                        |
+| action_result.data.*.created           | string |                        |
+| action_result.data.*.updated           | string |                        |
+
+## action: 'list add entity'
+Add new entity to list
+
+Type: **investigate**  
+Read only: **True**
+
+#### Action Parameters
+| PARAMETER       | REQUIRED | DESCRIPTION                                          | TYPE   | CONTAINS |
+|-----------------|----------|------------------------------------------------------|--------|----------|
+| **list_id**     | required | List ID                                              | string |          |
+| **entity_id**   | optional | Entity ID (Do not specify ID when use 'name'+'type') | string |          |
+| **entity_name** | optional | Entity name (can be used only with selected type)    | string |          |
+| **entity_type** | optional | Entity Type                                          | string |          |
+
+#### Action Output
+| DATA PATH                   | TYPE   | CONTAINS               |
+|-----------------------------|--------|------------------------|
+| action\_result\.status      | string | `action result status` |
+| action_result.data.*.result | string |                        |
+
+## action: 'list remove entity'
+Remove entity from list
+
+Type: **investigate**  
+Read only: **True**
+
+#### Action Parameters
+| PARAMETER       | REQUIRED | DESCRIPTION                                          | TYPE   | CONTAINS |
+|-----------------|----------|------------------------------------------------------|--------|----------|
+| **list_id**     | required | List ID                                              | string |          |
+| **entity_id**   | optional | Entity ID (Do not specify ID when use 'name'+'type') | string |          |
+| **entity_name** | optional | Entity name (can be used only with selected type)    | string |          |
+| **entity_type** | optional | Entity Type                                          | string |          |
+
+#### Action Output
+| DATA PATH                   | TYPE   | CONTAINS               |
+|-----------------------------|--------|------------------------|
+| action\_result\.status      | string | `action result status` |
+| action_result.data.*.result | string |                        |
+
+## action: 'list details'
+Get list details
+
+Type: **investigate**  
+Read only: **True**
+
+#### Action Parameters
+| PARAMETER   | REQUIRED | DESCRIPTION | TYPE   | CONTAINS |
+|-------------|----------|-------------|--------|----------|
+| **list_id** | required | List ID     | string |          |
+
+#### Action Output
+| DATA PATH                              | TYPE   | CONTAINS               |
+|----------------------------------------|--------|------------------------|
+| action\_result\.status                 | string | `action result status` |
+| action_result.data.*.id                | string |                        |
+| action_result.data.*.name              | string |                        |
+| action_result.data.*.type              | string |                        |
+| action_result.data.*.owner_name        | string |                        |
+| action_result.data.*.organisation_name | string |                        |
+| action_result.data.*.organisation_id   | string |                        |
+| action_result.data.*.created           | string |                        |
+| action_result.data.*.updated           | string |                        |
+
+## action: 'list status'
+Get list status
+
+Type: **investigate**  
+Read only: **True**
+
+#### Action Parameters
+| PARAMETER   | REQUIRED | DESCRIPTION | TYPE   | CONTAINS |
+|-------------|----------|-------------|--------|----------|
+| **list_id** | required | List ID     | string |          |
+
+#### Action Output
+| DATA PATH                   | TYPE   | CONTAINS               |
+|-----------------------------|--------|------------------------|
+| action\_result\.status      | string | `action result status` |
+| action_result.data.*.status | string |                        |
+
+## action: 'list entities'
+Get list entities
+
+Type: **investigate**  
+Read only: **True**
+
+#### Action Parameters
+| PARAMETER   | REQUIRED | DESCRIPTION | TYPE   | CONTAINS |
+|-------------|----------|-------------|--------|----------|
+| **list_id** | required | List ID     | string |          |
+
+#### Action Output
+| DATA PATH                        | TYPE   | CONTAINS               |
+|----------------------------------|--------|------------------------|
+| action_result.status             | string | `action result status` |
+| action_result.data.*.added       | string |                        |
+| action_result.data.*.entity.id   | string |                        |
+| action_result.data.*.entity.type | string |                        |
+| action_result.data.*.entity.name | string |                        |
+
+## action: 'playbook alerts search'
+Search Playbook alerts
+
+Type: **investigate**  
+Read only: **True**
+
+#### Action Parameters
+| PARAMETER             | REQUIRED | DESCRIPTION             | TYPE                                                | CONTAINS |
+|-----------------------|----------|-------------------------|-----------------------------------------------------|----------|
+| **category**          | optional | Playbook alert category | string                                              |          |
+| **status**            | optional | Playbook alert status   | string                                              |          |
+| **priority**          | optional | Playbook alert priority | string                                              |          |
+| **from_date**         | optional | Created after           | string (date in ISO format: 2022-12-01T11:00:00+00) |          |
+| **last_updated_date** | optional | Updated after           | string (date in ISO format: 2022-12-01T11:00:00+00) |          |
+
+#### Action Output
+| DATA PATH                              | TYPE   | CONTAINS               |
+|----------------------------------------|--------|------------------------|
+| action_result.status                   | string | `action result status` |
+| action_result.data.*.playbook_alert_id | string |                        |
+| action_result.data.*.created           | string |                        |
+| action_result.data.*.updated           | string |                        |
+| action_result.data.*.category          | string |                        |
+| action_result.data.*.priority          | string |                        |
+| action_result.data.*.title             | string |                        |
+| action_result.data.*.owner_name        | string |                        |
+| action_result.data.*.owner_id          | string |                        |
+| action_result.data.*.organisation_name | string |                        |
+| action_result.data.*.organisation_id   | string |                        |
+
+## action: 'playbook alert update'
+Update Playbook alert
+
+Type: **investigate**  
+Read only: **True**
+
+#### Action Parameters
+| PARAMETER       | REQUIRED | DESCRIPTION             | TYPE                                                | CONTAINS |
+|-----------------|----------|-------------------------|-----------------------------------------------------|----------|
+| **alert_id**    | required | Playbook alert id       | string                                              |          |
+| **status**      | optional | Playbook alert status   | string                                              |          |
+| **priority**    | optional | Playbook alert priority | string                                              |          |
+| **log_message** | optional | Log message             | string (date in ISO format: 2022-12-01T11:00:00+00) |          |
+
+#### Action Output
+| DATA PATH                                  | TYPE   | CONTAINS               |
+|--------------------------------------------|--------|------------------------|
+| action_result.status                       | string | `action result status` |
+| action_result.data.*.status.status_message | string |                        |
+
+## action: 'playbook alert details'
+Get Playbook alert details
+
+Type: **investigate**  
+Read only: **True**
+
+#### Action Parameters
+| PARAMETER    | REQUIRED | DESCRIPTION       | TYPE   | CONTAINS |
+|--------------|----------|-------------------|--------|----------|
+| **alert_id** | required | Playbook alert id | string |          |
+
+#### Action Output (for domain abuse Playbook alert)
+| DATA PATH                                                                        | TYPE   | CONTAINS               |
+|----------------------------------------------------------------------------------|--------|------------------------|
+| action_result.status                                                             | string | `action result status` |
+| action_result.data.*.playbook_alert_id                                           | string |                        |
+| action_result.data.*.panel_status.entity_id                                      | string |                        |
+| action_result.data.*.panel_status.entity_name                                    | string |                        |
+| action_result.data.*.panel_status.entity_criticality                             | string |                        |
+| action_result.data.*.panel_status.risk_score                                     | string |                        |
+| action_result.data.*.panel_status.context_list.\*.context                        | string |                        |
+| action_result.data.*.panel_status.target                                         | string |                        |
+| action_result.data.*.panel_status.status                                         | string |                        |
+| action_result.data.*.panel_status.priority                                       | string |                        |
+| action_result.data.*.panel_status.assignee_name                                  | string |                        |
+| action_result.data.*.panel_status.assignee_id                                    | string |                        |
+| action_result.data.*.panel_status.created                                        | string |                        |
+| action_result.data.*.panel_status.updated                                        | string |                        |
+| action_result.data.*.panel_status.case_rule_id                                   | string |                        |
+| action_result.data.*.panel_status.case_rule_label                                | string |                        |
+| action_result.data.*.panel_status.creator_name                                   | string |                        |
+| action_result.data.*.panel_status.creator_id                                     | string |                        |
+| action_result.data.*.panel_status.owner_id                                       | string |                        |
+| action_result.data.*.panel_status.owner_name                                     | string |                        |
+| action_result.data.*.panel_status.organisation_id                                | string |                        |
+| action_result.data.*.panel_status.organisation_name                              | string |                        |
+| action_result.data.*.panel_evidence_summary.explanation                          | string |                        |
+| action_result.data.*.panel_evidence_summary.resolved_records_list\*.record       | string |                        |
+| action_result.data.*.panel_evidence_summary.resolved_records_list.\*.risk_score  | string |                        |
+| action_result.data.*.panel_evidence_summary.resolved_records_list\*.criticality  | string |                        |
+| action_result.data.*.panel_evidence_summary.resolved_records_list\*.record_type  | string |                        |
+| action_result.data.*.panel_evidence_summary.resolved_records_list\*.context_list | string |                        |
+| action_result.data.*.panel_evidence_summary.screenshots.\*.image_id              | string |                        |
+| action_result.data.*.panel_evidence_summary.screenshots.\*.created_time          | string |                        |
+| action_result.data.*.panel_evidence_summary.screenshots.\*.tag                   | string |                        |
+| action_result.data.*.panel_evidence_dns.ip_list.\*.record                        | string |                        |
+| action_result.data.*.panel_evidence_dns.ip_list.\*.risk_score                    | string |                        |
+| action_result.data.*.panel_evidence_dns.ip_list.\*.criticality                   | string |                        |
+| action_result.data.*.panel_evidence_dns.ip_list.\*.record_type                   | string |                        |
+| action_result.data.*.panel_evidence_dns.ip_list.\*.context_list.\*.context       | string |                        |
+| action_result.data.*.panel_evidence_dns.mx_list.\*.record                        | string |                        |
+| action_result.data.*.panel_evidence_dns.mx_list.\*.risk_score                    | string |                        |
+| action_result.data.*.panel_evidence_dns.mx_list.\*.criticality                   | string |                        |
+| action_result.data.*.panel_evidence_dns.mx_list.\*.record_type                   | string |                        |
+| action_result.data.*.panel_evidence_dns.mx_list.\*.context_list.\*.context       | string |                        |
+| action_result.data.*.panel_evidence_dns.ns_list.\*.record                        | string |                        |
+| action_result.data.*.panel_evidence_dns.ns_list.\*.risk_score                    | string |                        |
+| action_result.data.*.panel_evidence_dns.ns_list.\*.criticality                   | string |                        |
+| action_result.data.*.panel_evidence_dns.ns_list.\*.record_type                   | string |                        |
+| action_result.data.*.panel_evidence_dns.ns_list.\*.context_list.\*.context       | string |                        |
+| action_result.data.*.panel_evidence_whois.body.\*                                | string |                        |
+| action_result.data.*.panel_log.id                                                | string |                        |
+| action_result.data.*.panel_log.actor_name                                        | string |                        |
+| action_result.data.*.panel_log.actor_id                                          | string |                        |
+| action_result.data.*.panel_log.created                                           | string |                        |
+| action_result.data.*.panel_log.modified                                          | string |                        |
+| action_result.data.*.panel_log.action_priority                                   | string |                        |
+| action_result.data.*.panel_log.changes                                           | string |                        |
+| action_result.data.*.panel_log.changes.previous                                  | string |                        |
+| action_result.data.*.panel_log.changes.current                                   | string |                        |
+| action_result.data.*.images                                                      | string |                        |
+

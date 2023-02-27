@@ -5,7 +5,7 @@
     "publisher": "Recorded Future, Inc",
     "type": "reputation",
     "main_module": "recordedfuture_connector.py",
-    "app_version": "4.1.0",
+    "app_version": "4.2.0",
     "utctime_updated": "2022-05-30T07:33:58.826014Z",
     "package_name": "phantom_recordedfuture",
     "product_name": "Recorded Future App for Phantom",
@@ -13,7 +13,7 @@
     "product_version_regex": ".*",
     "min_phantom_version": "5.4.0",
     "python_version": "3",
-    "fips_compliant": false,
+    "fips_compliant": true,
     "latest_tested_versions": [
         "Cloud API v2 on 3/13/2020",
         "3.1.0"
@@ -55,6 +55,14 @@
             "data_type": "ph",
             "order": 8
         },
+        "ph3": {
+            "data_type": "ph",
+            "order": 10
+        },
+        "ph4": {
+            "data_type": "ph",
+            "order": 12
+        },
         "on_poll_alert_ruleids": {
             "data_type": "string",
             "order": 1,
@@ -70,6 +78,21 @@
                 "Medium",
                 "Low"
             ]
+        },
+        "on_poll_playbook_alert_priority": {
+            "data_type": "string",
+            "order": 9,
+            "description": "Comma separated On Poll Playbook Alerts priority threshold (High,Moderate,Informational)"
+        },
+        "on_poll_playbook_alert_type": {
+            "data_type": "string",
+            "order": 11,
+            "description": "Comma-separated list of Playbook alert types. (domain_abuse, cyber_vulnerability are now supported)"
+        },
+        "on_poll_playbook_alert_start_time": {
+            "data_type": "string",
+            "order": 13,
+            "description": "Poll playbook alerts created after (date in ISO format: 2022-12-01T11:00:00+00)"
         },
         "max_count": {
             "data_type": "numeric",
@@ -4431,6 +4454,444 @@
             "versions": "EQ(*)"
         },
         {
+            "action": "list search",
+            "identifier": "list_search",
+            "description": "Find lists based on a query",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {
+                "list_name": {
+                    "description": "List Name",
+                    "data_type": "string",
+                    "required": false
+                },
+                "entity_types": {
+                    "description": "Entity Types",
+                    "data_type": "string",
+                    "required": false,
+                    "value_list": [
+                        "entity",
+                        "source",
+                        "text",
+                        "custom",
+                        "ip",
+                        "domain",
+                        "tech_stack",
+                        "industry",
+                        "brand",
+                        "partner",
+                        "industry_peer",
+                        "location",
+                        "supplier",
+                        "vulnerability",
+                        "company",
+                        "hash",
+                        "operation",
+                        "attacker",
+                        "target",
+                        "method"
+                    ]
+                },
+                "limit": {
+                    "description": "Limit number of records in response.",
+                    "data_type": "numeric",
+                    "required": false,
+                    "default": 25
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result status"
+                    ],
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.owner_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.organisation_name",
+                    "data_type": "string"
+                }
+            ],
+            "render": {
+                "type": "custom",
+                "width": 15,
+                "height": 8,
+                "view": "recordedfuture_view.list_search_results",
+                "title": "User List of entities"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "create list",
+            "identifier": "list_create",
+            "description": "Create new list",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {
+                "list_name": {
+                    "description": "List Name",
+                    "data_type": "string",
+                    "required": true
+                },
+                "entity_types": {
+                    "description": "List Type",
+                    "data_type": "string",
+                    "required": true,
+                    "value_list": [
+                        "entity",
+                        "source",
+                        "text",
+                        "custom",
+                        "ip",
+                        "domain",
+                        "tech_stack",
+                        "industry",
+                        "brand",
+                        "partner",
+                        "industry_peer",
+                        "location",
+                        "supplier",
+                        "vulnerability",
+                        "company",
+                        "hash",
+                        "operation",
+                        "attacker",
+                        "target",
+                        "method"
+                    ]
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result status"
+                    ],
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.owner_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.organisation_name",
+                    "data_type": "string"
+                }
+            ],
+            "render": {
+                "type": "custom",
+                "width": 15,
+                "height": 8,
+                "view": "recordedfuture_view.list_create_results",
+                "title": "Created list"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "list add entity",
+            "identifier": "list_add-entity",
+            "description": "Add new entity to list",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {
+                "list_id": {
+                   "description": "List ID",
+                    "data_type": "string",
+                    "required": true
+                },
+                "entity_id": {
+                   "description": "Entity ID (Do not specify ID when use 'name'+'type')",
+                    "data_type": "string",
+                    "required": false
+                },
+                "entity_name": {
+                    "description": "Entity name (can be used only with selected type)",
+                    "data_type": "string",
+                    "required": false
+                },
+                "entity_type": {
+                    "description": "Entity type",
+                    "data_type": "string",
+                    "required": false,
+                    "value_list": ["IpAddress", "InternetDomainName", "Hash", "CyberVulnerability"]
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result status"
+                    ],
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.result",
+                    "data_type": "string"
+                }
+            ],
+            "render": {
+                "type": "custom",
+                "width": 15,
+                "height": 8,
+                "view": "recordedfuture_view.list_entities_management_results",
+                "title": "Results"
+            },
+            "versions": "EQ(*)"
+        },
+                {
+            "action": "list remove entity",
+            "identifier": "list_remove-entity",
+            "description": "Remove entity from list",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {
+                "list_id": {
+                   "description": "List ID",
+                    "data_type": "string",
+                    "required": true
+                },
+                "entity_id": {
+                   "description": "Entity ID (Do not specify ID when use 'name'+'type')",
+                    "data_type": "string",
+                    "required": false
+                },
+                "entity_name": {
+                    "description": "Entity name (can be used only with selected type)",
+                    "data_type": "string",
+                    "required": false
+                },
+                "entity_type": {
+                    "description": "Entity type",
+                    "data_type": "string",
+                    "required": false,
+                    "value_list": ["IpAddress", "InternetDomainName", "Hash", "CyberVulnerability"]
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result status"
+                    ],
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.result",
+                    "data_type": "string"
+                }
+            ],
+            "render": {
+                "type": "custom",
+                "width": 15,
+                "height": 8,
+                "view": "recordedfuture_view.list_entities_management_results",
+                "title": "Results"
+            },
+            "versions": "EQ(*)"
+        },
+
+        {
+            "action": "list details",
+            "identifier": "list_details",
+            "description": "Get list details",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {
+                "list_id": {
+                    "description": "List ID",
+                    "data_type": "string",
+                    "required": true
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result status"
+                    ],
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.owner_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.organisation_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.created",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.updated",
+                    "data_type": "string"
+                }
+            ],
+            "render": {
+                "type": "custom",
+                "width": 15,
+                "height": 8,
+                "view": "recordedfuture_view.list_details_results",
+                "title": "List details"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "list status",
+            "identifier": "list_status",
+            "description": "Get list status info",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {
+                "list_id": {
+                    "description": "List ID",
+                    "data_type": "string",
+                    "required": true
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result status"
+                    ],
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.status",
+                    "data_type": "string"
+                }
+            ],
+            "render": {
+                "type": "custom",
+                "width": 15,
+                "height": 8,
+                "view": "recordedfuture_view.list_status_results",
+                "title": "List status"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "list entities",
+            "identifier": "list_entities",
+            "description": "Get list entities",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {
+                "list_id": {
+                    "description": "List id",
+                    "data_type": "string",
+                    "required": true
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result status"
+                    ],
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.status",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.added",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.entity.id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.entity.type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.entity.name",
+                    "data_type": "string"
+                }
+            ],
+            "render": {
+                "type": "custom",
+                "width": 15,
+                "height": 8,
+                "view": "recordedfuture_view.list_entities_results",
+                "title": "List entities"
+            },
+            "versions": "EQ(*)"
+        },
+        {
             "action": "ip reputation",
             "identifier": "ip_reputation",
             "description": "Get a quick indicator of the risk associated with an IP address",
@@ -5048,9 +5509,489 @@
             "versions": "EQ(*)"
         },
         {
+            "action": "playbook alerts search",
+            "identifier": "playbook_alerts_search",
+            "description": "Search Playbook alerts",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {
+                "category": {
+                    "description": "Playbook alert category (cyber_vulnerability, domain_abuse)",
+                    "data_type": "string",
+                    "required": false
+                },
+                "status": {
+                    "description": "Playbook alert status",
+                    "data_type": "string",
+                    "required": false,
+                    "value_list": [
+                        "New",
+                        "In Progress",
+                        "Dismissed",
+                        "Resolved"
+                    ]
+                },
+                "priority": {
+                    "description": "Playbook alert priority",
+                    "data_type": "string",
+                    "required": false,
+                    "value_list": ["High", "Moderate", "Informational"]
+                },
+                "from_date": {
+                    "description": "Created after (date in ISO format: 2022-12-01T11:00:00+00)",
+                    "data_type": "string",
+                    "required": false
+                },
+                "last_updated_date": {
+                    "description": "Updated after (date in ISO format: 2022-12-01T11:00:00+00)",
+                    "data_type": "string",
+                    "required": false
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.playbook_alert_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.created",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.updated",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.status",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.category",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.priority",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.title",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.owner_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.organisation_name",
+                    "data_type": "string"
+                }
+            ],
+            "render": {
+                "type": "custom",
+                "width": 15,
+                "height": 8,
+                "view": "recordedfuture_view.playbook_alert_search_results",
+                "title": "Recorded Future Playbook Alert Data"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "playbook alert update",
+            "identifier": "update_playbook_alert",
+            "description": "Update Playbook alert",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {
+                "alert_id": {
+                    "description": "Playbook alert ID",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture playbook alert id"
+                    ],
+                    "primary": true,
+                    "required": true,
+                    "order": 0
+                },
+                "priority": {
+                    "description": "Playbook alert category",
+                    "data_type": "string",
+                    "required": false,
+                    "value_list": [
+                        "High",
+                        "Moderate",
+                        "Informational"
+                    ]
+                },
+                "status": {
+                    "description": "Playbook alert status",
+                    "data_type": "string",
+                    "required": false,
+                    "value_list": [
+                        "New",
+                        "In Progress",
+                        "Dismissed",
+                        "Resolved"
+                    ]
+                },
+                "log_message": {
+                    "description": "Log message",
+                    "data_type": "string",
+                    "required": false
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.status.status_message",
+                    "data_type": "string"
+                }
+            ],
+            "render": {
+                "type": "custom",
+                "width": 15,
+                "height": 8,
+                "view": "recordedfuture_view.playbook_alert_update_results",
+                "title": "Recorded Future Playbook Alert Data"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "playbook alert details",
+            "identifier": "playbook_alert_details",
+            "description": "Get Playbook alert details",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {
+                "alert_id": {
+                    "description": "Playbook alert ID",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [
+                        "recordedfuture playbook alert id"
+                    ]
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.playbook_alert_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_status.entity_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_status.entity_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_status.entity_criticality",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_status.risk_score",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_status.context_list.*.context",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_status.target",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_status.status",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_status.priority",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_status.assignee_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_status.assignee_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_status.created",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_status.updated",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_status.case_rule_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_status.case_rule_label",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_status.creator_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_status.creator_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_status.owner_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_status.owner_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_status.organisation_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_status.organisation_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_summary.explanation",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_summary.resolved_records_list.*.record",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_summary.resolved_records_list.*.risk_score",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_summary.resolved_records_list.*.criticality",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_summary.resolved_records_list.*.record_type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_summary.resolved_records_list.*.context_list.*.context",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_summary.screenshots.*.image_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_summary.screenshots.*.created_time",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_summary.screenshots.*.tag",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_dns.ip_list.*.record",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_dns.ip_list.*.risk_score",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_dns.ip_list.*.criticality",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_dns.ip_list.*.record_type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_dns.ip_list.*.context_list.*.context",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_dns.mx_list.*.record",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_dns.mx_list.*.risk_score",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_dns.mx_list.*.criticality",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_dns.mx_list.*.record_type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_dns.mx_list.*.context_list.*.context",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_dns.ns_list.*.record",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_dns.ns_list.*.risk_score",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_dns.ns_list.*.criticality",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_dns.ns_list.*.record_type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_dns.ns_list.*.context_list.*.context",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_whois.body.*",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_log.id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_log.actor_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_log.actor_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_log.created",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_log.modified",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_log.action_priority",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_log.changes",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_log.changes.previous",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_log.changes.current",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.images",
+                    "data_type": "string"
+                }
+            ],
+            "render": {
+                "type": "custom",
+                "width": 15,
+                "height": 8,
+                "view": "recordedfuture_view.playbook_alert_details_results",
+                "title": "Recorded Future Playbook Alert Data"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "entity search",
+            "identifier": "entity_search",
+            "description": "Find entities based on a query",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {
+                "name": {
+                    "description": "Entity Name",
+                    "data_type": "string",
+                    "required": true
+                },
+                "entity_type": {
+                    "description": "Entity Type",
+                    "data_type": "string",
+                    "required": false
+                },
+                "limit": {
+                    "description": "Limit number of records in response.",
+                    "data_type": "numeric",
+                    "required": false,
+                    "default": 10
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result status"
+                    ],
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.type",
+                    "data_type": "string"
+                }
+            ],
+            "render": {
+                "type": "custom",
+                "width": 15,
+                "height": 8,
+                "view": "recordedfuture_view.entity_search_results",
+                "title": "Entities"
+            },
+            "versions": "EQ(*)"
+        },
+        {
             "action": "on poll",
             "description": "Ingest alerts from Recorded Future",
-            "verbose": "This action will fetch alerts for the specified rule IDs and within the specified timeframe. When limiting the number of events to ingest, it will ingest the most recent events.<br><br>",
+            "verbose": "This action will fetch alerts / Playbook Alerts for the specified rule IDs and within the specified timeframe. When limiting the number of events to ingest, it will ingest the most recent events.<br><br>",
             "type": "ingest",
             "identifier": "on_poll",
             "read_only": true,
