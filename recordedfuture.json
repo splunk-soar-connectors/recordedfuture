@@ -4463,7 +4463,8 @@
                 "list_name": {
                     "description": "List Name",
                     "data_type": "string",
-                    "required": false
+                    "required": false,
+                    "order": 0
                 },
                 "entity_types": {
                     "description": "Entity Types",
@@ -4490,13 +4491,15 @@
                         "attacker",
                         "target",
                         "method"
-                    ]
+                    ],
+                    "order": 1
                 },
                 "limit": {
                     "description": "Limit number of records in response.",
                     "data_type": "numeric",
                     "required": false,
-                    "default": 25
+                    "default": 25,
+                    "order": 2
                 }
             },
             "output": [
@@ -4578,7 +4581,8 @@
                 "list_name": {
                     "description": "List Name",
                     "data_type": "string",
-                    "required": true
+                    "required": true,
+                    "order": 0
                 },
                 "entity_types": {
                     "description": "List Type",
@@ -4605,7 +4609,8 @@
                         "attacker",
                         "target",
                         "method"
-                    ]
+                    ],
+                    "order": 1
                 }
             },
             "output": [
@@ -4687,17 +4692,20 @@
                 "list_id": {
                     "description": "List ID",
                     "data_type": "string",
-                    "required": true
+                    "required": true,
+                    "order": 0
                 },
                 "entity_id": {
                     "description": "Entity ID (Do not specify ID when use 'name'+'type')",
                     "data_type": "string",
-                    "required": false
+                    "required": false,
+                    "order": 1
                 },
                 "entity_name": {
                     "description": "Entity name (can be used only with selected type)",
                     "data_type": "string",
-                    "required": false
+                    "required": false,
+                    "order": 2
                 },
                 "entity_type": {
                     "description": "Entity type",
@@ -4708,7 +4716,8 @@
                         "InternetDomainName",
                         "Hash",
                         "CyberVulnerability"
-                    ]
+                    ],
+                    "order": 3
                 }
             },
             "output": [
@@ -4774,17 +4783,20 @@
                 "list_id": {
                     "description": "List ID",
                     "data_type": "string",
-                    "required": true
+                    "required": true,
+                    "order": 0
                 },
                 "entity_id": {
                     "description": "Entity ID (Do not specify ID when use 'name'+'type')",
                     "data_type": "string",
-                    "required": false
+                    "required": false,
+                    "order": 1
                 },
                 "entity_name": {
                     "description": "Entity name (can be used only with selected type)",
                     "data_type": "string",
-                    "required": false
+                    "required": false,
+                    "order": 2
                 },
                 "entity_type": {
                     "description": "Entity type",
@@ -4795,7 +4807,8 @@
                         "InternetDomainName",
                         "Hash",
                         "CyberVulnerability"
-                    ]
+                    ],
+                    "order": 3
                 }
             },
             "output": [
@@ -4861,7 +4874,8 @@
                 "list_id": {
                     "description": "List ID",
                     "data_type": "string",
-                    "required": true
+                    "required": true,
+                    "order": 0
                 }
             },
             "output": [
@@ -4951,7 +4965,8 @@
                 "list_id": {
                     "description": "List ID",
                     "data_type": "string",
-                    "required": true
+                    "required": true,
+                    "order": 0
                 }
             },
             "output": [
@@ -5017,7 +5032,8 @@
                 "list_id": {
                     "description": "List id",
                     "data_type": "string",
-                    "required": true
+                    "required": true,
+                    "order": 0
                 }
             },
             "output": [
@@ -5716,7 +5732,8 @@
                 "category": {
                     "description": "Playbook alert category (cyber_vulnerability, domain_abuse)",
                     "data_type": "string",
-                    "required": false
+                    "required": false,
+                    "order": 0
                 },
                 "status": {
                     "description": "Playbook alert status",
@@ -5727,7 +5744,8 @@
                         "In Progress",
                         "Dismissed",
                         "Resolved"
-                    ]
+                    ],
+                    "order": 1
                 },
                 "priority": {
                     "description": "Playbook alert priority",
@@ -5737,17 +5755,20 @@
                         "High",
                         "Moderate",
                         "Informational"
-                    ]
+                    ],
+                    "order": 2
                 },
                 "from_date": {
                     "description": "Created after (date in ISO format: 2022-12-01T11:00:00+00)",
                     "data_type": "string",
-                    "required": false
+                    "required": false,
+                    "order": 3
                 },
                 "last_updated_date": {
                     "description": "Updated after (date in ISO format: 2022-12-01T11:00:00+00)",
                     "data_type": "string",
-                    "required": false
+                    "required": false,
+                    "order": 4
                 }
             },
             "output": [
@@ -5857,7 +5878,8 @@
                         "High",
                         "Moderate",
                         "Informational"
-                    ]
+                    ],
+                    "order": 1
                 },
                 "status": {
                     "description": "Playbook alert status",
@@ -5868,12 +5890,14 @@
                         "In Progress",
                         "Dismissed",
                         "Resolved"
-                    ]
+                    ],
+                    "order": 2
                 },
                 "log_message": {
                     "description": "Log message",
                     "data_type": "string",
-                    "required": false
+                    "required": false,
+                    "order": 3
                 }
             },
             "output": [
@@ -5940,7 +5964,8 @@
                     "primary": true,
                     "contains": [
                         "recordedfuture playbook alert id"
-                    ]
+                    ],
+                    "order": 0
                 }
             },
             "output": [
@@ -6223,18 +6248,21 @@
                 "name": {
                     "description": "Entity Name",
                     "data_type": "string",
-                    "required": true
+                    "required": true,
+                    "order": 0
                 },
                 "entity_type": {
                     "description": "Entity Type",
                     "data_type": "string",
-                    "required": false
+                    "required": false,
+                    "order": 1
                 },
                 "limit": {
                     "description": "Limit number of records in response.",
                     "data_type": "numeric",
                     "required": false,
-                    "default": 10
+                    "default": 10,
+                    "order": 2
                 }
             },
             "output": [
