@@ -4512,6 +4512,33 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result message"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.id",
                     "data_type": "string"
                 },
@@ -4594,6 +4621,33 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result message"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.id",
                     "data_type": "string"
                 },
@@ -4670,6 +4724,33 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result message"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.result",
                     "data_type": "string"
                 }
@@ -4730,6 +4811,33 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result message"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.result",
                     "data_type": "string"
                 }
@@ -4766,6 +4874,33 @@
                     "example_values": [
                         "success",
                         "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result message"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 },
                 {
@@ -4832,6 +4967,33 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result message"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.status",
                     "data_type": "string"
                 }
@@ -4868,6 +5030,33 @@
                     "example_values": [
                         "success",
                         "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result message"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 },
                 {
@@ -5571,6 +5760,33 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result message"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.playbook_alert_id",
                     "data_type": "string"
                 },
@@ -5670,6 +5886,33 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result message"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.status.status_message",
                     "data_type": "string"
                 }
@@ -5707,6 +5950,33 @@
                     "example_values": [
                         "success",
                         "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result message"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 },
                 {
@@ -5977,6 +6247,33 @@
                     "example_values": [
                         "success",
                         "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result message"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
                     ]
                 },
                 {
