@@ -34,14 +34,16 @@ import platform
 import sys
 import time
 import uuid
+
+from datetime import datetime
 from html import escape
 from math import ceil
 from typing import Literal
-from datetime import datetime
 
 # Phantom App imports
 # noinspection PyUnresolvedReferences
 import phantom.app as phantom
+# noinspection PyUnresolvedReferences
 import phantom.vault as vault
 
 import requests
