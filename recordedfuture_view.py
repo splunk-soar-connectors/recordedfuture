@@ -85,7 +85,9 @@ def format_result(result, all_data=False):
     try:
         # assemble the string needed for an URL to Recorded Future portal
         if (
-            data and 'risk' in retval['data'] and retval['data']['risk']['score'] is not None
+            data
+            and 'risk' in retval['data']
+            and retval['data']['risk']['score'] is not None
         ):
             if 'domain' in retval['param']:
                 retval['intelCard'] = APP_URL % ('idn', retval['param']['domain'])
@@ -202,7 +204,6 @@ def intelligence_results(provides, all_app_runs, context):
     context['results'] = results = []
     for summary, action_results in all_app_runs:
         for result in action_results:
-
             formatted = format_result(result)
             if not formatted:
                 continue
@@ -215,7 +216,6 @@ def reputation_results(provides, all_app_runs, context):
     context['results'] = results = []
     for summary, action_results in all_app_runs:
         for result in action_results:
-
             formatted = format_reputation_result(result)
             if not formatted:
                 continue
@@ -228,7 +228,6 @@ def contexts_results(provides, all_app_runs, context):
     context['results'] = results = []
     for summary, action_results in all_app_runs:
         for result in action_results:
-
             formatted = format_contexts_result(result)
             if not formatted:
                 continue
@@ -246,7 +245,6 @@ def alert_lookup_results(provides, all_app_runs, context):
     context['results'] = results = []
 
     for summary, action_results in all_app_runs:
-
         for result in action_results:
             formatted = {'param': result.get_param(), 'data': result.get_data()}
             if not formatted:
@@ -261,7 +259,6 @@ def alert_update_results(provides, all_app_runs, context):
     context['results'] = results = []
 
     for summary, action_results in all_app_runs:
-
         for result in action_results:
             formatted = {'param': result.get_param(), 'data': result.get_data()}
             if not formatted:
@@ -276,7 +273,6 @@ def alert_search_results(provides, all_app_runs, context):
     context['results'] = results = []
 
     for summary, action_results in all_app_runs:
-
         for result in action_results:
             formatted = {'param': result.get_param(), 'data': result.get_data()}
             if not formatted:
@@ -291,7 +287,6 @@ def alert_rule_search_results(provides, all_app_runs, context):
     context['results'] = results = []
 
     for summary, action_results in all_app_runs:
-
         for result in action_results:
             formatted = {'param': result.get_param(), 'data': result.get_data()}
             if not formatted:
@@ -337,7 +332,6 @@ def threat_assessment_results(provides, all_app_runs, context):
     context['results'] = results = []
     for summary, action_results in all_app_runs:
         for result in action_results:
-
             formatted = format_threat_assessment_result(result)
             if not formatted:
                 continue

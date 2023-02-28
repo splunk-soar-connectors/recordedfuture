@@ -43,6 +43,7 @@ from typing import Literal
 # Phantom App imports
 # noinspection PyUnresolvedReferences
 import phantom.app as phantom
+
 # noinspection PyUnresolvedReferences
 import phantom.vault as vault
 
@@ -423,7 +424,6 @@ class RecordedfutureConnector(BaseConnector):
             )
 
     def _handle_test_connectivity(self, param):
-
         # Add an action result object to self (BaseConnector) to represent
         # the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -861,11 +861,9 @@ class RecordedfutureConnector(BaseConnector):
                 file_location=file_path,
                 file_name=file_name,
                 metadata=None,
-                trace=True
+                trace=True,
             )
-            self.debug_print(
-                f"Add screenshot - {message} - {container}"
-            )
+            self.debug_print(f"Add screenshot - {message} - {container}")
 
     def _on_poll_playbook_alerts(self, param, config, action_result):
         """Polling for triggered playbook alerts"""
@@ -885,7 +883,9 @@ class RecordedfutureConnector(BaseConnector):
                 from_date = config.get("on_poll_playbook_alert_start_time")
             else:
                 param['max_count'] = config.get('max_count', MAX_CONTAINERS)
-                from_date = self._state.get("last_playbook_alerts_fetch_time") or config.get("on_poll_playbook_alert_start_time")
+                from_date = self._state.get(
+                    "last_playbook_alerts_fetch_time"
+                ) or config.get("on_poll_playbook_alert_start_time")
 
         # Asset Settings in Asset Configuration allows a negative number
         if int(param['max_count']) <= 0:
@@ -901,7 +901,10 @@ class RecordedfutureConnector(BaseConnector):
                 for el in config.get("on_poll_playbook_alert_type", "").split(",")
                 if el.strip()
             ],
-            'priorities': [el.strip() for el in config["on_poll_playbook_alert_priority"].split(",")]
+            'priorities': [
+                el.strip()
+                for el in config["on_poll_playbook_alert_priority"].split(",")
+            ]
             if config.get("on_poll_playbook_alert_priority")
             else None,
         }
@@ -1299,8 +1302,7 @@ class RecordedfutureConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(param))
         params = {
             'categories': [
-                category.strip()
-                for category in param['category'].split(",")
+                category.strip() for category in param['category'].split(",")
             ]
             if 'category' in param
             else None,
@@ -1389,7 +1391,9 @@ class RecordedfutureConnector(BaseConnector):
 
         params = {
             'priority': UnicodeDammit(param.get('priority', '')).unicode_markup,
-            'status': UnicodeDammit(RF_PLAYBOOK_STATUS_MAP.get(param.get('status'), '')).unicode_markup,
+            'status': UnicodeDammit(
+                RF_PLAYBOOK_STATUS_MAP.get(param.get('status'), '')
+            ).unicode_markup,
             'log_message': UnicodeDammit(param.get('log_message', '')).unicode_markup,
         }
         params = {key: value for key, value in params.items() if value}
@@ -1558,7 +1562,6 @@ class RecordedfutureConnector(BaseConnector):
         return True
 
     def initialize(self):
-
         # Load the state in initialize, use it to store data
         # that needs to be accessed across actions
         self._state = self.load_state()
@@ -1587,7 +1590,6 @@ class RecordedfutureConnector(BaseConnector):
         return phantom.APP_SUCCESS
 
     def finalize(self):
-
         # Save the state, this data is saved across actions and app upgrades
         self.save_state(self._state)
         return phantom.APP_SUCCESS
