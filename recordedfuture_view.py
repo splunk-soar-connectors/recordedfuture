@@ -84,11 +84,7 @@ def format_result(result, all_data=False):
 
     try:
         # assemble the string needed for an URL to Recorded Future portal
-        if (
-            data
-            and 'risk' in retval['data']
-            and retval['data']['risk']['score'] is not None
-        ):
+        if (data and 'risk' in retval['data'] and retval['data']['risk']['score'] is not None):
             if 'domain' in retval['param']:
                 retval['intelCard'] = APP_URL % ('idn', retval['param']['domain'])
             elif 'ip' in retval['param']:
