@@ -122,8 +122,8 @@
             "action": "alert update",
             "identifier": "alert_update",
             "description": "Update status and/or notes for the alert specified with alert_id",
-            "type": "investigate",
-            "read_only": true,
+            "type": "generic",
+            "read_only": false,
             "parameters": {
                 "alert_id": {
                     "description": "Alert ID specifying which alert to update",
@@ -4522,8 +4522,8 @@
             "action": "create list",
             "identifier": "list_create",
             "description": "Create new list",
-            "type": "investigate",
-            "read_only": true,
+            "type": "generic",
+            "read_only": false,
             "parameters": {
                 "list_name": {
                     "description": "List Name",
