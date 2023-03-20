@@ -18,9 +18,61 @@
 # the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
+from datetime import datetime
+
+from recordedfuture_consts import RF_PLAYBOOK_STATUS_MAP
 
 APP_URL = 'https://app.recordedfuture.com/live/sc/entity/%s%%3A%s'
 VULN_APP_URL = 'https://app.recordedfuture.com/live/sc/entity/%s'
+
+ENTITY_LIST_STATUS_VALUE_TO_LITERAL_MAPPING = {
+    'ready': 'Ready (no pending updates)',
+    'pending': 'Processing update',
+    'processing': 'Processing update',
+    'added': 'added',
+    'unchanged': 'is already in list',
+    'not_in_list': 'is not in list',
+    'removed': 'removed from list',
+}
+
+PLAYBOOK_ALERT_CATEGORY_DISPLAY_MAPPING = {
+    "domain_abuse": "Domain Abuse",
+    "cyber_vulnerability": "Vulnerability",
+}
+
+
+def format_datetime_string(datetime_string):
+    try:
+        return datetime.strptime(datetime_string, '%Y-%m-%dT%H:%M:%S.%f%z').strftime(
+            '%Y-%m-%d, %H:%M'
+        )
+    except ValueError:
+        return datetime_string
+
+
+def format_domain_abuse_details_result(result):
+    retval = {'param': result.get_param()}
+
+    data = result.get_data()
+    if data:
+        data = data[0]
+    else:
+        retval["data"] = data
+        return retval
+
+    data["panel_status"]["created"] = format_datetime_string(
+        data["panel_status"]["created"]
+    )
+    data["panel_status"]["updated"] = format_datetime_string(
+        data["panel_status"]["updated"]
+    )
+
+    panel_evidence_whois = data.get("panel_evidence_whois", {})
+    if panel_evidence_whois and not isinstance(panel_evidence_whois.get("body"), list):
+        panel_evidence_whois["body"] = []
+
+    retval["data"] = data
+    return retval
 
 
 def format_result(result, all_data=False):
@@ -32,9 +84,7 @@ def format_result(result, all_data=False):
 
     try:
         # assemble the string needed for an URL to Recorded Future portal
-        if (
-            data and 'risk' in retval['data'] and retval['data']['risk']['score'] is not None
-        ):
+        if (data and 'risk' in retval['data'] and retval['data']['risk']['score'] is not None):
             if 'domain' in retval['param']:
                 retval['intelCard'] = APP_URL % ('idn', retval['param']['domain'])
             elif 'ip' in retval['param']:
@@ -150,7 +200,6 @@ def intelligence_results(provides, all_app_runs, context):
     context['results'] = results = []
     for summary, action_results in all_app_runs:
         for result in action_results:
-
             formatted = format_result(result)
             if not formatted:
                 continue
@@ -163,7 +212,6 @@ def reputation_results(provides, all_app_runs, context):
     context['results'] = results = []
     for summary, action_results in all_app_runs:
         for result in action_results:
-
             formatted = format_reputation_result(result)
             if not formatted:
                 continue
@@ -176,7 +224,6 @@ def contexts_results(provides, all_app_runs, context):
     context['results'] = results = []
     for summary, action_results in all_app_runs:
         for result in action_results:
-
             formatted = format_contexts_result(result)
             if not formatted:
                 continue
@@ -194,7 +241,6 @@ def alert_lookup_results(provides, all_app_runs, context):
     context['results'] = results = []
 
     for summary, action_results in all_app_runs:
-
         for result in action_results:
             formatted = {'param': result.get_param(), 'data': result.get_data()}
             if not formatted:
@@ -209,7 +255,6 @@ def alert_update_results(provides, all_app_runs, context):
     context['results'] = results = []
 
     for summary, action_results in all_app_runs:
-
         for result in action_results:
             formatted = {'param': result.get_param(), 'data': result.get_data()}
             if not formatted:
@@ -224,7 +269,6 @@ def alert_search_results(provides, all_app_runs, context):
     context['results'] = results = []
 
     for summary, action_results in all_app_runs:
-
         for result in action_results:
             formatted = {'param': result.get_param(), 'data': result.get_data()}
             if not formatted:
@@ -239,7 +283,6 @@ def alert_rule_search_results(provides, all_app_runs, context):
     context['results'] = results = []
 
     for summary, action_results in all_app_runs:
-
         for result in action_results:
             formatted = {'param': result.get_param(), 'data': result.get_data()}
             if not formatted:
@@ -285,10 +328,167 @@ def threat_assessment_results(provides, all_app_runs, context):
     context['results'] = results = []
     for summary, action_results in all_app_runs:
         for result in action_results:
-
             formatted = format_threat_assessment_result(result)
             if not formatted:
                 continue
             results.append(formatted)
 
     return 'threat_assessment_results.html'
+
+
+def list_search_results(provides, all_app_runs, context):
+    """Setup the view for list search results."""
+    context['results'] = results = []
+    for summary, action_results in all_app_runs:
+        for result in action_results:
+            result_data = result.get_data()
+            if result_data:
+                result_data = result_data[0]
+            results.append({'param': result.get_param(), 'data': result_data})
+
+    return 'list_search_results.html'
+
+
+def list_create_results(provides, all_app_runs, context):
+    """Setup the view for list create result"""
+    context['results'] = results = []
+    for summary, action_results in all_app_runs:
+        for result in action_results:
+            result_data = result.get_data()
+            if result_data:
+                result_data = result_data[0]
+            results.append({'param': result.get_param(), 'data': result_data})
+
+    return 'list_create_results.html'
+
+
+def list_details_results(provides, all_app_runs, context):
+    """Setup the view for list details result"""
+    context['results'] = results = []
+    for summary, action_results in all_app_runs:
+        for result in action_results:
+            result_data = result.get_data()
+            if result_data:
+                result_data = result_data[0]
+                result_data['created'] = format_datetime_string(result_data['created'])
+                result_data['updated'] = format_datetime_string(result_data['updated'])
+
+            results.append({'param': result.get_param(), 'data': result_data})
+
+    return 'list_details_results.html'
+
+
+def list_status_results(provides, all_app_runs, context):
+    """Setup the view for list status info"""
+    context['results'] = results = []
+    for summary, action_results in all_app_runs:
+        for result in action_results:
+            result_data = result.get_data()
+            if result_data:
+                result_data = result_data[0]
+                result_data['status'] = ENTITY_LIST_STATUS_VALUE_TO_LITERAL_MAPPING.get(
+                    result_data['status']
+                )
+            results.append({'param': result.get_param(), 'data': result_data})
+
+    return 'list_status_results.html'
+
+
+def list_entities_results(provides, all_app_runs, context):
+    """Setup the view for list status info"""
+    context['results'] = results = []
+    for summary, action_results in all_app_runs:
+        for result in action_results:
+            result_data = result.get_data()
+            if result_data:
+                result_data = result_data[0]
+                for entity in result_data:
+                    entity['added'] = format_datetime_string(entity['added'])
+                    entity['status'] = ENTITY_LIST_STATUS_VALUE_TO_LITERAL_MAPPING.get(
+                        entity['status']
+                    )
+            results.append({'param': result.get_param(), 'data': result_data})
+
+    return 'list_entities_results.html'
+
+
+def list_entities_management_results(provides, all_app_runs, context):
+    """Setup the view for list status info"""
+    context['results'] = results = []
+    for summary, action_results in all_app_runs:
+        for result in action_results:
+            result_data = result.get_data()
+            if result_data:
+                result_data = result_data[0]
+                result_data['result'] = ENTITY_LIST_STATUS_VALUE_TO_LITERAL_MAPPING.get(
+                    result_data['result']
+                )
+            results.append({'param': result.get_param(), 'data': result_data})
+
+    return 'list_entities_management_results.html'
+
+
+def playbook_alert_search_results(provides, all_app_runs, context):
+    """Setup the view for Playbook alerts search result"""
+    context['results'] = results = []
+    for summary, action_results in all_app_runs:
+        for result in action_results:
+            result_data = result.get_data()
+            if result_data:
+                result_data = result_data[0]
+                for search_result in result_data:
+                    search_result['created'] = format_datetime_string(
+                        search_result['created']
+                    )
+                    search_result['updated'] = format_datetime_string(
+                        search_result['updated']
+                    )
+                    search_result['status'] = RF_PLAYBOOK_STATUS_MAP.get(
+                        search_result['status'], search_result['status']
+                    )
+                    search_result[
+                        'category_display'
+                    ] = PLAYBOOK_ALERT_CATEGORY_DISPLAY_MAPPING.get(
+                        search_result['category'], search_result['category']
+                    )
+
+            results.append({'param': result.get_param(), 'data': result_data})
+
+    return 'playbook_alert_search_results.html'
+
+
+def playbook_alert_update_results(provides, all_app_runs, context):
+    """Setup the view for Playbook alert update"""
+    context['results'] = results = []
+    for summary, action_results in all_app_runs:
+        for result in action_results:
+            result_data = result.get_data()
+            if result_data:
+                result_data = result_data[0]
+            results.append({'param': result.get_param(), 'data': result_data})
+
+    return 'playbook_alert_update_results.html'
+
+
+def playbook_alert_details_results(provides, all_app_runs, context):
+    """Setup the view for Playbook alert details"""
+    context['results'] = results = []
+    for summary, action_results in all_app_runs:
+        for result in action_results:
+            results.append(format_domain_abuse_details_result(result))
+
+    return 'playbook_alert_details_results.html'
+
+
+def entity_search_results(provides, all_app_runs, context):
+    """Setup the view for entity search results."""
+
+    context['results'] = results = []
+    for summary, action_results in all_app_runs:
+        for result in action_results:
+            result_data = result.get_data()
+            if result_data:
+                result_data = result_data[0]
+            results.append({'param': result.get_param(), 'data': result_data})
+
+    return 'entity_search_results.html'
