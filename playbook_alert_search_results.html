@@ -9,7 +9,7 @@
 
 {% block widget_content %} <!-- Main Start Block -->
 
-<!-- File: alert_rule_search_results.html
+<!-- File: playbook_alert_search_results.html
 
 Copyright (c) Recorded Future, Inc, 2019-2023
 
@@ -194,37 +194,77 @@ and will be merged during compilation:
   }
 </style>
 
-<div class="rf-widget">
-  <!-- Main Div -->
-  {% for result in results %} <!-- loop for each result -->
-
+<div class="rf-widget"> <!-- Main Div -->
   <!------------------- For each Result ---------------------->
-
-    <div class="rf-box">
-      <table class="rf-table">
-        {% if result.data %}
-          {% for rule in result.data %}
+  {% for result in results %}
+      {% if not result.data %}
+        <h4>No data found</h4>
+      {% else %}
+        <div class="rf-full-widh-box">
+          <table class="rf-table">
+          <tr>
+            <td style="width: 15%">
+              <h6>Playbook Alert Title</h6>
+            </td>
+            <td style="width: 15%">
+              <h6>ID</h6>
+            </td>
+            <td style="width: 10%">
+              <h6>Category</h6>
+            </td>
+            <td style="width: 10%">
+              <h6>Status</h6>
+            </td>
+            <td style="width: 10%">
+              <h6>Priority</h6>
+            </td>
+            <td style="width: 10%">
+              <h6>Owner</h6>
+            </td>
+            <td style="width: 10%">
+              <h6>Organisation</h6>
+            </td>
+            <td style="width: 10%">
+              <h6>Created</h6>
+            </td>
+            <td style="width: 10%">
+              <h6>Updated</h6>
+            </td>
+          </tr>
+          {% for el in result.data %}
             <tr>
-              <td>
-                <span class="non-highlighted">Rule Id</span><br/>
-                <a href="javascript:;" onclick="context_menu(this, [{'contains': ['recordedfuture alert rule id'], 'value': '{{ rule.id }}' }], 0, {{ container.id }}, null, false);">
-                <span class="highlighted">{{ rule.id }}</span>&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
+              <td style="width: 15%; word-break: break-all;">
+                {{ el.title  }}
               </td>
-              <td>
-                <span class="non-highlighted">Rule Name</span><br/>
-                {{ rule.name }}
+              <td style="width: 15%">
+                {{ el.playbook_alert_id  }}
+              </td>
+              <td style="width: 10%">
+                {{ el.category_display  }}
+              </td>
+              <td style="width: 10%">
+                {{ el.status  }}
+              </td>
+              <td style="width: 10%">
+                {{ el.priority }}
+              </td>
+              <td style="width: 10%">
+                {{ el.owner_name  }}
+              </td>
+              <td style="width: 10%">
+                {{ el.organisation_name  }}
+              </td>
+              <td style="width: 10%">
+                {{ el.created  }}
+              </td>
+              <td style="width: 10%">
+                {{ el.updated }}
               </td>
             </tr>
           {% endfor %}
-        {% else %}
-          <tr>
-            <td>
-              No rules found
-            </td>
-          </tr>
-        {% endif %}
-      </table>
-    </div>
+        </table>
+      </div>
+      {% endif %}
   {% endfor %}
 </div> <!-- Main Div -->
 

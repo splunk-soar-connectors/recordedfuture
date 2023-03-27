@@ -9,7 +9,7 @@
 
 {% block widget_content %} <!-- Main Start Block -->
 
-<!-- File: alert_rule_search_results.html
+<!-- File: list_entities_results.html
 
 Copyright (c) Recorded Future, Inc, 2019-2023
 
@@ -194,36 +194,53 @@ and will be merged during compilation:
   }
 </style>
 
-<div class="rf-widget">
-  <!-- Main Div -->
-  {% for result in results %} <!-- loop for each result -->
-
+<div class="rf-widget"> <!-- Main Div -->
   <!------------------- For each Result ---------------------->
-
-    <div class="rf-box">
-      <table class="rf-table">
-        {% if result.data %}
-          {% for rule in result.data %}
+  {% for result in results %}
+    <div class="rf-full-width-box">
+      <h2>{{ result.param.list_id }}</h2>
+      {% if not result.data %}
+        <h4>No data found</h4>
+      {% else %}
+        <table class="rf-table">
+          <tr>
+            <td>
+              <h6>Entity Name</h6>
+            </td>
+            <td>
+              <h6>Entity ID</h6>
+            </td>
+            <td>
+              <h6>Entity Types</h6>
+            </td>
+            <td>
+              <h6>Status</h6>
+            </td>
+            <td>
+              <h6>Added</h6>
+            </td>
+          </tr>
+          {% for entity_data in result.data %}
             <tr>
               <td>
-                <span class="non-highlighted">Rule Id</span><br/>
-                <a href="javascript:;" onclick="context_menu(this, [{'contains': ['recordedfuture alert rule id'], 'value': '{{ rule.id }}' }], 0, {{ container.id }}, null, false);">
-                <span class="highlighted">{{ rule.id }}</span>&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                  {{ entity_data.entity.name  }}
               </td>
               <td>
-                <span class="non-highlighted">Rule Name</span><br/>
-                {{ rule.name }}
+                  {{ entity_data.entity.id  }}
+              </td>
+              <td>
+                  {{ entity_data.entity.type  }}
+              </td>
+              <td>
+                {{ entity_data.status  }}
+              </td>
+              <td>
+                {{ entity_data.added }}
               </td>
             </tr>
           {% endfor %}
-        {% else %}
-          <tr>
-            <td>
-              No rules found
-            </td>
-          </tr>
-        {% endif %}
-      </table>
+        </table>
+      {% endif %}
     </div>
   {% endfor %}
 </div> <!-- Main Div -->

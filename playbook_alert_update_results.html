@@ -9,7 +9,7 @@
 
 {% block widget_content %} <!-- Main Start Block -->
 
-<!-- File: alert_rule_search_results.html
+<!-- File: playbook_alert_update_results.html
 
 Copyright (c) Recorded Future, Inc, 2019-2023
 
@@ -194,37 +194,15 @@ and will be merged during compilation:
   }
 </style>
 
+<!-- needs to be modified from scratch  -->
+
 <div class="rf-widget">
   <!-- Main Div -->
   {% for result in results %} <!-- loop for each result -->
-
-  <!------------------- For each Result ---------------------->
-
-    <div class="rf-box">
-      <table class="rf-table">
-        {% if result.data %}
-          {% for rule in result.data %}
-            <tr>
-              <td>
-                <span class="non-highlighted">Rule Id</span><br/>
-                <a href="javascript:;" onclick="context_menu(this, [{'contains': ['recordedfuture alert rule id'], 'value': '{{ rule.id }}' }], 0, {{ container.id }}, null, false);">
-                <span class="highlighted">{{ rule.id }}</span>&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
-              </td>
-              <td>
-                <span class="non-highlighted">Rule Name</span><br/>
-                {{ rule.name }}
-              </td>
-            </tr>
-          {% endfor %}
-        {% else %}
-          <tr>
-            <td>
-              No rules found
-            </td>
-          </tr>
-        {% endif %}
-      </table>
-    </div>
+    <!------------------- For each Result ---------------------->
+      <div class="rf-full-width-box">
+        <p>{{ result.param.alert_id }} - {{ result.data.status.status_message }}</p>
+      </div>
   {% endfor %}
 </div> <!-- Main Div -->
 

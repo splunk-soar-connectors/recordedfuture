@@ -9,7 +9,7 @@
 
 {% block widget_content %} <!-- Main Start Block -->
 
-<!-- File: alert_rule_search_results.html
+<!-- File: list_search_results.html
 
 Copyright (c) Recorded Future, Inc, 2019-2023
 
@@ -194,37 +194,53 @@ and will be merged during compilation:
   }
 </style>
 
-<div class="rf-widget">
-  <!-- Main Div -->
-  {% for result in results %} <!-- loop for each result -->
-
+<div class="rf-widget"> <!-- Main Div -->
   <!------------------- For each Result ---------------------->
-
-    <div class="rf-box">
-      <table class="rf-table">
-        {% if result.data %}
-          {% for rule in result.data %}
+  {% for result in results %}
+      {% if not result.data %}
+        <h4>No data found</h4>
+      {% else %}
+        <div class="rf-full-widh-box">
+          <table class="rf-table">
+          <tr>
+            <td>
+              <h6>List Name</h6>
+            </td>
+            <td>
+              <h6>List ID</h6>
+            </td>
+            <td>
+              <h6>Entity Types</h6>
+            </td>
+            <td>
+              <h6>Created By</h6>
+            </td>
+            <td>
+              <h6>Organisation</h6>
+            </td>
+          </tr>
+          {% for el in result.data %}
             <tr>
               <td>
-                <span class="non-highlighted">Rule Id</span><br/>
-                <a href="javascript:;" onclick="context_menu(this, [{'contains': ['recordedfuture alert rule id'], 'value': '{{ rule.id }}' }], 0, {{ container.id }}, null, false);">
-                <span class="highlighted">{{ rule.id }}</span>&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                  {{ el.name  }}
               </td>
               <td>
-                <span class="non-highlighted">Rule Name</span><br/>
-                {{ rule.name }}
+                  {{ el.id  }}
+              </td>
+              <td>
+                  {{ el.type  }}
+              </td>
+              <td>
+                {{ el.owner_name  }}
+              </td>
+              <td>
+                {{ el.organisation_name }}
               </td>
             </tr>
           {% endfor %}
-        {% else %}
-          <tr>
-            <td>
-              No rules found
-            </td>
-          </tr>
-        {% endif %}
-      </table>
-    </div>
+        </table>
+      </div>
+      {% endif %}
   {% endfor %}
 </div> <!-- Main Div -->
 
