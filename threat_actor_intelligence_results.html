@@ -1,0 +1,101 @@
+{% extends 'widgets/widget_template.html' %}
+{% load custom_template %}
+
+{% block custom_title_prop %}{% if title_logo %}style="background-size: auto 60%; background-position: 50%; background-repeat: no-repeat; background-image: url('/app_resource/{{ title_logo }}');"{% endif %}{% endblock %}
+{% block title1 %}{{ title1 }}{% endblock %}
+{% block title2 %}{{ title2 }}{% endblock %}
+{% block custom_tools %}
+{% endblock %}
+
+{% block widget_content %} <!-- Main Start Block -->
+
+<!-- File: links_search_results.html
+
+Copyright (c) Recorded Future, Inc, 2019-2023
+
+This unpublished material is proprietary to Recorded Future. All
+rights reserved. The methods and techniques described herein are
+considered trade secrets and/or confidential. Reproduction or
+distribution, in whole or in part, is forbidden except by express
+written permission of Recorded Future.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under
+the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+either express or implied. See the License for the specific language governing permissions
+and limitations under the License.
+-->
+
+<!--
+Style elements are defined in a separate file, named below,
+and will be merged during compilation:
+       recordedfuture_style.css          -->
+
+<!-- needs to be modified from scratch  -->
+
+<div class="rf-widget">
+  <!-- Main Div -->
+  {% for result in results %}  <!-- loop for each result -->
+    <!------------------- For each Result ---------------------->
+    <h4> Intelligence data for {{result.data.name}} :</h4>
+    <h5> Actor Intent: {{result.data.intent|default:"N/A"}}</h5>
+    <h5> Actor Alias: {{result.data.alias|join:", "|default:"N/A"}}</h5>
+    <h5> Actor Opportunity: {{result.data.opportunity|default:"N/A"}}</h5>
+    <h5> Actor Severity: {{result.data.severity|default:"N/A"}}</h5>
+    <h5> Actor Categories: {{result.data.categories|join:", "|default:"N/A"}}</h5>
+    <a href="{{result.data.intelCard}}">Link to Portal</a>
+    <h4> Links for {{result.data.name}} :</h4>
+    <div class="rf-full-width-box">
+      <table class="rf-table">
+        {% for link_type, link_objects in result.data.links.items %}
+          <table class="rf-table">
+            <tr>
+              <td>
+                <span class="non-highlighted">Name:</span><br/>
+              </td>
+              <td>
+                <span class="non-highlighted">Source:</span><br/>
+              </td>
+              <td>
+                <span class="non-highlighted">Criticality:</span><br/>
+              </td>
+              <td>
+                <span class="non-highlighted">Risk Score:</span><br/>
+              </td>
+              <td>
+                <span class="non-highlighted">Risk Level:</span><br/>
+              </td>
+            </tr>
+            {% for link in link_objects %}
+              <tr>
+                <td>
+                  {{ link.name }}
+                </td>
+                <td>
+                  {{ link.source }}
+                </td>
+                <td>
+                  {{ link.criticality }}
+                </td>
+                <td>
+                  {{ link.risk_score }}
+                </td>
+                <td>
+                  {{ link.risk_level }}
+                </td>
+              </tr>
+              {% endfor %}
+          <!------------------- For some reason this should be after the table and in render it will be before the table. ---------------------->
+          <h5>Links Type: {{ link_type }}</h5>
+        {% endfor %}
+      </table>
+    </div>
+  {% endfor %}
+</div> <!-- Main Div -->
+
+{% endblock %} <!-- Main Start Block -->
