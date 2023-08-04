@@ -38,6 +38,7 @@ ENTITY_LIST_STATUS_VALUE_TO_LITERAL_MAPPING = {
 PLAYBOOK_ALERT_CATEGORY_DISPLAY_MAPPING = {
     "domain_abuse": "Domain Abuse",
     "cyber_vulnerability": "Vulnerability",
+    "code_repo_leakage": "Code Repo Leakage",
 }
 
 

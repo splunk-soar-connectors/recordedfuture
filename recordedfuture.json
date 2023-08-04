@@ -5747,7 +5747,7 @@
             "read_only": true,
             "parameters": {
                 "category": {
-                    "description": "Playbook alert category (cyber_vulnerability, domain_abuse)",
+                    "description": "Playbook alert category (cyber_vulnerability, domain_abuse, code_repo_leakage)",
                     "data_type": "string",
                     "order": 0
                 },

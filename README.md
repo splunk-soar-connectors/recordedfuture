@@ -67,7 +67,7 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 **on_poll_alert_ruleids** |  optional  | string | Comma-separated list of alert rule IDs
 **on_poll_alert_severity** |  optional  | string | Severity to apply to the alert event
 **on_poll_playbook_alert_priority** |  optional  | string | Comma separated On Poll Playbook Alerts priority threshold (High,Moderate,Informational)
-**on_poll_playbook_alert_type** |  optional  | string | Comma-separated list of Playbook alert types. (domain_abuse, cyber_vulnerability are now supported)
+**on_poll_playbook_alert_type** |  optional  | string | Comma-separated list of Playbook alert types. (domain_abuse, cyber_vulnerability and code_repo_leakage are now supported)
 **on_poll_playbook_alert_start_time** |  optional  | string | Poll playbook alerts created after (date in ISO format: 2022-12-01T11:00:00+00)
 **max_count** |  optional  | numeric | Max events to ingest for scheduled polling
 **first_max_count** |  optional  | numeric | Max events to ingest for scheduled polling first time
@@ -1209,7 +1209,7 @@ Read only: **True**
 #### Action Parameters
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
-**category** |  optional  | Playbook alert category (cyber_vulnerability, domain_abuse) | string | 
+**category** |  optional  | Playbook alert category (cyber_vulnerability, domain_abuse, code_repo_leakage) | string | 
 **status** |  optional  | Playbook alert status | string | 
 **priority** |  optional  | Playbook alert priority | string | 
 **from_date** |  optional  | Created after (date in ISO format: 2022-12-01T11:00:00+00) | string | 
