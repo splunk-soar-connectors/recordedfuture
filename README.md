@@ -101,11 +101,11 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 [playbook alert update](#action-playbook-alert-update) - Update Playbook alert  
 [playbook alert details](#action-playbook-alert-details) - Get Playbook alert details  
 [entity search](#action-entity-search) - Find entities based on a query  
-[links search](#action-links-search) - Search for links data.  
-[detection rule search](#action-detection-rule-search) - Search for detection rule.  
-[threat actor intelligence](#action-threat-actor-intelligence) - Get threat actor intelligence.  
-[threat map](#action-threat-map) - Get threat map.  
-[collective insights submit](#action-collective-insights-submit) - Enables contribute data, `collective insights`, into the Recorded Future Intelligence Cloud.  
+[links search](#action-links-search) - Search for links data  
+[detection rule search](#action-detection-rule-search) - Search for detection rule  
+[threat actor intelligence](#action-threat-actor-intelligence) - Get threat actor intelligence  
+[threat map](#action-threat-map) - Get threat map  
+[collective insights submit](#action-collective-insights-submit) - Enables contribute data, `collective insights`, into the Recorded Future Intelligence Cloud  
 [on poll](#action-on-poll) - Ingest alerts from Recorded Future  
 
 ## action: 'test connectivity'
@@ -1372,7 +1372,7 @@ summary.total_objects | numeric |  `recordedfuture total objects`  |   1
 summary.total_objects_successful | numeric |  `recordedfuture total objects successful`  |   1   
 
 ## action: 'links search'
-Search for links data.
+Search for links data
 
 Type: **investigate**  
 Read only: **True**
@@ -1534,7 +1534,7 @@ summary.total_objects | numeric |  `recordedfuture total objects`  |   1
 summary.total_objects_successful | numeric |  `recordedfuture total objects successful`  |   1   
 
 ## action: 'detection rule search'
-Search for detection rule.
+Search for detection rule
 
 Type: **investigate**  
 Read only: **True**
@@ -1545,8 +1545,8 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 **entity_id** |  optional  | Entity ID (Do not specify ID when use 'name'+'type') | string | 
 **entity_name** |  optional  | Entity name (can be used only with selected type) | string | 
 **entity_type** |  optional  | Entity type | string | 
-**rule_types** |  optional  | This is a comma separated list of the following values: 'yara', 'sigma', and 'snort'.  Values in this filter are applied as a logical 'OR'. | string | 
-**title** |  optional  | Free text search for Insikt notes associated with detection rules. | string | 
+**rule_types** |  optional  | This is a comma separated list of the following values: 'yara', 'sigma', and 'snort'.  Values in this filter are applied as a logical 'OR' | string | 
+**title** |  optional  | Free text search for Insikt notes associated with detection rules | string | 
 
 #### Action Output
 DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
@@ -1574,7 +1574,7 @@ summary.total_objects | numeric |  `recordedfuture total objects`  |   1
 summary.total_objects_successful | numeric |  `recordedfuture total objects successful`  |   1   
 
 ## action: 'threat actor intelligence'
-Get threat actor intelligence.
+Get threat actor intelligence
 
 Type: **investigate**  
 Read only: **True**
@@ -1582,8 +1582,8 @@ Read only: **True**
 #### Action Parameters
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
-**threat_actor** |  required  | Threat actor name to look up. | string | 
-**links** |  required  | Add links data to a threat actor map data. | boolean | 
+**threat_actor** |  required  | Threat actor name to look up | string | 
+**links** |  required  | Add links data to a threat actor map data | boolean | 
 
 #### Action Output
 DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
@@ -1733,7 +1733,7 @@ summary.total_objects | numeric |  `recordedfuture total objects`  |   1
 summary.total_objects_successful | numeric |  `recordedfuture total objects successful`  |   1   
 
 ## action: 'threat map'
-Get threat map.
+Get threat map
 
 Type: **investigate**  
 Read only: **True**
@@ -1758,7 +1758,7 @@ summary.total_objects | numeric |  `recordedfuture total objects`  |   1
 summary.total_objects_successful | numeric |  `recordedfuture total objects successful`  |   1   
 
 ## action: 'collective insights submit'
-Enables contribute data, `collective insights`, into the Recorded Future Intelligence Cloud.
+Enables contribute data, `collective insights`, into the Recorded Future Intelligence Cloud
 
 Type: **investigate**  
 Read only: **True**
