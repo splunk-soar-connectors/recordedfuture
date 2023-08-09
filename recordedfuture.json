@@ -6410,7 +6410,7 @@
         {
             "action": "links search",
             "identifier": "links_search",
-            "description": "Search for links data.",
+            "description": "Search for links data",
             "type": "investigate",
             "read_only": true,
             "parameters": {
@@ -6418,13 +6418,13 @@
                     "description": "Entity ID (Do not specify ID when use 'name'+'type')",
                     "data_type": "string",
                     "primary": true,
-                    "order": 1
+                    "order": 0
                 },
                 "entity_name": {
                     "description": "Entity name (can be used only with selected type)",
                     "data_type": "string",
                     "primary": true,
-                    "order": 2
+                    "order": 1
                 },
                 "entity_type": {
                     "description": "Entity type",
@@ -6446,7 +6446,7 @@
                         "Person",
                         "Username"
                     ],
-                    "order": 3
+                    "order": 2
                 },
                 "source_type": {
                     "data_type": "string",
@@ -6455,7 +6455,7 @@
                         "technical",
                         "insikt"
                     ],
-                    "order": 4
+                    "order": 3
                 },
                 "timeframe": {
                     "description": "Time range for when rules were triggered",
@@ -6467,12 +6467,12 @@
                         "-7d",
                         "-24h"
                     ],
-                    "order": 5
+                    "order": 4
                 },
                 "technical_type": {
                     "data_type": "string",
                     "description": "Technical link sources may be further filtered by specifying an event type (type:MalwareAnalysis)",
-                    "order": 6
+                    "order": 5
                 }
             },
             "output": [
@@ -7865,7 +7865,7 @@
         {
             "action": "detection rule search",
             "identifier": "detection_rule_search",
-            "description": "Search for detection rule.",
+            "description": "Search for detection rule",
             "type": "investigate",
             "read_only": true,
             "parameters": {
@@ -7873,13 +7873,13 @@
                     "description": "Entity ID (Do not specify ID when use 'name'+'type')",
                     "data_type": "string",
                     "primary": true,
-                    "order": 1
+                    "order": 0
                 },
                 "entity_name": {
                     "description": "Entity name (can be used only with selected type)",
                     "data_type": "string",
                     "primary": true,
-                    "order": 2
+                    "order": 1
                 },
                 "entity_type": {
                     "description": "Entity type",
@@ -7901,17 +7901,17 @@
                         "Person",
                         "Username"
                     ],
-                    "order": 3
+                    "order": 2
                 },
                 "rule_types": {
                     "data_type": "string",
-                    "description": "This is a comma separated list of the following values: 'yara', 'sigma', and 'snort'.  Values in this filter are applied as a logical 'OR'.",
-                    "order": 4
+                    "description": "This is a comma separated list of the following values: 'yara', 'sigma', and 'snort'.  Values in this filter are applied as a logical 'OR'",
+                    "order": 3
                 },
                 "title": {
                     "data_type": "string",
-                    "description": "Free text search for Insikt notes associated with detection rules.",
-                    "order": 5
+                    "description": "Free text search for Insikt notes associated with detection rules",
+                    "order": 4
                 }
             },
             "output": [
@@ -8100,22 +8100,22 @@
         {
             "action": "threat actor intelligence",
             "identifier": "threat_actor_intelligence",
-            "description": "Get threat actor intelligence.",
+            "description": "Get threat actor intelligence",
             "type": "investigate",
             "read_only": true,
             "parameters": {
                 "threat_actor": {
-                    "description": "Threat actor name to look up.",
+                    "description": "Threat actor name to look up",
                     "data_type": "string",
                     "primary": true,
                     "required": true,
-                    "order": 1
+                    "order": 0
                 },
                 "links": {
-                    "description": "Add links data to a threat actor map data.",
+                    "description": "Add links data to a threat actor map data",
                     "data_type": "boolean",
                     "required": true,
-                    "order": 2
+                    "order": 1
                 }
             },
             "output": [
@@ -9542,7 +9542,7 @@
         {
             "action": "threat map",
             "identifier": "threat_map",
-            "description": "Get threat map.",
+            "description": "Get threat map",
             "type": "investigate",
             "read_only": true,
             "parameters": {},
@@ -9672,7 +9672,7 @@
         {
             "action": "collective insights submit",
             "identifier": "collective_insights_submit",
-            "description": "Enables contribute data, `collective insights`, into the Recorded Future Intelligence Cloud.",
+            "description": "Enables contribute data, `collective insights`, into the Recorded Future Intelligence Cloud",
             "type": "investigate",
             "read_only": true,
             "parameters": {
