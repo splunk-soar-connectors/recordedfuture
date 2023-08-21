@@ -1707,6 +1707,16 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.ai_insights",
+                    "data_type": "string",
+                    "contains": [
+                        "recorded future AI Insights"
+                    ],
+                    "example_values": [
+                        "Here is some AI generated text related to this entity"
+                    ]
+                },
+                {
                     "data_path": "action_result.summary.criticalityLabel",
                     "data_type": "string",
                     "example_values": [
@@ -2384,6 +2394,16 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.ai_insights",
+                    "data_type": "string",
+                    "contains": [
+                        "recorded future AI Insights"
+                    ],
+                    "example_values": [
+                        "Here is some AI generated text related to this entity"
+                    ]
+                },
+                {
                     "data_path": "action_result.summary.criticalityLabel",
                     "data_type": "string",
                     "contains": [
@@ -3016,6 +3036,16 @@
                     "data_type": "string",
                     "contains": [
                         "recordedfuture evidence lastseen"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.ai_insights",
+                    "data_type": "string",
+                    "contains": [
+                        "recorded future AI Insights"
+                    ],
+                    "example_values": [
+                        "Here is some AI generated text related to this entity"
                     ]
                 },
                 {
@@ -3662,6 +3692,16 @@
                     "data_type": "string",
                     "contains": [
                         "recordedfuture evidence lastseen"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.ai_insights",
+                    "data_type": "string",
+                    "contains": [
+                        "recorded future AI Insights"
+                    ],
+                    "example_values": [
+                        "Here is some AI generated text related to this entity"
                     ]
                 },
                 {
@@ -4324,6 +4364,16 @@
                     "data_type": "string",
                     "contains": [
                         "recordedfuture evidence lastseen"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.ai_insights",
+                    "data_type": "string",
+                    "contains": [
+                        "recorded future AI Insights"
+                    ],
+                    "example_values": [
+                        "Here is some AI generated text related to this entity"
                     ]
                 },
                 {
@@ -9496,6 +9546,16 @@
                     ],
                     "example_values": [
                         "Ukraine"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.ai_insights",
+                    "data_type": "string",
+                    "contains": [
+                        "recorded future AI Insights"
+                    ],
+                    "example_values": [
+                        "Here is some AI generated text related to this entity"
                     ]
                 },
                 {

@@ -383,6 +383,7 @@ action_result.data.\*.evidence.\*.rule | string |  `recordedfuture evidence rule
 action_result.data.\*.evidence.\*.timestamp | string |  `recordedfuture evidence timestamp`  |  
 action_result.summary.alert_title | string |  |  
 action_result.summary.triggered | string |  |  
+action_result.summary.ai_insights | string | `recorded future AI Insights` |  
 action_result.message | string |  `recordedfuture result message`  |  
 summary.total_objects | numeric |  `recordedfuture total objects`  |   1 
 summary.total_objects_successful | numeric |  `recordedfuture total objects successful`  |   1   
@@ -465,6 +466,7 @@ action_result.data.\*.risk.rules | numeric |  `recordedfuture risk rules`  |
 action_result.data.\*.risk.score | numeric |  `recordedfuture risk score`  |  
 action_result.data.\*.timestamps.firstSeen | string |  `recordedfuture evidence firstseen`  |  
 action_result.data.\*.timestamps.lastSeen | string |  `recordedfuture evidence lastseen`  |  
+action_result.data.\*.ai_insights | string | `recorded future AI Insights` |  
 action_result.summary.criticalityLabel | string |  `recordedfuture risk criticality label`  |   Very Malicious  Malicious  Suspicious  Unusual 
 action_result.summary.lastSeen | string |  `recordedfuture evidence lastseen`  |  
 action_result.summary.riskSummary | string |  `recordedfuture risk summary`  |  
@@ -578,6 +580,7 @@ action_result.data.\*.risk.rules | numeric |  `recordedfuture risk rules`  |
 action_result.data.\*.risk.score | numeric |  `recordedfuture risk score`  |  
 action_result.data.\*.timestamps.firstSeen | string |  `recordedfuture evidence firstseen`  |  
 action_result.data.\*.timestamps.lastSeen | string |  `recordedfuture evidence lastseen`  |  
+action_result.data.\*.ai_insights | string | `recorded future AI Insights` |  
 action_result.summary.criticalityLabel | string |  `recordedfuture risk criticality label`  |  
 action_result.summary.lastSeen | string |  `recordedfuture evidence lastseen`  |  
 action_result.summary.riskSummary | string |  `recordedfuture risk summary`  |  
@@ -682,6 +685,7 @@ action_result.data.\*.risk.rules | numeric |  `recordedfuture risk rules`  |
 action_result.data.\*.risk.score | numeric |  `recordedfuture risk score`  |  
 action_result.data.\*.timestamps.firstSeen | string |  `recordedfuture evidence firstseen`  |  
 action_result.data.\*.timestamps.lastSeen | string |  `recordedfuture evidence lastseen`  |  
+action_result.data.\*.ai_insights | string | `recorded future AI Insights` |  
 action_result.summary.criticalityLabel | string |  `recordedfuture risk criticality label`  |   Malicious 
 action_result.summary.lastSeen | string |  `recordedfuture evidence lastseen`  |  
 action_result.summary.riskSummary | string |  `recordedfuture risk summary`  |  
@@ -787,6 +791,7 @@ action_result.data.\*.threatLists.\*.name | string |  `recordedfuture threatlist
 action_result.data.\*.threatLists.\*.type | string |  `recordedfuture threatlist type`  |  
 action_result.data.\*.timestamps.firstSeen | string |  `recordedfuture evidence firstseen`  |  
 action_result.data.\*.timestamps.lastSeen | string |  `recordedfuture evidence lastseen`  |  
+action_result.data.\*.ai_insights | string | `recorded future AI Insights` |  
 action_result.summary.criticalityLabel | string |  `recordedfuture risk criticality label`  |   Very Malicious 
 action_result.summary.lastSeen | string |  `recordedfuture evidence lastseen`  |  
 action_result.summary.riskSummary | string |  `recordedfuture risk summary`  |  
@@ -897,6 +902,7 @@ action_result.data.\*.risk.rules | numeric |  `recordedfuture risk rules`  |
 action_result.data.\*.risk.score | numeric |  `recordedfuture risk score`  |  
 action_result.data.\*.timestamps.firstSeen | string |  `recordedfuture evidence firstseen`  |  
 action_result.data.\*.timestamps.lastSeen | string |  `recordedfuture evidence lastseen`  |  
+action_result.data.\*.ai_insights | string | `recorded future AI Insights` |  
 action_result.summary.criticalityLabel | string |  `recordedfuture risk criticality label`  |   Very Malicious 
 action_result.summary.lastSeen | string |  `recordedfuture evidence lastseen`  |  
 action_result.summary.riskSummary | string |  `recordedfuture risk summary`  |  
