@@ -38,6 +38,7 @@ ENTITY_LIST_STATUS_VALUE_TO_LITERAL_MAPPING = {
 PLAYBOOK_ALERT_CATEGORY_DISPLAY_MAPPING = {
     "domain_abuse": "Domain Abuse",
     "cyber_vulnerability": "Vulnerability",
+    "code_repo_leakage": "Code Repo Leakage",
 }
 
 
@@ -492,3 +493,59 @@ def entity_search_results(provides, all_app_runs, context):
             results.append({'param': result.get_param(), 'data': result_data})
 
     return 'entity_search_results.html'
+
+
+def links_search_results(provides, all_app_runs, context):
+    """Setup the view for links search results."""
+    context['results'] = results = []
+    for summary, action_results in all_app_runs:
+        for result in action_results:
+            result_data = result.get_data()
+            if result_data:
+                result_data = result_data[0]
+            results.append({'param': result.get_param(), 'data': result_data})
+    return 'links_search_results.html'
+
+
+def detection_rule_search_results(provides, all_app_runs, context):
+    """Setup the view for detection rule search results."""
+    context['results'] = results = []
+    for summary, action_results in all_app_runs:
+        for result in action_results:
+            result_data = result.get_data()
+            if result_data:
+                result_data = result_data[0]
+            results.append({'param': result.get_param(), 'data': result_data})
+    return 'detection_rule_search_results.html'
+
+
+def threat_actor_intelligence_results(provides, all_app_runs, context):
+    """Setup the view for threat actor intelligence results."""
+    context['results'] = results = []
+    for summary, action_results in all_app_runs:
+        for result in action_results:
+            result_data = result.get_data()
+            if result_data:
+                result_data = result_data[0]
+                result_data["categories"] = [category.get("name") for category in result_data.get("categories", [])]
+            results.append({'param': result.get_param(), 'data': result_data})
+    return 'threat_actor_intelligence_results.html'
+
+
+def threat_map_results(provides, all_app_runs, context):
+    """Setup the view for threat map results."""
+    context['results'] = results = []
+    for summary, action_results in all_app_runs:
+        for result in action_results:
+            result_data = result.get_data()
+            if result_data:
+                result_data = result_data[0]
+                for actor in result_data.get("threatActor", []):
+                    actor["categories"] = [category.get("name") for category in actor.get("categories", [])]
+            results.append({'param': result.get_param(), 'data': result_data})
+    return 'threat_map_results.html'
+
+
+def collective_insights_submission_results(provides, all_app_runs, context):
+    """Setup the view for collective insights submission."""
+    return 'collective_insights_submission_results.html'

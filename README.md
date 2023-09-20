@@ -2,7 +2,7 @@
 # Recorded Future For Splunk SOAR
 
 Publisher: Recorded Future, Inc  
-Connector Version: 4.2.0  
+Connector Version: 4.3.0  
 Product Vendor: Recorded Future, Inc  
 Product Name: Recorded Future App for Phantom  
 Product Version Supported (regex): ".\*"  
@@ -67,7 +67,7 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 **on_poll_alert_ruleids** |  optional  | string | Comma-separated list of alert rule IDs
 **on_poll_alert_severity** |  optional  | string | Severity to apply to the alert event
 **on_poll_playbook_alert_priority** |  optional  | string | Comma separated On Poll Playbook Alerts priority threshold (High,Moderate,Informational)
-**on_poll_playbook_alert_type** |  optional  | string | Comma-separated list of Playbook alert types. (domain_abuse, cyber_vulnerability are now supported)
+**on_poll_playbook_alert_type** |  optional  | string | Comma-separated list of Playbook alert types. (domain_abuse, cyber_vulnerability, code_repo_leakage are now supported)
 **on_poll_playbook_alert_start_time** |  optional  | string | Poll playbook alerts created after (date in ISO format: 2022-12-01T11:00:00+00)
 **max_count** |  optional  | numeric | Max events to ingest for scheduled polling
 **first_max_count** |  optional  | numeric | Max events to ingest for scheduled polling first time
@@ -101,6 +101,11 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 [playbook alert update](#action-playbook-alert-update) - Update Playbook alert  
 [playbook alert details](#action-playbook-alert-details) - Get Playbook alert details  
 [entity search](#action-entity-search) - Find entities based on a query  
+[links search](#action-links-search) - Search for links data  
+[detection rule search](#action-detection-rule-search) - Search for detection rule  
+[threat actor intelligence](#action-threat-actor-intelligence) - Get threat actor intelligence  
+[threat map](#action-threat-map) - Get threat map  
+[collective insights submit](#action-collective-insights-submit) - Enables contribute data, `collective insights`, into the Recorded Future Intelligence Cloud  
 [on poll](#action-on-poll) - Ingest alerts from Recorded Future  
 
 ## action: 'test connectivity'
@@ -460,6 +465,7 @@ action_result.data.\*.risk.rules | numeric |  `recordedfuture risk rules`  |
 action_result.data.\*.risk.score | numeric |  `recordedfuture risk score`  |  
 action_result.data.\*.timestamps.firstSeen | string |  `recordedfuture evidence firstseen`  |  
 action_result.data.\*.timestamps.lastSeen | string |  `recordedfuture evidence lastseen`  |  
+action_result.data.\*.ai_insights | string |  `recorded future AI Insights`  |   Here is some AI generated text related to this entity 
 action_result.summary.criticalityLabel | string |  `recordedfuture risk criticality label`  |   Very Malicious  Malicious  Suspicious  Unusual 
 action_result.summary.lastSeen | string |  `recordedfuture evidence lastseen`  |  
 action_result.summary.riskSummary | string |  `recordedfuture risk summary`  |  
@@ -573,6 +579,7 @@ action_result.data.\*.risk.rules | numeric |  `recordedfuture risk rules`  |
 action_result.data.\*.risk.score | numeric |  `recordedfuture risk score`  |  
 action_result.data.\*.timestamps.firstSeen | string |  `recordedfuture evidence firstseen`  |  
 action_result.data.\*.timestamps.lastSeen | string |  `recordedfuture evidence lastseen`  |  
+action_result.data.\*.ai_insights | string |  `recorded future AI Insights`  |   Here is some AI generated text related to this entity 
 action_result.summary.criticalityLabel | string |  `recordedfuture risk criticality label`  |  
 action_result.summary.lastSeen | string |  `recordedfuture evidence lastseen`  |  
 action_result.summary.riskSummary | string |  `recordedfuture risk summary`  |  
@@ -677,6 +684,7 @@ action_result.data.\*.risk.rules | numeric |  `recordedfuture risk rules`  |
 action_result.data.\*.risk.score | numeric |  `recordedfuture risk score`  |  
 action_result.data.\*.timestamps.firstSeen | string |  `recordedfuture evidence firstseen`  |  
 action_result.data.\*.timestamps.lastSeen | string |  `recordedfuture evidence lastseen`  |  
+action_result.data.\*.ai_insights | string |  `recorded future AI Insights`  |   Here is some AI generated text related to this entity 
 action_result.summary.criticalityLabel | string |  `recordedfuture risk criticality label`  |   Malicious 
 action_result.summary.lastSeen | string |  `recordedfuture evidence lastseen`  |  
 action_result.summary.riskSummary | string |  `recordedfuture risk summary`  |  
@@ -782,6 +790,7 @@ action_result.data.\*.threatLists.\*.name | string |  `recordedfuture threatlist
 action_result.data.\*.threatLists.\*.type | string |  `recordedfuture threatlist type`  |  
 action_result.data.\*.timestamps.firstSeen | string |  `recordedfuture evidence firstseen`  |  
 action_result.data.\*.timestamps.lastSeen | string |  `recordedfuture evidence lastseen`  |  
+action_result.data.\*.ai_insights | string |  `recorded future AI Insights`  |   Here is some AI generated text related to this entity 
 action_result.summary.criticalityLabel | string |  `recordedfuture risk criticality label`  |   Very Malicious 
 action_result.summary.lastSeen | string |  `recordedfuture evidence lastseen`  |  
 action_result.summary.riskSummary | string |  `recordedfuture risk summary`  |  
@@ -892,6 +901,7 @@ action_result.data.\*.risk.rules | numeric |  `recordedfuture risk rules`  |
 action_result.data.\*.risk.score | numeric |  `recordedfuture risk score`  |  
 action_result.data.\*.timestamps.firstSeen | string |  `recordedfuture evidence firstseen`  |  
 action_result.data.\*.timestamps.lastSeen | string |  `recordedfuture evidence lastseen`  |  
+action_result.data.\*.ai_insights | string |  `recorded future AI Insights`  |   Here is some AI generated text related to this entity 
 action_result.summary.criticalityLabel | string |  `recordedfuture risk criticality label`  |   Very Malicious 
 action_result.summary.lastSeen | string |  `recordedfuture evidence lastseen`  |  
 action_result.summary.riskSummary | string |  `recordedfuture risk summary`  |  
@@ -1204,7 +1214,7 @@ Read only: **True**
 #### Action Parameters
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
-**category** |  optional  | Playbook alert category (cyber_vulnerability, domain_abuse) | string | 
+**category** |  optional  | Playbook alert category (cyber_vulnerability, domain_abuse, code_repo_leakage) | string | 
 **status** |  optional  | Playbook alert status | string | 
 **priority** |  optional  | Playbook alert priority | string | 
 **from_date** |  optional  | Created after (date in ISO format: 2022-12-01T11:00:00+00) | string | 
@@ -1361,6 +1371,434 @@ action_result.parameter.name | string |  |
 action_result.data.\*.id | string |  |  
 action_result.data.\*.name | string |  |  
 action_result.data.\*.type | string |  |  
+action_result.summary | string |  |  
+action_result.message | string |  `recordedfuture result message`  |  
+summary.total_objects | numeric |  `recordedfuture total objects`  |   1 
+summary.total_objects_successful | numeric |  `recordedfuture total objects successful`  |   1   
+
+## action: 'links search'
+Search for links data
+
+Type: **investigate**  
+Read only: **True**
+
+#### Action Parameters
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**entity_id** |  optional  | Entity ID (Do not specify ID when use 'name'+'type') | string | 
+**entity_name** |  optional  | Entity name (can be used only with selected type) | string | 
+**entity_type** |  optional  | Entity type | string | 
+**source_type** |  optional  | Sources are grouped into two types, technical analysis and Insikt Group research. Specify either technical or insikt for the type | string | 
+**timeframe** |  optional  | Time range for when rules were triggered | string | 
+**technical_type** |  optional  | Technical link sources may be further filtered by specifying an event type (type:MalwareAnalysis) | string | 
+
+#### Action Output
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string |  `recordedfuture result status`  |   success  failed 
+action_result.parameter.entity_id | string |  |  
+action_result.parameter.entity_name | string |  |  
+action_result.parameter.entity_type | string |  |  
+action_result.parameter.source_type | string |  |  
+action_result.parameter.timeframe | string |  |  
+action_result.parameter.technical_type | string |  |  
+action_result.data.\*.entity.type | string |  `recordedfuture entity type`  |   type:IpAddress 
+action_result.data.\*.entity.id | string |  `recordedfuture entity id`  |   ip:8.8.8.8 
+action_result.data.\*.entity.name | string |  `recordedfuture entity name`  |   8.8.8.8 
+action_result.data.\*.links.IpAddress.\*.type | string |  `recordedfuture link type`  |   type:IpAddress 
+action_result.data.\*.links.IpAddress.\*.id | string |  `recordedfuture link id`  |   ip:8.8.8.8 
+action_result.data.\*.links.IpAddress.\*.name | string |  `recordedfuture link name`  |   8.8.8.8 
+action_result.data.\*.links.IpAddress.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.IpAddress.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.IpAddress.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.IpAddress.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.IpAddress.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.URL.\*.type | string |  `recordedfuture link type`  |   type:URL 
+action_result.data.\*.links.URL.\*.id | string |  `recordedfuture link id`  |   url:https:google.com 
+action_result.data.\*.links.URL.\*.name | string |  `recordedfuture link name`  |   https:google.com 
+action_result.data.\*.links.URL.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.URL.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.URL.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.URL.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.URL.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.InternetDomainName.\*.type | string |  `recordedfuture link type`  |   type:InternetDomainName 
+action_result.data.\*.links.InternetDomainName.\*.id | string |  `recordedfuture link id`  |   idn:avsvmcloud.com 
+action_result.data.\*.links.InternetDomainName.\*.name | string |  `recordedfuture link name`  |   avsvmcloud.com 
+action_result.data.\*.links.InternetDomainName.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.InternetDomainName.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.InternetDomainName.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.InternetDomainName.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.InternetDomainName.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.Hash.\*.type | string |  `recordedfuture link type`  |   type:Hash 
+action_result.data.\*.links.Hash.\*.id | string |  `recordedfuture link id`  |   hash:8c09f9146cd9f53a768baf1dea8718ae98d73d9f2528eb0a7e970f50411c318d 
+action_result.data.\*.links.Hash.\*.name | string |  `recordedfuture link name`  |   8c09f9146cd9f53a768baf1dea8718ae98d73d9f2528eb0a7e970f50411c318d 
+action_result.data.\*.links.Hash.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.Hash.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.Hash.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.Hash.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.Hash.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.CyberVulnerability.\*.type | string |  `recordedfuture link type`  |   type:CyberVulnerability 
+action_result.data.\*.links.CyberVulnerability.\*.id | string |  `recordedfuture link id`  |   FH4y7 
+action_result.data.\*.links.CyberVulnerability.\*.name | string |  `recordedfuture link name`  |   CVE-2021-38647 
+action_result.data.\*.links.CyberVulnerability.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.CyberVulnerability.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.CyberVulnerability.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.CyberVulnerability.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.CyberVulnerability.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.CyberThreatActorCategory.\*.type | string |  `recordedfuture link type`  |   type:CyberThreatActorCategory 
+action_result.data.\*.links.CyberThreatActorCategory.\*.id | string |  `recordedfuture link id`  |    
+action_result.data.\*.links.CyberThreatActorCategory.\*.name | string |  `recordedfuture link name`  |   8c09f9146cd9f53a768baf1dea8718ae98d73d9f2528eb0a7e970f50411c318d 
+action_result.data.\*.links.CyberThreatActorCategory.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.CyberThreatActorCategory.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.CyberThreatActorCategory.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.CyberThreatActorCategory.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.CyberThreatActorCategory.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.AttackVector.\*.type | string |  `recordedfuture link type`  |   type:AttackVector 
+action_result.data.\*.links.AttackVector.\*.id | string |  `recordedfuture link id`  |   Jsdy3 
+action_result.data.\*.links.AttackVector.\*.name | string |  `recordedfuture link name`  |   Malicious code 
+action_result.data.\*.links.AttackVector.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.AttackVector.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.AttackVector.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.AttackVector.\*.risk_score | string |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.AttackVector.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.Company.\*.type | string |  `recordedfuture link type`  |   type:Company 
+action_result.data.\*.links.Company.\*.id | string |  `recordedfuture link id`  |   jf7ff 
+action_result.data.\*.links.AttackVector.\*.name | string |  `recordedfuture link name`  |   Google 
+action_result.data.\*.links.Company.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.Company.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.Company.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.Company.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.Company.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.FileContent.\*.type | string |  `recordedfuture link type`  |   type:FileContent 
+action_result.data.\*.links.FileContent.\*.id | string |  `recordedfuture link id`  |   d37hhj 
+action_result.data.\*.links.FileContent.\*.name | string |  `recordedfuture link name`  |   8c09f9146cd9f53a768baf1dea8718ae98d73d9f2528eb0a7e970f50411c318d 
+action_result.data.\*.links.FileContent.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.FileContent.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.FileContent.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.FileContent.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.FileContent.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.Malware.\*.type | string |  `recordedfuture link type`  |   type:Hash 
+action_result.data.\*.links.Malware.\*.id | string |  `recordedfuture link id`  |   JLHNoH 
+action_result.data.\*.links.Malware.\*.name | string |  `recordedfuture link name`  |   Cobalt Strike 
+action_result.data.\*.links.Malware.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.Malware.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.Malware.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.Malware.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.Malware.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.MalwareCategory.\*.type | string |  `recordedfuture link type`  |   type:Hash 
+action_result.data.\*.links.MalwareCategory.\*.id | string |  `recordedfuture link id`  |   hash:8c09f9146cd9f53a768baf1dea8718ae98d73d9f2528eb0a7e970f50411c318d 
+action_result.data.\*.links.MalwareCategory.\*.name | string |  `recordedfuture link name`  |   8c09f9146cd9f53a768baf1dea8718ae98d73d9f2528eb0a7e970f50411c318d 
+action_result.data.\*.links.MalwareCategory.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.MalwareCategory.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.MalwareCategory.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.MalwareCategory.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.MalwareCategory.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.MalwareSignature.\*.type | string |  `recordedfuture link type`  |   type:Hash 
+action_result.data.\*.links.MalwareSignature.\*.id | string |  `recordedfuture link id`  |   hash:8c09f9146cd9f53a768baf1dea8718ae98d73d9f2528eb0a7e970f50411c318d 
+action_result.data.\*.links.MalwareSignature.\*.name | string |  `recordedfuture link name`  |   8c09f9146cd9f53a768baf1dea8718ae98d73d9f2528eb0a7e970f50411c318d 
+action_result.data.\*.links.MalwareSignature.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.MalwareSignature.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.MalwareSignature.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.MalwareSignature.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.MalwareSignature.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.MitreAttackIdentifier.\*.type | string |  `recordedfuture link type`  |   type:MitreAttackIdentifier 
+action_result.data.\*.links.MitreAttackIdentifier.\*.id | string |  `recordedfuture link id`  |   mitre:T1059.001 
+action_result.data.\*.links.MitreAttackIdentifier.\*.name | string |  `recordedfuture link name`  |   T1059.001 
+action_result.data.\*.links.MitreAttackIdentifier.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.MitreAttackIdentifier.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.MitreAttackIdentifier.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.MitreAttackIdentifier.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.MitreAttackIdentifier.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.Organization.\*.type | string |  `recordedfuture link type`  |   type:Organization 
+action_result.data.\*.links.Organization.\*.id | string |  `recordedfuture link id`  |   FJD7IK 
+action_result.data.\*.links.Organization.\*.name | string |  `recordedfuture link name`  |   Sichuan University 
+action_result.data.\*.links.Organization.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.Organization.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.Organization.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.Organization.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.Organization.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.Person.\*.type | string |  `recordedfuture link type`  |   type:Person 
+action_result.data.\*.links.Person.\*.id | string |  `recordedfuture link id`  |   F7FJ 
+action_result.data.\*.links.Person.\*.name | string |  `recordedfuture link name`  |   Some Person 
+action_result.data.\*.links.Person.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.Person.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.Person.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.Person.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.Person.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.Username.\*.type | string |  `recordedfuture link type`  |   type:Username 
+action_result.data.\*.links.Username.\*.id | string |  `recordedfuture link id`  |   KDJ8l 
+action_result.data.\*.links.Username.\*.name | string |  `recordedfuture link name`  |   noname 
+action_result.data.\*.links.Username.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.Username.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.Username.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.Username.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.Username.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.summary | string |  |  
+action_result.message | string |  `recordedfuture result message`  |  
+summary.total_objects | numeric |  `recordedfuture total objects`  |   1 
+summary.total_objects_successful | numeric |  `recordedfuture total objects successful`  |   1   
+
+## action: 'detection rule search'
+Search for detection rule
+
+Type: **investigate**  
+Read only: **True**
+
+#### Action Parameters
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**entity_id** |  optional  | Entity ID (Do not specify ID when use 'name'+'type') | string | 
+**entity_name** |  optional  | Entity name (can be used only with selected type) | string | 
+**entity_type** |  optional  | Entity type | string | 
+**rule_types** |  optional  | This is a comma separated list of the following values: 'yara', 'sigma', and 'snort'.  Values in this filter are applied as a logical 'OR' | string | 
+**title** |  optional  | Free text search for Insikt notes associated with detection rules | string | 
+
+#### Action Output
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string |  `recordedfuture result status`  |   success  failed 
+action_result.parameter.entity_id | string |  |  
+action_result.parameter.entity_name | string |  |  
+action_result.parameter.entity_type | string |  |  
+action_result.parameter.rule_types | string |  |  
+action_result.parameter.title | string |  |  
+action_result.data.\*.type | string |  `recordedfuture detection rule type`  |   sigma 
+action_result.data.\*.id | string |  `recordedfuture detection rule id`  |   doc:nhChac 
+action_result.data.\*.title | string |  `recordedfuture detection rule title`  |   Insikt Validated TTP: Hunting Brute Ratel C4 
+action_result.data.\*.created | string |  `recordedfuture detection rule created date`  |   2022-08-05T14:25:31.063Z 
+action_result.data.\*.updated | string |  `recordedfuture detection rule updated date`  |   2022-08-05T14:25:31.063Z 
+action_result.data.\*.description | string |  `recordedfuture detection rule description`  |   Brute Ratel C4 (BRc4) is a red team tool authored by security researcher.... 
+action_result.data.\*.rules.\*.content | string |  `recordedfuture detection file content`  |   title: MAL_Brute_Ratel_C4_DLL_Sideloading id:.... 
+action_result.data.\*.rules.\*.file_name | string |  `recordedfuture detection file name`  |   mal_brute_ratel_c4_dll_sideloading.yml 
+action_result.data.\*.rules.\*.entities.type | string |  `recordedfuture entity type`  |   type:IpAddress 
+action_result.data.\*.rules.\*.entities.id | string |  `recordedfuture entity id`  |   ip:8.8.8.8 
+action_result.data.\*.rules.\*.entities.name | string |  `recordedfuture entity name`  |   8.8.8.8 
+action_result.summary | string |  |  
+action_result.message | string |  `recordedfuture result message`  |  
+summary.total_objects | numeric |  `recordedfuture total objects`  |   1 
+summary.total_objects_successful | numeric |  `recordedfuture total objects successful`  |   1   
+
+## action: 'threat actor intelligence'
+Get threat actor intelligence
+
+Type: **investigate**  
+Read only: **True**
+
+#### Action Parameters
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**threat_actor** |  required  | Threat actor name to look up | string | 
+**links** |  required  | Add links data to a threat actor map data | boolean | 
+
+#### Action Output
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string |  `recordedfuture result status`  |   success  failed 
+action_result.parameter.threat_actor | string |  |  
+action_result.parameter.links | boolean |  |  
+action_result.data.\*.id | string |  `recordedfuture entity id`  |   L37nw- 
+action_result.data.\*.name | string |  `recordedfuture entity name`  |   APT28 
+action_result.data.\*.alias.\* | string |  `recordedfuture alias for entity`  |   Pawn Storm 
+action_result.data.\*.intent | numeric |  `recorded future threat actor intent score`  |   5 
+action_result.data.\*.opportunity | numeric |  `recorded future threat actor opportunity score`  |   95 
+action_result.data.\*.severity | string |  `recorded future threat actor severity`  |   High 
+action_result.data.\*.intelCard | string |  `recorded future threat actor intel card link`  |   https://app.recordedfuture.com/live/sc/entity/L37nw- 
+action_result.data.\*.links.IpAddress.\*.type | string |  `recordedfuture link type`  |   type:IpAddress 
+action_result.data.\*.links.IpAddress.\*.id | string |  `recordedfuture link id`  |   ip:8.8.8.8 
+action_result.data.\*.links.IpAddress.\*.name | string |  `recordedfuture link name`  |   8.8.8.8 
+action_result.data.\*.links.IpAddress.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.IpAddress.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.IpAddress.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.IpAddress.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.IpAddress.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.URL.\*.type | string |  `recordedfuture link type`  |   type:URL 
+action_result.data.\*.links.URL.\*.id | string |  `recordedfuture link id`  |   url:https:google.com 
+action_result.data.\*.links.URL.\*.name | string |  `recordedfuture link name`  |   https:google.com 
+action_result.data.\*.links.URL.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.URL.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.URL.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.URL.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.URL.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.InternetDomainName.\*.type | string |  `recordedfuture link type`  |   type:InternetDomainName 
+action_result.data.\*.links.InternetDomainName.\*.id | string |  `recordedfuture link id`  |   idn:avsvmcloud.com 
+action_result.data.\*.links.InternetDomainName.\*.name | string |  `recordedfuture link name`  |   avsvmcloud.com 
+action_result.data.\*.links.InternetDomainName.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.InternetDomainName.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.InternetDomainName.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.InternetDomainName.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.InternetDomainName.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.Hash.\*.type | string |  `recordedfuture link type`  |   type:Hash 
+action_result.data.\*.links.Hash.\*.id | string |  `recordedfuture link id`  |   hash:8c09f9146cd9f53a768baf1dea8718ae98d73d9f2528eb0a7e970f50411c318d 
+action_result.data.\*.links.Hash.\*.name | string |  `recordedfuture link name`  |   8c09f9146cd9f53a768baf1dea8718ae98d73d9f2528eb0a7e970f50411c318d 
+action_result.data.\*.links.Hash.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.Hash.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.Hash.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.Hash.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.Hash.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.CyberVulnerability.\*.type | string |  `recordedfuture link type`  |   type:CyberVulnerability 
+action_result.data.\*.links.CyberVulnerability.\*.id | string |  `recordedfuture link id`  |   FH4y7 
+action_result.data.\*.links.CyberVulnerability.\*.name | string |  `recordedfuture link name`  |   CVE-2021-38647 
+action_result.data.\*.links.CyberVulnerability.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.CyberVulnerability.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.CyberVulnerability.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.CyberVulnerability.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.CyberVulnerability.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.CyberThreatActorCategory.\*.type | string |  `recordedfuture link type`  |   type:CyberThreatActorCategory 
+action_result.data.\*.links.CyberThreatActorCategory.\*.id | string |  `recordedfuture link id`  |    
+action_result.data.\*.links.CyberThreatActorCategory.\*.name | string |  `recordedfuture link name`  |   8c09f9146cd9f53a768baf1dea8718ae98d73d9f2528eb0a7e970f50411c318d 
+action_result.data.\*.links.CyberThreatActorCategory.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.CyberThreatActorCategory.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.CyberThreatActorCategory.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.CyberThreatActorCategory.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.CyberThreatActorCategory.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.AttackVector.\*.type | string |  `recordedfuture link type`  |   type:AttackVector 
+action_result.data.\*.links.AttackVector.\*.id | string |  `recordedfuture link id`  |   Jsdy3 
+action_result.data.\*.links.AttackVector.\*.name | string |  `recordedfuture link name`  |   Malicious code 
+action_result.data.\*.links.AttackVector.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.AttackVector.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.AttackVector.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.AttackVector.\*.risk_score | string |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.AttackVector.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.Company.\*.type | string |  `recordedfuture link type`  |   type:Company 
+action_result.data.\*.links.Company.\*.id | string |  `recordedfuture link id`  |   jf7ff 
+action_result.data.\*.links.AttackVector.\*.name | string |  `recordedfuture link name`  |   Google 
+action_result.data.\*.links.Company.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.Company.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.Company.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.Company.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.Company.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.FileContent.\*.type | string |  `recordedfuture link type`  |   type:FileContent 
+action_result.data.\*.links.FileContent.\*.id | string |  `recordedfuture link id`  |   d37hhj 
+action_result.data.\*.links.FileContent.\*.name | string |  `recordedfuture link name`  |   8c09f9146cd9f53a768baf1dea8718ae98d73d9f2528eb0a7e970f50411c318d 
+action_result.data.\*.links.FileContent.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.FileContent.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.FileContent.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.FileContent.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.FileContent.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.Malware.\*.type | string |  `recordedfuture link type`  |   type:Hash 
+action_result.data.\*.links.Malware.\*.id | string |  `recordedfuture link id`  |   JLHNoH 
+action_result.data.\*.links.Malware.\*.name | string |  `recordedfuture link name`  |   Cobalt Strike 
+action_result.data.\*.links.Malware.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.Malware.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.Malware.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.Malware.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.Malware.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.MalwareCategory.\*.type | string |  `recordedfuture link type`  |   type:Hash 
+action_result.data.\*.links.MalwareCategory.\*.id | string |  `recordedfuture link id`  |   hash:8c09f9146cd9f53a768baf1dea8718ae98d73d9f2528eb0a7e970f50411c318d 
+action_result.data.\*.links.MalwareCategory.\*.name | string |  `recordedfuture link name`  |   8c09f9146cd9f53a768baf1dea8718ae98d73d9f2528eb0a7e970f50411c318d 
+action_result.data.\*.links.MalwareCategory.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.MalwareCategory.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.MalwareCategory.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.MalwareCategory.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.MalwareCategory.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.MalwareSignature.\*.type | string |  `recordedfuture link type`  |   type:Hash 
+action_result.data.\*.links.MalwareSignature.\*.id | string |  `recordedfuture link id`  |   hash:8c09f9146cd9f53a768baf1dea8718ae98d73d9f2528eb0a7e970f50411c318d 
+action_result.data.\*.links.MalwareSignature.\*.name | string |  `recordedfuture link name`  |   8c09f9146cd9f53a768baf1dea8718ae98d73d9f2528eb0a7e970f50411c318d 
+action_result.data.\*.links.MalwareSignature.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.MalwareSignature.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.MalwareSignature.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.MalwareSignature.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.MalwareSignature.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.MitreAttackIdentifier.\*.type | string |  `recordedfuture link type`  |   type:MitreAttackIdentifier 
+action_result.data.\*.links.MitreAttackIdentifier.\*.id | string |  `recordedfuture link id`  |   mitre:T1059.001 
+action_result.data.\*.links.MitreAttackIdentifier.\*.name | string |  `recordedfuture link name`  |   T1059.001 
+action_result.data.\*.links.MitreAttackIdentifier.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.MitreAttackIdentifier.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.MitreAttackIdentifier.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.MitreAttackIdentifier.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.MitreAttackIdentifier.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.Organization.\*.type | string |  `recordedfuture link type`  |   type:Organization 
+action_result.data.\*.links.Organization.\*.id | string |  `recordedfuture link id`  |   FJD7IK 
+action_result.data.\*.links.Organization.\*.name | string |  `recordedfuture link name`  |   Sichuan University 
+action_result.data.\*.links.Organization.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.Organization.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.Organization.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.Organization.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.Organization.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.Person.\*.type | string |  `recordedfuture link type`  |   type:Person 
+action_result.data.\*.links.Person.\*.id | string |  `recordedfuture link id`  |   F7FJ 
+action_result.data.\*.links.Person.\*.name | string |  `recordedfuture link name`  |   Some Person 
+action_result.data.\*.links.Person.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.Person.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.Person.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.Person.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.Person.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.links.Username.\*.type | string |  `recordedfuture link type`  |   type:Username 
+action_result.data.\*.links.Username.\*.id | string |  `recordedfuture link id`  |   KDJ8l 
+action_result.data.\*.links.Username.\*.name | string |  `recordedfuture link name`  |   noname 
+action_result.data.\*.links.Username.\*.source | string |  `recordedfuture link source`  |   technical 
+action_result.data.\*.links.Username.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
+action_result.data.\*.links.Username.\*.risk_level | numeric |  `recordedfuture link risk level`  |   1 
+action_result.data.\*.links.Username.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
+action_result.data.\*.links.Username.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
+action_result.data.\*.location.country | string |  `country location for the threat actor`  |   Ukraine 
+action_result.data.\*.ai_insights | string |  `recorded future AI Insights`  |   Here is some AI generated text related to this entity 
+action_result.summary | string |  |  
+action_result.message | string |  `recordedfuture result message`  |  
+summary.total_objects | numeric |  `recordedfuture total objects`  |   1 
+summary.total_objects_successful | numeric |  `recordedfuture total objects successful`  |   1   
+
+## action: 'threat map'
+Get threat map
+
+Type: **investigate**  
+Read only: **True**
+
+#### Action Parameters
+No parameters are required for this action
+
+#### Action Output
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string |  `recordedfuture result status`  |   success  failed 
+action_result.data.\*.threatActor.\*.id | string |  `recorded future threat actor id`  |   ny_8g4 
+action_result.data.\*.threatActor.\*.name | string |  `recorded future threat actor name`  |   BianLian Ransomware Group 
+action_result.data.\*.threatActor.\*.alias.\* | string |  `recorded future threat actor alias name`  |   Pawn Storm 
+action_result.data.\*.threatActor.\*.intent | numeric |  `recorded future threat actor intent score`  |   5 
+action_result.data.\*.threatActor.\*.opportunity | numeric |  `recorded future threat actor opportunity score`  |   95 
+action_result.data.\*.threatActor.\*.severity | string |  `recorded future threat actor severity`  |   High 
+action_result.data.\*.threatActor.\*.intelCard | string |  `recorded future threat actor intel card link`  |   https://app.recordedfuture.com/live/sc/entity/L37nw- 
+action_result.summary | string |  |  
+action_result.message | string |  `recordedfuture result message`  |  
+summary.total_objects | numeric |  `recordedfuture total objects`  |   1 
+summary.total_objects_successful | numeric |  `recordedfuture total objects successful`  |   1   
+
+## action: 'collective insights submit'
+Enables contribute data, `collective insights`, into the Recorded Future Intelligence Cloud
+
+Type: **investigate**  
+Read only: **True**
+
+#### Action Parameters
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**entity_name** |  required  | Entity value of the IOC itself | string | 
+**entity_type** |  required  | Entity Type value that can contain one of the enumerated list of values: ip, hash, domain, vulnerability, url | string | 
+**entity_field** |  optional  | Entity field used to describe characteristics about the IOC. Example: dstip | string | 
+**entity_source_type** |  optional  | Used to describe what log source the IOC came from.  Example: netscreen:firewall | string | 
+**event_id** |  optional  | Event unique id. Example: 31 | string | 
+**event_name** |  optional  | Title of the event related to the IOC. Example: Recorded Future Domain Abuse Alert | string | 
+**event_type** |  optional  | Attack vector associated with the incident. Example: C2, Phishing, splunk-detection-rule, ... etc) | string | 
+**mitre_codes** |  optional  | Comma-separated list of MITRE codes associated with the IOC. Example: T1055, T1064 | string | 
+**malware** |  optional  | Comma separated Malware associated with the IOCs. Example: Stuxnet, DUQU | string | 
+**timestamp** |  optional  | Timestamp in ISO format. Example: 2023-07-19T04:29:40 | string | 
+
+#### Action Output
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string |  `recordedfuture result status`  |   success  failed 
+action_result.parameter.entity_name | string |  |  
+action_result.parameter.entity_type | string |  |  
+action_result.parameter.entity_field | string |  |  
+action_result.parameter.entity_source_type | string |  |  
+action_result.parameter.event_id | string |  |  
+action_result.parameter.entity_field | string |  |  
+action_result.parameter.event_name | string |  |  
+action_result.parameter.event_type | string |  |  
+action_result.parameter.mitre_codes | string |  |  
+action_result.parameter.malware | string |  |  
+action_result.parameter.timestamp | string |  |  
+action_result.data | string |  |  
 action_result.summary | string |  |  
 action_result.message | string |  `recordedfuture result message`  |  
 summary.total_objects | numeric |  `recordedfuture total objects`  |   1 
