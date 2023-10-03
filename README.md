@@ -2,7 +2,7 @@
 # Recorded Future For Splunk SOAR
 
 Publisher: Recorded Future, Inc  
-Connector Version: 4.3.0  
+Connector Version: 4.3.1  
 Product Vendor: Recorded Future, Inc  
 Product Name: Recorded Future App for Phantom  
 Product Version Supported (regex): ".\*"  
