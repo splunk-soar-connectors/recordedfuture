@@ -1,6 +1,6 @@
 # File: recordedfuture_consts.py
 #
-# Copyright (c) Recorded Future, Inc, 2019-2023
+# Copyright (c) Recorded Future, Inc, 2019-2024
 #
 # This unpublished material is proprietary to Recorded Future. All
 # rights reserved. The methods and techniques described herein are
@@ -20,11 +20,11 @@
 # and limitations under the License.
 
 # Define your constants here
-version = '4.1.0'
-buildid = '321'
+version = "%RELEASE%"
+buildid = "%BUILDID%"
 
 # timeout for our http requests to bfi_phantom
-timeout = 300
+timeout = 63
 MAX_CONTAINERS = 100
 
 # These dicts map which path_info, which fields, what the Recorded Future
@@ -33,56 +33,56 @@ MAX_CONTAINERS = 100
 # (path_info template, fields, quote parameter)
 
 INTELLIGENCE_MAP = {
-    'ip': (
-        '/ip/%s',
+    "ip": (
+        "/ip/%s",
         [
-            'entity',
-            'risk',
-            'timestamps',
+            "entity",
+            "risk",
+            "timestamps",
             "threatLists",
             "intelCard",
             "metrics",
             "location",
             "relatedEntities",
         ],
-        'ip',
+        "ip",
         False,
     ),
-    'domain': (
-        '/domain/idn:%s',
+    "domain": (
+        "/domain/idn:%s",
         [
-            'entity',
-            'risk',
-            'timestamps',
+            "entity",
+            "risk",
+            "timestamps",
             "threatLists",
             "intelCard",
             "metrics",
             "relatedEntities",
         ],
-        'domain',
+        "domain",
         False,
     ),
-    'file': (
-        '/hash/%s',
+    "file": (
+        "/hash/%s",
         [
-            'entity',
-            'risk',
-            'timestamps',
+            "entity",
+            "risk",
+            "timestamps",
             "threatLists",
             "intelCard",
             "metrics",
             "hashAlgorithm",
             "relatedEntities",
         ],
-        'hash',
+        "hash",
         False,
     ),
-    'vulnerability': (
-        '/vulnerability/%s',
+    "vulnerability": (
+        "/vulnerability/%s",
         [
-            'entity',
-            'risk',
-            'timestamps',
+            "entity",
+            "risk",
+            "timestamps",
             "threatLists",
             "intelCard",
             "metrics",
@@ -90,13 +90,13 @@ INTELLIGENCE_MAP = {
             "nvdDescription",
             "relatedEntities",
         ],
-        'vulnerability',
+        "vulnerability",
         False,
     ),
-    'url': (
-        '/url/%s',
-        ['entity', 'risk', 'timestamps', "metrics", "relatedEntities"],
-        'url',
+    "url": (
+        "/url/%s",
+        ["entity", "risk", "timestamps", "metrics", "relatedEntities"],
+        "url",
         True,
     ),
 }
