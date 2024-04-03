@@ -86,7 +86,9 @@ def format_result(result, all_data=False):
     try:
         # assemble the string needed for an URL to Recorded Future portal
         if (
-            data and "risk" in retval["data"] and retval["data"]["risk"]["score"] is not None
+            data
+            and "risk" in retval["data"]
+            and retval["data"]["risk"]["score"] is not None
         ):
             if "domain" in retval["param"]:
                 retval["intelCard"] = APP_URL % ("idn", retval["param"]["domain"])
@@ -449,10 +451,10 @@ def playbook_alert_search_results(provides, all_app_runs, context):
                     search_result["status"] = RF_PLAYBOOK_STATUS_MAP.get(
                         search_result["status"], search_result["status"]
                     )
-                    search_result["category_display"] = (
-                        PLAYBOOK_ALERT_CATEGORY_DISPLAY_MAPPING.get(
-                            search_result["category"], search_result["category"]
-                        )
+                    search_result[
+                        "category_display"
+                    ] = PLAYBOOK_ALERT_CATEGORY_DISPLAY_MAPPING.get(
+                        search_result["category"], search_result["category"]
                     )
 
             results.append({"param": result.get_param(), "data": result_data})

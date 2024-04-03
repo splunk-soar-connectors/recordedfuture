@@ -23,9 +23,11 @@
 # Phantom App imports
 import base64
 import hashlib
+
 # noinspection PyCompatibility
 import ipaddress
 import json
+
 # Global imports
 import os
 import platform
@@ -40,13 +42,17 @@ from typing import Literal
 # Phantom App imports
 # noinspection PyUnresolvedReferences
 import phantom.app as phantom
+
 # noinspection PyUnresolvedReferences
 import phantom.vault as vault
 import requests
+
 # noinspection PyUnresolvedReferences
 from bs4 import BeautifulSoup, UnicodeDammit
+
 # noinspection PyUnresolvedReferences
 from phantom.action_result import ActionResult
+
 # noinspection PyUnresolvedReferences
 from phantom.base_connector import BaseConnector
 
