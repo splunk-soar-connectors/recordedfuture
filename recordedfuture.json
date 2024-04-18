@@ -5,13 +5,13 @@
     "publisher": "Recorded Future, Inc",
     "type": "reputation",
     "main_module": "recordedfuture_connector.py",
-    "app_version": "4.3.1",
+    "app_version": "4.3.2",
     "utctime_updated": "2022-05-30T07:33:58.826014Z",
     "package_name": "phantom_recordedfuture",
     "product_name": "Recorded Future App for Phantom",
     "product_vendor": "Recorded Future, Inc",
     "product_version_regex": ".*",
-    "min_phantom_version": "5.5.0",
+    "min_phantom_version": "6.1.1",
     "python_version": "3",
     "fips_compliant": true,
     "latest_tested_versions": [
@@ -20,7 +20,7 @@
     ],
     "logo": "logo_recordedfuture.svg",
     "logo_dark": "logo_recordedfuture_dark.svg",
-    "license": "Copyright (c) Recorded Future, Inc, 2019-2023",
+    "license": "Copyright (c) Recorded Future, Inc, 2019-2024",
     "contributors": [
         {
             "name": "Recorded Future - Premier Integrations",
@@ -9958,7 +9958,7 @@
             },
             {
                 "module": "soupsieve",
-                "input_file": "wheels/py3/soupsieve-2.4.1-py3-none-any.whl"
+                "input_file": "wheels/py3/soupsieve-2.5-py3-none-any.whl"
             }
         ]
     }

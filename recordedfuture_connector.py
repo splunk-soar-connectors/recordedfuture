@@ -1,6 +1,6 @@
 # File: recordedfuture_connector.py
 #
-# Copyright (c) Recorded Future, Inc, 2019-2023
+# Copyright (c) Recorded Future, Inc, 2019-2024
 #
 # This unpublished material is proprietary to Recorded Future. All
 # rights reserved. The methods and techniques described herein are
@@ -99,9 +99,9 @@ class RecordedfutureConnector(BaseConnector):
             for element in soup(["script", "style", "footer", "nav"]):
                 element.extract()
             error_text = soup.text
-            split_lines = error_text.split('\n')
+            split_lines = error_text.split("\n")
             split_lines = [x.strip() for x in split_lines if x.strip()]
-            error_text = '\n'.join(split_lines)
+            error_text = "\n".join(split_lines)
         except Exception as err:
             error_text = "Cannot parse error details: {0}".format(err)
 
@@ -111,7 +111,7 @@ class RecordedfutureConnector(BaseConnector):
             status_code, error_text
         )
 
-        message = message.replace('{', '{{').replace('}', '}}')
+        message = message.replace("{", "{{").replace("}", "}}")
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
@@ -126,30 +126,30 @@ class RecordedfutureConnector(BaseConnector):
         the returned structure is more or less rich.
         """
         resp_json = {
-            'data': {
-                'entity': {'name': '', 'type': None, 'id': None},
-                'timestamps': {'firstSeen': 'never', 'lastSeen': 'never'},
-                'risk': {
-                    'criticalityLabel': None,
-                    'rules': None,
-                    'evidenceDetails': [],
-                    'riskSummary': 'No information available.',
-                    'criticality': None,
-                    'riskString': '',
-                    'score': None,
+            "data": {
+                "entity": {"name": "", "type": None, "id": None},
+                "timestamps": {"firstSeen": "never", "lastSeen": "never"},
+                "risk": {
+                    "criticalityLabel": None,
+                    "rules": None,
+                    "evidenceDetails": [],
+                    "riskSummary": "No information available.",
+                    "criticality": None,
+                    "riskString": "",
+                    "score": None,
                 },
             }
         }
-        if 'intelCard' in fields:
-            resp_json['data']['intelCard'] = ''
-        if 'threatLists' in fields:
-            resp_json['data']['threatLists'] = []
-        if 'relatedEntities' in fields:
-            resp_json['data']['relatedEntities'] = []
-        if 'location' in fields:
-            resp_json['data']['location'] = {}
-        if 'metrics' in fields:
-            resp_json['data']['metrics'] = []
+        if "intelCard" in fields:
+            resp_json["data"]["intelCard"] = ""
+        if "threatLists" in fields:
+            resp_json["data"]["threatLists"] = []
+        if "relatedEntities" in fields:
+            resp_json["data"]["relatedEntities"] = []
+        if "location" in fields:
+            resp_json["data"]["location"] = {}
+        if "metrics" in fields:
+            resp_json["data"]["metrics"] = []
         return resp_json
 
     def _process_json_response(self, resp, action_result, **kwargs):
@@ -176,25 +176,25 @@ class RecordedfutureConnector(BaseConnector):
         # If an IOC has no data in Recorded Future's API it returns 404.
         # While this is correct in REST semantics it's not what our app
         # needs. We will create an empty response instead.
-        self.debug_print('_process_json_response kwargs: ', kwargs)
-        if 'fields' in kwargs.get('params', {}):
-            fields = kwargs['params']['fields'].split(',')
-            self.debug_print('_process_json_response fields: ', fields)
+        self.debug_print("_process_json_response kwargs: ", kwargs)
+        if "fields" in kwargs.get("params", {}):
+            fields = kwargs["params"]["fields"].split(",")
+            self.debug_print("_process_json_response fields: ", fields)
             if resp.status_code == 404:
                 resp_json = self._create_empty_response(fields)
 
                 return RetVal(phantom.APP_SUCCESS, resp_json)
 
-        msg = 'No data found'
+        msg = "No data found"
 
-        if resp_json.get('message'):
-            msg = resp_json.get('message')
+        if resp_json.get("message"):
+            msg = resp_json.get("message")
 
-        if resp_json.get('error').get('message'):
+        if resp_json.get("error").get("message"):
             if msg:
-                msg = "{} and {}".format(msg, resp_json.get('error').get('message'))
+                msg = "{} and {}".format(msg, resp_json.get("error").get("message"))
             else:
-                msg = resp_json.get('error').get('message')
+                msg = resp_json.get("error").get("message")
 
         # You should process the error returned in the json
         message = "Error from server. Status Code: {0} " "Data from server: {1}".format(
@@ -211,22 +211,22 @@ class RecordedfutureConnector(BaseConnector):
         """
         # store the r_text in debug data, it will get dumped in the logs if
         # the action fails
-        if hasattr(action_result, 'add_debug_data'):
-            action_result.add_debug_data({'r_status_code': resp.status_code})
-            action_result.add_debug_data({'r_text': resp.text})
-            action_result.add_debug_data({'r_headers': resp.headers})
+        if hasattr(action_result, "add_debug_data"):
+            action_result.add_debug_data({"r_status_code": resp.status_code})
+            action_result.add_debug_data({"r_text": resp.text})
+            action_result.add_debug_data({"r_headers": resp.headers})
 
         # Process each 'Content-Type' of response separately
 
         # Process a json response
-        if 'json' in resp.headers.get('Content-Type', ''):
+        if "json" in resp.headers.get("Content-Type", ""):
             return self._process_json_response(resp, action_result, **kwargs)
 
         # Process an HTML response, Do this no matter what the api talks.
         # There is a high chance of a PROXY in between phantom and the rest of
         # world, in case of errors, PROXY's return HTML, this function parses
         # the error and adds it to the action_result.
-        if 'html' in resp.headers.get('Content-Type', ''):
+        if "html" in resp.headers.get("Content-Type", ""):
             return self._process_html_response(resp, action_result)
 
         # it's not content-type that is to be parsed, handle an empty response
@@ -235,7 +235,7 @@ class RecordedfutureConnector(BaseConnector):
 
         # everything else is actually an error at this point
         error_msg = UnicodeDammit(
-            (resp.text.replace('{', '{{').replace('}', '}}'))
+            (resp.text.replace("{", "{{").replace("}", "}}"))
         ).unicode_markup
         message = (
             "Can't process response from server. Status Code: {0} "
@@ -250,24 +250,24 @@ class RecordedfutureConnector(BaseConnector):
         :return: error message
         """
 
-        error_code = 'Error code unavailable'
+        error_code = "Error code unavailable"
 
         try:
-            if hasattr(e, 'args'):
+            if hasattr(e, "args"):
                 if len(e.args) > 1:
                     error_code = e.args[0]
                     error_msg = e.args[1]
                 elif len(e.args) == 1:
                     error_msg = e.args[0]
             else:
-                error_msg = 'Unknown error occurred. Please check the asset configuration and|or action parameters.'
+                error_msg = "Unknown error occurred. Please check the asset configuration and|or action parameters."
         except Exception as err:
             error_msg = "An error occurred. Cannot parse error details: {0}".format(err)
 
         try:
             error_msg = UnicodeDammit(error_msg).unicode_markup
         except TypeError:
-            error_msg = 'Error occurred while connecting to the server. Please check the asset configuration and|or the action parameters.'
+            error_msg = "Error occurred while connecting to the server. Please check the asset configuration and|or the action parameters."
         except Exception as err:
             error_msg = "An error occurred. Cannot parse error details: {0}".format(err)
 
@@ -312,42 +312,42 @@ class RecordedfutureConnector(BaseConnector):
         # Create a HTTP_USER_AGENT header
         # container_id is added to track actions associated with an event in
         # order to improve the app
-        platform_id = 'Phantom_%s' % self.get_product_version()
+        platform_id = "Phantom_%s" % self.get_product_version()
 
         pdict = dict(
             app_name=os.path.basename(__file__),
             container_id=self.get_container_id(),
             os_id=platform.platform(),
-            pkg_name='phantom',
+            pkg_name="phantom",
             pkg_version=version,
             requests_id=requests.__version__,
             platform_id=platform_id,
         )
         user_agent_tplt = (
-            '{app_name}/{container_id} ({os_id}) '
-            '{pkg_name}/{pkg_version} '
-            'python-requests/{requests_id} ({platform_id})'
+            "{app_name}/{container_id} ({os_id}) "
+            "{pkg_name}/{pkg_version} "
+            "python-requests/{requests_id} ({platform_id})"
         )
         user_agent = user_agent_tplt.format(**pdict)
         # headers
-        api_key = config.get('recordedfuture_api_token')
-        my_headers = {'X-RFToken': api_key, 'User-Agent': user_agent}
+        api_key = config.get("recordedfuture_api_token")
+        my_headers = {"X-RFToken": api_key, "User-Agent": user_agent}
 
         # Ensure we log some useful data:
         # url:          shows if the url to ConnectAPI has been changed
         # kwargs:       shows fields and other keywords
         # fingerprint:  can be used to verify that the correct API key is used
-        self.debug_print('_make_rest_call url: {}'.format(url))
-        self.debug_print('_make_rest_call kwargs {}'.format(kwargs))
+        self.debug_print("_make_rest_call url: {}".format(url))
+        self.debug_print("_make_rest_call kwargs {}".format(kwargs))
         try:
             self.debug_print(
-                '_make_rest_call api key fingerprint: %s'
+                "_make_rest_call api key fingerprint: %s"
                 % hashlib.md5(api_key).hexdigest()[:6]  # nosemgrep
             )
         except Exception:
             self.debug_print(
-                '_make_rest_call exception: %s'
-                % hashlib.md5(api_key.encode('utf-8')).hexdigest()[:6]  # nosemgrep
+                "_make_rest_call exception: %s"
+                % hashlib.md5(api_key.encode("utf-8")).hexdigest()[:6]  # nosemgrep
             )
 
         # Make the call
@@ -355,7 +355,7 @@ class RecordedfutureConnector(BaseConnector):
             resp = request_func(
                 url,
                 headers=my_headers,
-                verify=config.get('recordedfuture_verify_ssl', False),
+                verify=config.get("recordedfuture_verify_ssl", False),
                 params=params,
                 timeout=timeout,
                 **kwargs,
@@ -385,7 +385,7 @@ class RecordedfutureConnector(BaseConnector):
             return RetVal(
                 action_result.set_status(
                     phantom.APP_ERROR,
-                    'Error Connecting to server. Details: Error code: 401 Unauthorised.',
+                    "Error Connecting to server. Details: Error code: 401 Unauthorised.",
                 ),
                 None,
             )
@@ -393,7 +393,7 @@ class RecordedfutureConnector(BaseConnector):
             return RetVal(
                 action_result.set_status(
                     phantom.APP_ERROR,
-                    'Error Connecting to server. Details: Error code: 403 Forbidden.',
+                    "Error Connecting to server. Details: Error code: 403 Forbidden.",
                 ),
                 None,
             )
@@ -401,7 +401,7 @@ class RecordedfutureConnector(BaseConnector):
             return RetVal(
                 action_result.set_status(
                     phantom.APP_ERROR,
-                    'Error Connecting to server. Details: Error code: 400 Bad Request.',
+                    "Error Connecting to server. Details: Error code: 400 Bad Request.",
                 ),
                 None,
             )
@@ -409,7 +409,7 @@ class RecordedfutureConnector(BaseConnector):
             return RetVal(
                 action_result.set_status(
                     phantom.APP_ERROR,
-                    'Error Connecting to server. Details: Error code: 404 Not Found.',
+                    "Error Connecting to server. Details: Error code: 404 Not Found.",
                 ),
                 resp,
             )
@@ -434,33 +434,33 @@ class RecordedfutureConnector(BaseConnector):
         # Also typically it does not add any data into an action_result either.
         # The status and progress messages are more important.
 
-        params = {'output-format': 'application/json'}
+        params = {"output-format": "application/json"}
 
         # make rest call - further info: https://docs.splunk.com/Documentation/Phantom/4.10/DevelopApps/Tutorial
         my_ret_val, response = self._make_rest_call(
-            '/helo', action_result, params=params
+            "/helo", action_result, params=params
         )
 
         if phantom.is_fail(my_ret_val):
-            self.save_progress('Connectivity test failed. API endpoint not reachable')
+            self.save_progress("Connectivity test failed. API endpoint not reachable")
             return action_result.get_status()
 
-        self.save_progress('Successful connection to the API')
+        self.save_progress("Successful connection to the API")
 
-        self.save_progress('Verifying Recorded Future API token')
+        self.save_progress("Verifying Recorded Future API token")
 
-        my_ret_val, response = self._make_rest_call('/config/info', action_result)
+        my_ret_val, response = self._make_rest_call("/config/info", action_result)
 
         # this is never run as we don't take care of a non-successful reply properly
         if phantom.is_fail(my_ret_val):
-            self.save_progress('Test Credentials Failed')
+            self.save_progress("Test Credentials Failed")
             return action_result.get_status()
 
         # Return success
-        self.save_progress('Token is accepted by the API')
+        self.save_progress("Token is accepted by the API")
 
         self.save_progress(
-            'Connectivity and credentials test passed. You may now close this window'
+            "Connectivity and credentials test passed. You may now close this window"
         )
         return action_result.set_status(phantom.APP_SUCCESS)
 
@@ -473,21 +473,21 @@ class RecordedfutureConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # Params for the API call
-        params = {'entity_type': entity_type, 'ioc': ioc}
+        params = {"entity_type": entity_type, "ioc": ioc}
 
         # make rest call
         my_ret_val, response = self._make_rest_call(
-            '/lookup/intelligence', action_result, json=params, method='post'
+            "/lookup/intelligence", action_result, json=params, method="post"
         )
 
         self.debug_print(
-            '_handle_intelligence',
+            "_handle_intelligence",
             {
-                'path_info': ("%s/%s", entity_type, ioc),
-                'action_result': action_result,
-                'params': params,
-                'my_ret_val': my_ret_val,
-                'response': response,
+                "path_info": ("%s/%s", entity_type, ioc),
+                "action_result": action_result,
+                "params": params,
+                "my_ret_val": my_ret_val,
+                "response": response,
             },
         )
 
@@ -495,25 +495,25 @@ class RecordedfutureConnector(BaseConnector):
         if phantom.is_fail(my_ret_val) and response.status_code == 404:
             action_result.set_status(
                 phantom.APP_SUCCESS,
-                status_message="Recorded Future does not have any information on this indicator."
+                status_message="Recorded Future does not have any information on this indicator.",
             )
 
         if phantom.is_fail(my_ret_val):
             return action_result.get_status()
 
-        res = response.get('data', {})
+        res = response.get("data", {})
         action_result.add_data(res)
-        self.save_progress('Added data with keys {}', list(res.keys()))
+        self.save_progress("Added data with keys {}", list(res.keys()))
 
         # Update the summary
         summary = action_result.get_summary()
-        if 'risk' in res:
-            if 'criticalityLabel' in res['risk']:
-                summary['criticalityLabel'] = res['risk']['criticalityLabel']
-            if 'riskSummary' in res['risk']:
-                summary['riskSummary'] = res['risk']['riskSummary']
-        if res.get('timestamps', {}).get('lastSeen', ''):
-            summary['lastSeen'] = res['timestamps']['lastSeen']
+        if "risk" in res:
+            if "criticalityLabel" in res["risk"]:
+                summary["criticalityLabel"] = res["risk"]["criticalityLabel"]
+            if "riskSummary" in res["risk"]:
+                summary["riskSummary"] = res["risk"]["riskSummary"]
+        if res.get("timestamps", {}).get("lastSeen", ""):
+            summary["lastSeen"] = res["timestamps"]["lastSeen"]
 
         action_result.set_summary(summary)
 
@@ -531,18 +531,18 @@ class RecordedfutureConnector(BaseConnector):
 
         # make rest call
         my_ret_val, response = self._make_rest_call(
-            '/lookup/reputation', action_result, json=params, method='post'
+            "/lookup/reputation", action_result, json=params, method="post"
         )
 
         self.debug_print(
-            '_handle_reputation',
+            "_handle_reputation",
             {
-                'path_info': entity,
-                'endpoint': '/lookup/reputation',
-                'action_result': action_result,
-                'params': params,
-                'my_ret_val': my_ret_val,
-                'response': response,
+                "path_info": entity,
+                "endpoint": "/lookup/reputation",
+                "action_result": action_result,
+                "params": params,
+                "my_ret_val": my_ret_val,
+                "response": response,
             },
         )
 
@@ -555,39 +555,39 @@ class RecordedfutureConnector(BaseConnector):
 
         summary = action_result.get_summary()
 
-        if entity.get('id', ''):
-            summary['risk score'] = entity.get('riskscore', '')
-            summary['risk summary'] = '%s rules triggered of %s' % (
-                entity.get('rulecount', ''),
-                entity.get('maxrules', ''),
+        if entity.get("id", ""):
+            summary["risk score"] = entity.get("riskscore", "")
+            summary["risk summary"] = "%s rules triggered of %s" % (
+                entity.get("rulecount", ""),
+                entity.get("maxrules", ""),
             )
         else:
             summary = action_result.get_summary()
-            summary['riskscore'] = 'No information available.'
+            summary["riskscore"] = "No information available."
 
         action_result.add_data(entity)
         action_result.set_summary(summary)
-        self.save_progress('Added data with keys {}', list(entity.keys()))
+        self.save_progress("Added data with keys {}", list(entity.keys()))
 
         # Return success, no need to set the message, only the status BaseConnector
         # will create a textual message based off the summary dictionary
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_list_actions(self, param, action: str):
-        if action == 'search':
+        if action == "search":
             return self._handle_list_search(param)
-        if action == 'details':
-            return self._handle_list_details(param, info_type='info')
-        if action == 'entities':
-            return self._handle_list_details(param, info_type='entities')
-        if action == 'status':
-            return self._handle_list_details(param, info_type='status')
-        if action == 'create':
+        if action == "details":
+            return self._handle_list_details(param, info_type="info")
+        if action == "entities":
+            return self._handle_list_details(param, info_type="entities")
+        if action == "status":
+            return self._handle_list_details(param, info_type="status")
+        if action == "create":
             return self._handle_list_create(param)
-        if action == 'add-entity':
-            return self._handle_manage_list_entities(param, action='add')
-        if action == 'remove-entity':
-            return self._handle_manage_list_entities(param, action='remove')
+        if action == "add-entity":
+            return self._handle_manage_list_entities(param, action="add")
+        if action == "remove-entity":
+            return self._handle_manage_list_entities(param, action="remove")
 
     def _get_list_action_result(self, action_result, my_ret_val, response_obj):
         if phantom.is_fail(my_ret_val):
@@ -604,27 +604,27 @@ class RecordedfutureConnector(BaseConnector):
             "In action handler for: {0}".format(self.get_action_identifier())
         )
         action_result = self.add_action_result(ActionResult(param))
-        params = {'limit': param.get('limit', 25)}
-        entity_types = param.get('entity_types', '')
-        list_name = param.get('list_name', '')
+        params = {"limit": param.get("limit", 25)}
+        entity_types = param.get("entity_types", "")
+        list_name = param.get("list_name", "")
         if entity_types:
-            params['type'] = UnicodeDammit(escape(entity_types)).unicode_markup
+            params["type"] = UnicodeDammit(escape(entity_types)).unicode_markup
         if list_name:
-            params['name'] = UnicodeDammit(escape(list_name)).unicode_markup
+            params["name"] = UnicodeDammit(escape(list_name)).unicode_markup
 
         my_ret_val, response = self._make_rest_call(
-            '/list/search', action_result, json=params, method='post'
+            "/list/search", action_result, json=params, method="post"
         )
 
         self.debug_print(
-            '_handle_list_search',
+            "_handle_list_search",
             {
-                'endpoint': '/list/search',
-                'action_result': action_result,
-                'param': param,
-                'params': params,
-                'my_ret_val': my_ret_val,
-                'response': response,
+                "endpoint": "/list/search",
+                "action_result": action_result,
+                "param": param,
+                "params": params,
+                "my_ret_val": my_ret_val,
+                "response": response,
             },
         )
 
@@ -641,20 +641,20 @@ class RecordedfutureConnector(BaseConnector):
         )
         action_result = self.add_action_result(ActionResult(param))
         params = {
-            'name': UnicodeDammit(param['list_name']).unicode_markup,
-            'type': UnicodeDammit(param['entity_types']).unicode_markup,
+            "name": UnicodeDammit(param["list_name"]).unicode_markup,
+            "type": UnicodeDammit(param["entity_types"]).unicode_markup,
         }
         my_ret_val, response = self._make_rest_call(
-            '/list/create', action_result, json=params, method='post'
+            "/list/create", action_result, json=params, method="post"
         )
         self.debug_print(
-            '_handle_list_create',
+            "_handle_list_create",
             {
-                'endpoint': '/list/create',
-                'action_result': action_result,
-                'params': params,
-                'my_ret_val': my_ret_val,
-                'response': response,
+                "endpoint": "/list/create",
+                "action_result": action_result,
+                "params": params,
+                "my_ret_val": my_ret_val,
+                "response": response,
             },
         )
         return self._get_list_action_result(
@@ -673,15 +673,15 @@ class RecordedfutureConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(param))
         list_id = UnicodeDammit(param["list_id"]).unicode_markup
         my_ret_val, response = self._make_rest_call(
-            f'/list/{list_id}/{info_type}', action_result, method='get'
+            f"/list/{list_id}/{info_type}", action_result, method="get"
         )
         self.debug_print(
-            '_handle_list_details',
+            "_handle_list_details",
             {
-                'endpoint': f'/list/{list_id}/{info_type}',
-                'action_result': action_result,
-                'my_ret_val': my_ret_val,
-                'response': response,
+                "endpoint": f"/list/{list_id}/{info_type}",
+                "action_result": action_result,
+                "my_ret_val": my_ret_val,
+                "response": response,
             },
         )
         return self._get_list_action_result(
@@ -694,33 +694,33 @@ class RecordedfutureConnector(BaseConnector):
             "In action handler for: {0}".format(self.get_action_identifier())
         )
         action_result = self.add_action_result(ActionResult(param))
-        list_id = UnicodeDammit(param['list_id']).unicode_markup
-        entity_id = param.get('entity_id')
-        entity_name = param.get('entity_name')
-        entity_type = param.get('entity_type')
+        list_id = UnicodeDammit(param["list_id"]).unicode_markup
+        entity_id = param.get("entity_id")
+        entity_name = param.get("entity_name")
+        entity_type = param.get("entity_type")
 
         data = {
-            'name': UnicodeDammit(escape(entity_name)).unicode_markup
+            "name": UnicodeDammit(escape(entity_name)).unicode_markup
             if entity_name
             else None,
-            'type': UnicodeDammit(escape(entity_type)).unicode_markup
+            "type": UnicodeDammit(escape(entity_type)).unicode_markup
             if entity_type
             else None,
-            'id': UnicodeDammit(escape(entity_id)).unicode_markup
+            "id": UnicodeDammit(escape(entity_id)).unicode_markup
             if entity_id
             else None,
         }
         my_ret_val, response = self._make_rest_call(
-            f'/list/{list_id}/entity/{action}', action_result, json=data, method='post'
+            f"/list/{list_id}/entity/{action}", action_result, json=data, method="post"
         )
         self.debug_print(
-            '_handle_manage_list_entities',
+            "_handle_manage_list_entities",
             {
-                'endpoint': f'/list/{list_id}/entity/{action}',
-                'action_result': action_result,
-                'my_ret_val': my_ret_val,
-                'response': response,
-                'data': data,
+                "endpoint": f"/list/{list_id}/entity/{action}",
+                "action_result": action_result,
+                "my_ret_val": my_ret_val,
+                "response": response,
+                "data": data,
             },
         )
         return self._get_list_action_result(
@@ -737,61 +737,61 @@ class RecordedfutureConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # Params for the API call
-        param_types = ['ip', 'domain', 'url', 'hash']
+        param_types = ["ip", "domain", "url", "hash"]
         params = {}
         for i in param.keys():
             if i in param_types:
                 params[i] = [
                     UnicodeDammit(entry.strip()).unicode_markup
-                    for entry in param.get(i).split(',')
-                    if entry != 'None'
+                    for entry in param.get(i).split(",")
+                    if entry != "None"
                 ]
 
-        self.save_progress('Params found to triage: %s' % params)
+        self.save_progress("Params found to triage: %s" % params)
 
         # make rest call
         my_ret_val, response = self._make_rest_call(
-            '/lookup/triage/%s?%s'
+            "/lookup/triage/%s?%s"
             % (
-                UnicodeDammit(param['threat_context']).unicode_markup,
-                '&format=phantom',
+                UnicodeDammit(param["threat_context"]).unicode_markup,
+                "&format=phantom",
             ),
             action_result,
             json=params,
-            method='post',
+            method="post",
         )
 
         self.debug_print(
-            '_handle_triage',
+            "_handle_triage",
             {
-                'path_info': 'triage',
-                'endpoint': '/lookup/triage',
-                'action_result': action_result,
-                'params': params,
-                'my_ret_val': my_ret_val,
-                'response': response,
+                "path_info": "triage",
+                "endpoint": "/lookup/triage",
+                "action_result": action_result,
+                "params": params,
+                "my_ret_val": my_ret_val,
+                "response": response,
             },
         )
 
-        self.save_progress('Obtained API response')
+        self.save_progress("Obtained API response")
 
         if phantom.is_fail(my_ret_val):
             return action_result.get_status()
 
         # there will always be a response with data, how best represent this?
         summary = action_result.get_summary()
-        if response.get('verdict', ''):
-            summary['assessment'] = 'Suspected to be malicious'
-            summary['riskscore'] = response.get('triage_riskscore', '')
-        elif not response.get('entities', []):
-            summary['assessment'] = 'No information available'
+        if response.get("verdict", ""):
+            summary["assessment"] = "Suspected to be malicious"
+            summary["riskscore"] = response.get("triage_riskscore", "")
+        elif not response.get("entities", []):
+            summary["assessment"] = "No information available"
         else:
-            summary['assessment'] = 'Not found to be malicious'
-            summary['riskscore'] = response.get('triage_riskscore', '')
+            summary["assessment"] = "Not found to be malicious"
+            summary["riskscore"] = response.get("triage_riskscore", "")
 
         action_result.add_data(response)
         action_result.set_summary(summary)
-        self.save_progress('Added data with keys {}', response.keys())
+        self.save_progress("Added data with keys {}", response.keys())
 
         # Return success, no need to set the message, only the status BaseConnector
         # will create a textual message based off the summary dictionary
@@ -807,47 +807,47 @@ class RecordedfutureConnector(BaseConnector):
 
         # make rest call
         my_ret_val, response = self._make_rest_call(
-            '/config/triage/contexts', action_result
+            "/config/triage/contexts", action_result
         )
 
         self.debug_print(
-            '_handle_list_contexts',
+            "_handle_list_contexts",
             {
-                'action_result': action_result,
-                'my_ret_val': my_ret_val,
-                'response': response,
+                "action_result": action_result,
+                "my_ret_val": my_ret_val,
+                "response": response,
             },
         )
 
         if phantom.is_fail(my_ret_val):
-            self.save_progress('API call to retrieve triage contexts failed.')
+            self.save_progress("API call to retrieve triage contexts failed.")
             return action_result.get_status()
 
         if response:
-            self.save_progress('Added data with keys {}', list(response.keys()))
+            self.save_progress("Added data with keys {}", list(response.keys()))
 
             summary = action_result.get_summary()
-            summary_statement = ''
+            summary_statement = ""
             for triage_context in list(response.keys()):
                 # Assemble summary
-                if summary_statement == '':
+                if summary_statement == "":
                     summary_statement = triage_context
                 else:
-                    summary_statement = summary_statement + ', ' + triage_context
+                    summary_statement = summary_statement + ", " + triage_context
 
                 action_result.add_data(
                     {
-                        'context': triage_context,
-                        'name': response[triage_context].get('name'),
-                        'datagroup': response[triage_context].get('datagroup'),
+                        "context": triage_context,
+                        "name": response[triage_context].get("name"),
+                        "datagroup": response[triage_context].get("datagroup"),
                     }
                 )
 
-            summary['contexts_available_for_threat_assessment'] = summary_statement
+            summary["contexts_available_for_threat_assessment"] = summary_statement
 
         else:
-            self.save_progress('API call failed to retrieve any information.')
-            summary = 'API call to retrieve triage contexts failed'
+            self.save_progress("API call failed to retrieve any information.")
+            summary = "API call to retrieve triage contexts failed"
 
         action_result.set_summary(summary)
 
@@ -857,7 +857,7 @@ class RecordedfutureConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _write_file_to_vault(self, container, file_data, file_name):
-        file_path = os.path.join('/opt/splunk-soar/vault/tmp', file_name)
+        file_path = os.path.join("/opt/splunk-soar/vault/tmp", file_name)
         with open(file_path, "wb") as file:
             file.write(file_data)
             _, message, _ = vault.vault_add(
@@ -871,7 +871,7 @@ class RecordedfutureConnector(BaseConnector):
 
     def _add_screenshots_to_container(self, container, screenshots):
         for screenshot in screenshots:
-            file_name = f'{uuid.uuid4()}.png'
+            file_name = f"{uuid.uuid4()}.png"
             file_data = base64.b64decode(screenshot)
             self._write_file_to_vault(container, file_data, file_name)
 
@@ -880,48 +880,49 @@ class RecordedfutureConnector(BaseConnector):
         params = {}
 
         if self.is_poll_now():
-            param['max_count'] = param.get('container_count', MAX_CONTAINERS)
+            param["max_count"] = param.get("container_count", MAX_CONTAINERS)
             params["from_date"] = None
         else:
             if not config.get("on_poll_playbook_alert_type"):
                 return []
             # Different number of max containers if first run
-            if self._state.get('first_run', True):
+            if self._state.get("first_run", True):
                 # set the config to _not_ first run hereafter
-                self._state['first_run'] = False
-                param['max_count'] = config.get('first_max_count', MAX_CONTAINERS)
+                self._state["first_run"] = False
+                param["max_count"] = config.get("first_max_count", MAX_CONTAINERS)
                 self.save_progress("First time Ingestion detected.")
                 params["from_date"] = config.get("on_poll_playbook_alert_start_time")
             else:
-                param['max_count'] = config.get('max_count', MAX_CONTAINERS)
+                param["max_count"] = config.get("max_count", MAX_CONTAINERS)
                 # For all the runs after tge first one we get alerts filtered by update_data instead of create_date.
                 params["last_updated_date"] = self._state.get(
                     "last_playbook_alerts_fetch_time"
                 ) or config.get("on_poll_playbook_alert_start_time")
 
         # Asset Settings in Asset Configuration allows a negative number
-        if int(param['max_count']) <= 0:
-            param['max_count'] = MAX_CONTAINERS
+        if int(param["max_count"]) <= 0:
+            param["max_count"] = MAX_CONTAINERS
 
         # Prepare the REST call to get all alerts within the timeframe and with status New
-        params['state'] = self._state
-        params['limit'] = param.get('max_count', 100)
-        params['categories'] = [
+        params["state"] = self._state
+        params["limit"] = param.get("max_count", 100)
+        params["categories"] = [
             el.strip()
             for el in config.get("on_poll_playbook_alert_type", "").split(",")
             if el.strip()
         ]
-        params['priorities'] = [
-            el.strip()
-            for el in config["on_poll_playbook_alert_priority"].split(",")
-        ] if config.get("on_poll_playbook_alert_priority") else None
+        params["priorities"] = (
+            [el.strip() for el in config["on_poll_playbook_alert_priority"].split(",")]
+            if config.get("on_poll_playbook_alert_priority")
+            else None
+        )
 
         # Make the rest call
         my_ret_val, containers = self._make_rest_call(
-            '/playbook_alert/on_poll',
+            "/playbook_alert/on_poll",
             action_result,
             json=params,
-            method='post',
+            method="post",
         )
         # Something went wrong
         if phantom.is_fail(my_ret_val):
@@ -954,9 +955,9 @@ class RecordedfutureConnector(BaseConnector):
                 )
 
         action_result.set_status(phantom.APP_SUCCESS)
-        self._state['last_playbook_alerts_fetch_time'] = datetime.now().isoformat()
+        self._state["last_playbook_alerts_fetch_time"] = datetime.now().isoformat()
 
-        if not config.get('on_poll_alert_ruleids'):
+        if not config.get("on_poll_alert_ruleids"):
             return action_result.get_status()
 
         containers = self._on_poll_alerts(param, config, action_result)
@@ -976,17 +977,17 @@ class RecordedfutureConnector(BaseConnector):
             # description has string in the format -> "Container created from alert {alert_id}"
             # we get alert_id from it.
             params = [
-                {'id': container['description'].split(' ')[4], 'status': 'Pending'}
+                {"id": container["description"].split(" ")[4], "status": "Pending"}
             ]
             my_ret_val, response = self._make_rest_call(
-                '/alert/update', action_result, json=params, method='post'
+                "/alert/update", action_result, json=params, method="post"
             )
 
             # Something went wrong
             if phantom.is_fail(my_ret_val):
                 return action_result.get_status()
 
-        self._state['start_time'] = time.time()
+        self._state["start_time"] = time.time()
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
@@ -994,56 +995,56 @@ class RecordedfutureConnector(BaseConnector):
         """Polling for triggered alerts given a list of rule IDs."""
 
         # obtain the list of rule ids to use to obtain alerts
-        list_of_rules = config.get('on_poll_alert_ruleids')
+        list_of_rules = config.get("on_poll_alert_ruleids")
         if not list_of_rules:
             self.save_progress("Need to specify Alert Rule IDs use for polling")
             return action_result.set_status(phantom.APP_ERROR)
-        rule_list = [x.strip() for x in list_of_rules.split(',')]
+        rule_list = [x.strip() for x in list_of_rules.split(",")]
 
         if self.is_poll_now():
-            param['max_count'] = param.get('container_count', MAX_CONTAINERS)
+            param["max_count"] = param.get("container_count", MAX_CONTAINERS)
             timeframe = ""
         else:
             # Different number of max containers if first run
-            if self._state.get('first_run', True):
+            if self._state.get("first_run", True):
                 # set the config to _not_ first run hereafter
-                self._state['first_run'] = False
-                param['max_count'] = config.get('first_max_count', MAX_CONTAINERS)
+                self._state["first_run"] = False
+                param["max_count"] = config.get("first_max_count", MAX_CONTAINERS)
                 self.save_progress("First time Ingestion detected.")
                 timeframe = ""
             else:
-                param['max_count'] = config.get('max_count', MAX_CONTAINERS)
+                param["max_count"] = config.get("max_count", MAX_CONTAINERS)
                 # calculate time since last fetch
                 interval = (
-                    ceil((time.time() - self._state.get('start_time')) / 3600) + 3
+                    ceil((time.time() - self._state.get("start_time")) / 3600) + 3
                 )
-                timeframe = f'-{interval}h to now'
+                timeframe = f"-{interval}h to now"
 
         # Asset Settings in Asset Configuration allows a negative number
-        if int(param['max_count']) <= 0:
-            param['max_count'] = MAX_CONTAINERS
+        if int(param["max_count"]) <= 0:
+            param["max_count"] = MAX_CONTAINERS
 
         # Prepare the REST call to get all alerts within the timeframe and with status New
         params = {
-            'triggered': timeframe,
-            'rules': rule_list,
-            'severity': config.get('on_poll_alert_severity'),
-            'limit': param.get('max_count', 100),
+            "triggered": timeframe,
+            "rules": rule_list,
+            "severity": config.get("on_poll_alert_severity"),
+            "limit": param.get("max_count", 100),
         }
 
         # Make the rest call
         my_ret_val, containers = self._make_rest_call(
-            '/alert/on_poll',
+            "/alert/on_poll",
             action_result,
             json=params,
-            method='post',
+            method="post",
         )
         # Something went wrong
         if phantom.is_fail(my_ret_val):
             return action_result.get_status()
 
         # sort the containers to get the oldest first
-        containers.sort(key=lambda k: k['triggered'], reverse=False)
+        containers.sort(key=lambda k: k["triggered"], reverse=False)
 
         # if necessary truncate the list of containers TODO need to fix other issue first
         # if len(containers) > param['max_count'] + 1:
@@ -1062,27 +1063,27 @@ class RecordedfutureConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # Required values can be accessed directly
-        rule_id = UnicodeDammit(param['rule_id']).unicode_markup
-        timeframe = UnicodeDammit(param['timeframe']).unicode_markup
+        rule_id = UnicodeDammit(param["rule_id"]).unicode_markup
+        timeframe = UnicodeDammit(param["timeframe"]).unicode_markup
         assert rule_id is not None
         assert timeframe is not None
 
         # Prepare the REST call
-        params = {'triggered': timeframe}
+        params = {"triggered": timeframe}
 
         # Make rest call
         my_ret_val, response = self._make_rest_call(
-            f'/alert/rule/{rule_id}', action_result, params=params
+            f"/alert/rule/{rule_id}", action_result, params=params
         )
 
         self.debug_print(
-            '_handle_alert_search',
+            "_handle_alert_search",
             {
-                'path_info': f'/alert/rule/{rule_id}',
-                'action_result': action_result,
-                'params': params,
-                'my_ret_val': my_ret_val,
-                'response': response,
+                "path_info": f"/alert/rule/{rule_id}",
+                "action_result": action_result,
+                "params": params,
+                "my_ret_val": my_ret_val,
+                "response": response,
             },
         )
 
@@ -1092,38 +1093,38 @@ class RecordedfutureConnector(BaseConnector):
 
         # Setup summary
         summary = action_result.get_summary()
-        summary['total_number_of_alerts'] = response['counts'].get('total', 0)
-        summary['alerts_returned'] = response['counts'].get('returned', 0)
+        summary["total_number_of_alerts"] = response["counts"].get("total", 0)
+        summary["alerts_returned"] = response["counts"].get("returned", 0)
 
         # No results can be non existing rule id or just that, no results...
-        if response['counts']['total'] == 0:
+        if response["counts"]["total"] == 0:
             action_result.set_summary(summary)
             return action_result.set_status(
                 phantom.APP_SUCCESS,
-                'No alerts triggered from rule %s '
+                "No alerts triggered from rule %s "
                 'within timerange "%s"' % (rule_id, timeframe),
             )
 
         # Add info about the rule to summary and action_result['data']
-        summary['rule_name'] = response['data']['results'][0]['rule']['name']
-        summary['rule_id'] = response['data']['results'][0]['rule']['id']
+        summary["rule_name"] = response["data"]["results"][0]["rule"]["name"]
+        summary["rule_id"] = response["data"]["results"][0]["rule"]["id"]
         action_result.set_summary(summary)
 
         # For each alert that match the rule id/timerange search details
         # are fetched and added.
         alerts = []
-        for alert in response['data']['results']:
-            self.save_progress('In alert loop: %s' % alert)
-            url2 = '/alert/lookup/%s' % alert['id']
+        for alert in response["data"]["results"]:
+            self.save_progress("In alert loop: %s" % alert)
+            url2 = "/alert/lookup/%s" % alert["id"]
             ret_val2, response2 = self._make_rest_call(url2, action_result)
             self.debug_print(
-                '_handle_alert_search',
+                "_handle_alert_search",
                 {
-                    'path_info': url2,
-                    'action_result': action_result,
-                    'params': params,
-                    'my_ret_val': ret_val2,
-                    'response': response2,
+                    "path_info": url2,
+                    "action_result": action_result,
+                    "params": params,
+                    "my_ret_val": ret_val2,
+                    "response": response2,
                 },
             )
             # Something went wrong
@@ -1134,11 +1135,11 @@ class RecordedfutureConnector(BaseConnector):
             alerts.append(response2)
             self.save_progress(
                 'Alert: "%s" triggered "%s"'
-                % (response2['title'], response2['triggered'])
+                % (response2["title"], response2["triggered"])
             )
 
         action_result.add_data(
-            {'rule': response['data']['results'][0]['rule'], 'alerts': alerts}
+            {"rule": response["data"]["results"][0]["rule"], "alerts": alerts}
         )
 
         # Return success, no need to set the message, only the status
@@ -1155,20 +1156,20 @@ class RecordedfutureConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # Required values can be accessed directly
-        alert_id = UnicodeDammit(param['alert_id']).unicode_markup
+        alert_id = UnicodeDammit(param["alert_id"]).unicode_markup
 
         # Make rest call
         my_ret_val, response = self._make_rest_call(
-            f'/alert/lookup/{alert_id}', action_result
+            f"/alert/lookup/{alert_id}", action_result
         )
 
         self.debug_print(
-            '_handle_alert_lookup',
+            "_handle_alert_lookup",
             {
-                'path_info': f'/alert/lookup/{alert_id}',
-                'action_result': action_result,
-                'my_ret_val': my_ret_val,
-                'response': response,
+                "path_info": f"/alert/lookup/{alert_id}",
+                "action_result": action_result,
+                "my_ret_val": my_ret_val,
+                "response": response,
             },
         )
 
@@ -1181,8 +1182,8 @@ class RecordedfutureConnector(BaseConnector):
         summary = action_result.get_summary()
 
         # Add info about the rule to summary and action_result['data'] TODO format date
-        summary['alert_title'] = response.get('title', '')
-        summary['triggered'] = response.get('triggered', '')
+        summary["alert_title"] = response.get("title", "")
+        summary["triggered"] = response.get("triggered", "")
         action_result.set_summary(summary)
 
         # Return success, no need to set the message, only the status
@@ -1201,25 +1202,25 @@ class RecordedfutureConnector(BaseConnector):
 
         params = [
             {
-                'id': UnicodeDammit(param.get('alert_id', '')).unicode_markup,
-                'status': UnicodeDammit(param.get('alert_status', '')).unicode_markup,
-                'note': UnicodeDammit(param.get('alert_note', '')).unicode_markup,
+                "id": UnicodeDammit(param.get("alert_id", "")).unicode_markup,
+                "status": UnicodeDammit(param.get("alert_status", "")).unicode_markup,
+                "note": UnicodeDammit(param.get("alert_note", "")).unicode_markup,
             }
         ]
 
         # Make rest call
         my_ret_val, response = self._make_rest_call(
-            '/alert/update', action_result, json=params, method='post'
+            "/alert/update", action_result, json=params, method="post"
         )
 
         self.debug_print(
-            '_handle_alert_update',
+            "_handle_alert_update",
             {
-                'path_info': 'alert/update',
-                'action_result': action_result,
-                'params': params,
-                'my_ret_val': my_ret_val,
-                'response': response,
+                "path_info": "alert/update",
+                "action_result": action_result,
+                "params": params,
+                "my_ret_val": my_ret_val,
+                "response": response,
             },
         )
 
@@ -1228,15 +1229,15 @@ class RecordedfutureConnector(BaseConnector):
             return action_result.get_status()
 
         # Setup response including summary
-        res = response.get('success', '')
+        res = response.get("success", "")
         action_result.add_data(res[0])
         summary = action_result.get_summary()
 
-        if response.get('success', ''):
-            summary['update'] = 'Successful'
+        if response.get("success", ""):
+            summary["update"] = "Successful"
         else:
-            summary['update'] = 'Not successful'
-            summary['reason'] = response['error'].get('reason', '')
+            summary["update"] = "Not successful"
+            summary["reason"] = response["error"].get("reason", "")
         action_result.set_summary(summary)
 
         # Return success, no need to set the message, only the status
@@ -1252,30 +1253,30 @@ class RecordedfutureConnector(BaseConnector):
         # the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        self.save_progress('DEBUG: started fetching rules')
+        self.save_progress("DEBUG: started fetching rules")
 
         # Prepare the REST call
-        if not UnicodeDammit(param.get('rule_search', '')).unicode_markup:
-            params = {'limit': 100}
+        if not UnicodeDammit(param.get("rule_search", "")).unicode_markup:
+            params = {"limit": 100}
         else:
             params = {
-                'freetext': UnicodeDammit(param.get('rule_search', '')).unicode_markup,
-                'limit': 100,
+                "freetext": UnicodeDammit(param.get("rule_search", "")).unicode_markup,
+                "limit": 100,
             }
 
         # make rest call
         my_ret_val, response = self._make_rest_call(
-            '/config/alert/rules', action_result, params=params
+            "/config/alert/rules", action_result, params=params
         )
 
         self.debug_print(
-            '_handle_alert_rule_search',
+            "_handle_alert_rule_search",
             {
-                'path_info': 'config/alert/rules',
-                'action_result': action_result,
-                'params': params,
-                'my_ret_val': my_ret_val,
-                'response': response,
+                "path_info": "config/alert/rules",
+                "action_result": action_result,
+                "params": params,
+                "my_ret_val": my_ret_val,
+                "response": response,
             },
         )
 
@@ -1285,15 +1286,15 @@ class RecordedfutureConnector(BaseConnector):
 
         # Now post process the data
         rule_ids = []
-        for result in response['data']['results']:
-            action_result.add_data({'id': result['id'], 'name': result['title']})
-            rule_ids.append(result['id'])
+        for result in response["data"]["results"]:
+            action_result.add_data({"id": result["id"], "name": result["title"]})
+            rule_ids.append(result["id"])
 
         # Summary
         summary = action_result.get_summary()
-        summary['rules_returned'] = response['counts']['returned']
-        summary['total_number_of_rules'] = response['counts']['total']
-        summary['rule_id_list'] = ','.join(rule_ids)
+        summary["rules_returned"] = response["counts"]["returned"]
+        summary["total_number_of_rules"] = response["counts"]["total"]
+        summary["rule_id_list"] = ",".join(rule_ids)
         action_result.set_summary(summary)
 
         # Return success, no need to set the message, only the status
@@ -1308,37 +1309,37 @@ class RecordedfutureConnector(BaseConnector):
         # the action for this param
         action_result = self.add_action_result(ActionResult(param))
         params = {
-            'categories': [
-                category.strip() for category in param['category'].split(",")
+            "categories": [
+                category.strip() for category in param["category"].split(",")
             ]
-            if 'category' in param
+            if "category" in param
             else None,
-            'statuses': [RF_PLAYBOOK_STATUS_MAP.get(param['status'])]
-            if 'status' in param
+            "statuses": [RF_PLAYBOOK_STATUS_MAP.get(param["status"])]
+            if "status" in param
             else None,
-            'priorities': [UnicodeDammit(param['priority']).unicode_markup]
-            if 'priority' in param
+            "priorities": [UnicodeDammit(param["priority"]).unicode_markup]
+            if "priority" in param
             else None,
-            'limit': param.get('limit', 100),
-            'from_date': UnicodeDammit(param.get('from_date', '')).unicode_markup,
-            'last_updated_date': UnicodeDammit(
-                param.get('last_updated_date', '')
+            "limit": param.get("limit", 100),
+            "from_date": UnicodeDammit(param.get("from_date", "")).unicode_markup,
+            "last_updated_date": UnicodeDammit(
+                param.get("last_updated_date", "")
             ).unicode_markup,
         }
         params = {key: value for key, value in params.items() if value}
         # make rest call
         my_ret_val, response = self._make_rest_call(
-            '/playbook_alert/search', action_result, json=params, method="post"
+            "/playbook_alert/search", action_result, json=params, method="post"
         )
 
         self.debug_print(
-            '_handle_playbook_alert_search',
+            "_handle_playbook_alert_search",
             {
-                'path_info': '/playbook_alert/search',
-                'action_result': action_result,
-                'params': params,
-                'my_ret_val': my_ret_val,
-                'response': response,
+                "path_info": "/playbook_alert/search",
+                "action_result": action_result,
+                "params": params,
+                "my_ret_val": my_ret_val,
+                "response": response,
             },
         )
 
@@ -1368,12 +1369,12 @@ class RecordedfutureConnector(BaseConnector):
         )
 
         self.debug_print(
-            '_handle_playbook_alert_details',
+            "_handle_playbook_alert_details",
             {
-                'path_info': f'/playbook_alert/domain_abuse/{param["alert_id"]}',
-                'action_result': action_result,
-                'my_ret_val': my_ret_val,
-                'response': response,
+                "path_info": f'/playbook_alert/domain_abuse/{param["alert_id"]}',
+                "action_result": action_result,
+                "my_ret_val": my_ret_val,
+                "response": response,
             },
         )
 
@@ -1389,7 +1390,7 @@ class RecordedfutureConnector(BaseConnector):
 
     def _handle_playbook_alert_update(self, param):
         self.save_progress(
-            'In action handler for: {0}'.format(self.get_action_identifier())
+            "In action handler for: {0}".format(self.get_action_identifier())
         )
 
         # Add an action result object to self (BaseConnector) to represent
@@ -1397,11 +1398,11 @@ class RecordedfutureConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(param))
 
         params = {
-            'priority': UnicodeDammit(param.get('priority', '')).unicode_markup,
-            'status': UnicodeDammit(
-                RF_PLAYBOOK_STATUS_MAP.get(param.get('status'), '')
+            "priority": UnicodeDammit(param.get("priority", "")).unicode_markup,
+            "status": UnicodeDammit(
+                RF_PLAYBOOK_STATUS_MAP.get(param.get("status"), "")
             ).unicode_markup,
-            'log_message': UnicodeDammit(param.get('log_message', '')).unicode_markup,
+            "log_message": UnicodeDammit(param.get("log_message", "")).unicode_markup,
         }
         params = {key: value for key, value in params.items() if value}
 
@@ -1414,12 +1415,12 @@ class RecordedfutureConnector(BaseConnector):
         )
 
         self.debug_print(
-            '_handle_playbook_alert_update',
+            "_handle_playbook_alert_update",
             {
-                'path_info': f'/playbook_alert/{param["alert_id"]}',
-                'action_result': action_result,
-                'my_ret_val': my_ret_val,
-                'response': response,
+                "path_info": f'/playbook_alert/{param["alert_id"]}',
+                "action_result": action_result,
+                "my_ret_val": my_ret_val,
+                "response": response,
             },
         )
         # Handle failure
@@ -1441,26 +1442,26 @@ class RecordedfutureConnector(BaseConnector):
         # the action for this param
         action_result = self.add_action_result(ActionResult(param))
         params = {
-            'name': UnicodeDammit(param['name']).unicode_markup,
-            'type': UnicodeDammit(param['entity_type']).unicode_markup
-            if 'entity_type' in param
+            "name": UnicodeDammit(param["name"]).unicode_markup,
+            "type": UnicodeDammit(param["entity_type"]).unicode_markup
+            if "entity_type" in param
             else None,
-            'limit': param.get('limit', 10),
+            "limit": param.get("limit", 10),
         }
         params = {key: value for key, value in params.items() if value}
         # make rest call
         my_ret_val, response = self._make_rest_call(
-            '/entity/search', action_result, json=params, method="post"
+            "/entity/search", action_result, json=params, method="post"
         )
 
         self.debug_print(
-            '_handle_entities_search',
+            "_handle_entities_search",
             {
-                'path_info': '/entity/search',
-                'action_result': action_result,
-                'params': params,
-                'my_ret_val': my_ret_val,
-                'response': response,
+                "path_info": "/entity/search",
+                "action_result": action_result,
+                "params": params,
+                "my_ret_val": my_ret_val,
+                "response": response,
             },
         )
 
@@ -1483,29 +1484,29 @@ class RecordedfutureConnector(BaseConnector):
         # the action for this param
         action_result = self.add_action_result(ActionResult(param))
         params = {
-            'entity_id': UnicodeDammit(param['entity_id']).unicode_markup
-            if 'entity_id' in param
+            "entity_id": UnicodeDammit(param["entity_id"]).unicode_markup
+            if "entity_id" in param
             else None,
-            'entity_name': UnicodeDammit(param['entity_name']).unicode_markup
-            if 'entity_name' in param
+            "entity_name": UnicodeDammit(param["entity_name"]).unicode_markup
+            if "entity_name" in param
             else None,
-            'entity_type': UnicodeDammit(param['entity_type']).unicode_markup
-            if 'entity_type' in param
+            "entity_type": UnicodeDammit(param["entity_type"]).unicode_markup
+            if "entity_type" in param
             else None,
-            "timeframe": UnicodeDammit(param['timeframe']).unicode_markup
-            if 'timeframe' in param
+            "timeframe": UnicodeDammit(param["timeframe"]).unicode_markup
+            if "timeframe" in param
             else "-90d",
-            "technical_type": UnicodeDammit(param['technical_type']).unicode_markup
-            if 'technical_type' in param
+            "technical_type": UnicodeDammit(param["technical_type"]).unicode_markup
+            if "technical_type" in param
             else None,
-            'source_type': UnicodeDammit(param['source_type']).unicode_markup
-            if 'source_type' in param
+            "source_type": UnicodeDammit(param["source_type"]).unicode_markup
+            if "source_type" in param
             else None,
         }
         params = {key: value for key, value in params.items() if value}
         # make rest call
         my_ret_val, response = self._make_rest_call(
-            '/links/search', action_result, json=params, method="post"
+            "/links/search", action_result, json=params, method="post"
         )
         # Handle failure
         if phantom.is_fail(my_ret_val):
@@ -1516,13 +1517,13 @@ class RecordedfutureConnector(BaseConnector):
         action_result.add_data(response)
         action_result.set_summary(summary)
         self.debug_print(
-            '_handle_links_search',
+            "_handle_links_search",
             {
-                'path_info': '/links/search',
-                'action_result': action_result,
-                'params': params,
-                'my_ret_val': my_ret_val,
-                'response': response,
+                "path_info": "/links/search",
+                "action_result": action_result,
+                "params": params,
+                "my_ret_val": my_ret_val,
+                "response": response,
             },
         )
         return action_result.set_status(phantom.APP_SUCCESS)
@@ -1536,26 +1537,26 @@ class RecordedfutureConnector(BaseConnector):
         # the action for this param
         action_result = self.add_action_result(ActionResult(param))
         params = {
-            'entity_id': UnicodeDammit(param['entity_id']).unicode_markup
-            if 'entity_id' in param
+            "entity_id": UnicodeDammit(param["entity_id"]).unicode_markup
+            if "entity_id" in param
             else None,
-            'entity_name': UnicodeDammit(param['entity_name']).unicode_markup
-            if 'entity_name' in param
+            "entity_name": UnicodeDammit(param["entity_name"]).unicode_markup
+            if "entity_name" in param
             else None,
-            'entity_type': UnicodeDammit(param['entity_type']).unicode_markup
-            if 'entity_type' in param
+            "entity_type": UnicodeDammit(param["entity_type"]).unicode_markup
+            if "entity_type" in param
             else None,
-            "rule_types": UnicodeDammit(param['rule_types']).unicode_markup
-            if 'rule_types' in param
+            "rule_types": UnicodeDammit(param["rule_types"]).unicode_markup
+            if "rule_types" in param
             else None,
-            "title": UnicodeDammit(param['title']).unicode_markup
-            if 'title' in param
+            "title": UnicodeDammit(param["title"]).unicode_markup
+            if "title" in param
             else None,
         }
         params = {key: value for key, value in params.items() if value}
         # make rest call
         my_ret_val, response = self._make_rest_call(
-            '/detection_rule/search', action_result, json=params, method="post"
+            "/detection_rule/search", action_result, json=params, method="post"
         )
         # Handle failure
         if phantom.is_fail(my_ret_val):
@@ -1574,13 +1575,13 @@ class RecordedfutureConnector(BaseConnector):
         action_result.add_data(response)
         action_result.set_summary(summary)
         self.debug_print(
-            '_handle_detection_rule_search',
+            "_handle_detection_rule_search",
             {
-                'path_info': '/detection_rule/search',
-                'action_result': action_result,
-                'params': params,
-                'my_ret_val': my_ret_val,
-                'response': response,
+                "path_info": "/detection_rule/search",
+                "action_result": action_result,
+                "params": params,
+                "my_ret_val": my_ret_val,
+                "response": response,
             },
         )
         return action_result.set_status(phantom.APP_SUCCESS)
@@ -1594,12 +1595,12 @@ class RecordedfutureConnector(BaseConnector):
         # the action for this param
         action_result = self.add_action_result(ActionResult(param))
         params = {
-            'threat_actor': UnicodeDammit(param['threat_actor']).unicode_markup,
-            'links': param['links'],
+            "threat_actor": UnicodeDammit(param["threat_actor"]).unicode_markup,
+            "links": param["links"],
         }
         # make rest call
         my_ret_val, response = self._make_rest_call(
-            '/threat/map/actors', action_result, json=params, method="post"
+            "/threat/map/actors", action_result, json=params, method="post"
         )
         # Handle failure
         if phantom.is_fail(my_ret_val):
@@ -1610,13 +1611,13 @@ class RecordedfutureConnector(BaseConnector):
         action_result.add_data(response)
         action_result.set_summary(summary)
         self.debug_print(
-            '_handle_threat_actor_intelligence',
+            "_handle_threat_actor_intelligence",
             {
-                'path_info': '/threat/map/actors',
-                'action_result': action_result,
-                'params': params,
-                'my_ret_val': my_ret_val,
-                'response': response,
+                "path_info": "/threat/map/actors",
+                "action_result": action_result,
+                "params": params,
+                "my_ret_val": my_ret_val,
+                "response": response,
             },
         )
         return action_result.set_status(phantom.APP_SUCCESS)
@@ -1631,7 +1632,7 @@ class RecordedfutureConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(param))
         # make rest call
         my_ret_val, response = self._make_rest_call(
-            '/threat/map', action_result, method="get"
+            "/threat/map", action_result, method="get"
         )
         # Handle failure
         if phantom.is_fail(my_ret_val):
@@ -1642,12 +1643,12 @@ class RecordedfutureConnector(BaseConnector):
         action_result.add_data(response)
         action_result.set_summary(summary)
         self.debug_print(
-            '_handle_threat_map',
+            "_handle_threat_map",
             {
-                'path_info': '/threat/map',
-                'action_result': action_result,
-                'my_ret_val': my_ret_val,
-                'response': response,
+                "path_info": "/threat/map",
+                "action_result": action_result,
+                "my_ret_val": my_ret_val,
+                "response": response,
             },
         )
         return action_result.set_status(phantom.APP_SUCCESS)
@@ -1661,41 +1662,43 @@ class RecordedfutureConnector(BaseConnector):
         # the action for this param
         action_result = self.add_action_result(ActionResult(param))
         params = {
-            'entity_name': UnicodeDammit(param['entity_name']).unicode_markup
-            if 'entity_name' in param
+            "entity_name": UnicodeDammit(param["entity_name"]).unicode_markup
+            if "entity_name" in param
             else None,
-            'entity_type': UnicodeDammit(param['entity_type']).unicode_markup
-            if 'entity_type' in param
+            "entity_type": UnicodeDammit(param["entity_type"]).unicode_markup
+            if "entity_type" in param
             else None,
-            'entity_field': UnicodeDammit(param['entity_field']).unicode_markup
-            if 'entity_field' in param
+            "entity_field": UnicodeDammit(param["entity_field"]).unicode_markup
+            if "entity_field" in param
             else None,
-            "entity_source_type": UnicodeDammit(param['entity_source_type']).unicode_markup
-            if 'entity_source_type' in param
+            "entity_source_type": UnicodeDammit(
+                param["entity_source_type"]
+            ).unicode_markup
+            if "entity_source_type" in param
             else None,
-            "event_id": UnicodeDammit(param['event_id']).unicode_markup
-            if 'event_id' in param
+            "event_id": UnicodeDammit(param["event_id"]).unicode_markup
+            if "event_id" in param
             else None,
-            "event_name": UnicodeDammit(param['event_name']).unicode_markup
-            if 'event_name' in param
+            "event_name": UnicodeDammit(param["event_name"]).unicode_markup
+            if "event_name" in param
             else None,
-            "event_type": UnicodeDammit(param['event_type']).unicode_markup
-            if 'event_type' in param
+            "event_type": UnicodeDammit(param["event_type"]).unicode_markup
+            if "event_type" in param
             else None,
-            "mitre_codes": UnicodeDammit(param['mitre_codes']).unicode_markup
-            if 'mitre_codes' in param
+            "mitre_codes": UnicodeDammit(param["mitre_codes"]).unicode_markup
+            if "mitre_codes" in param
             else None,
-            "malware": UnicodeDammit(param['malware']).unicode_markup
-            if 'malware' in param
+            "malware": UnicodeDammit(param["malware"]).unicode_markup
+            if "malware" in param
             else None,
-            "timestamp": UnicodeDammit(param['timestamp']).unicode_markup
-            if 'timestamp' in param
+            "timestamp": UnicodeDammit(param["timestamp"]).unicode_markup
+            if "timestamp" in param
             else None,
         }
         params = {key: value for key, value in params.items() if value}
         # make rest call
         my_ret_val, response = self._make_rest_call(
-            '/collective-insights/detections', action_result, json=params, method="post"
+            "/collective-insights/detections", action_result, json=params, method="post"
         )
         # Handle failure
         if phantom.is_fail(my_ret_val):
@@ -1706,12 +1709,12 @@ class RecordedfutureConnector(BaseConnector):
         action_result.add_data(response)
         action_result.set_summary(summary)
         self.debug_print(
-            '_handle_collective_insights_submission',
+            "_handle_collective_insights_submission",
             {
-                'path_info': '/collective-insights/detections',
-                'action_result': action_result,
-                'my_ret_val': my_ret_val,
-                'response': response,
+                "path_info": "/collective-insights/detections",
+                "action_result": action_result,
+                "my_ret_val": my_ret_val,
+                "response": response,
             },
         )
         return action_result.set_status(phantom.APP_SUCCESS)
@@ -1722,89 +1725,89 @@ class RecordedfutureConnector(BaseConnector):
 
         # Get the action that we are supposed to execute for this App Run
         action_id = self.get_action_identifier()
-        self.debug_print('DEBUG: action_id = %s' % action_id)
+        self.debug_print("DEBUG: action_id = %s" % action_id)
 
         # Try to split on _ in order to handle reputation/intelligence and
         # ip/domain/file/vulnerability/url permutation.
-        if len(action_id.split('_')) == 2:
-            entity_type, operation_type = action_id.split('_')
+        if len(action_id.split("_")) == 2:
+            entity_type, operation_type = action_id.split("_")
         else:
             entity_type, operation_type = None, None
         self.debug_print(
-            'DEBUG: entity_type, operation_type = %s, %s'
+            "DEBUG: entity_type, operation_type = %s, %s"
             % (entity_type, operation_type)
         )
 
         # Switch depending on action
-        if action_id == 'test_connectivity':
+        if action_id == "test_connectivity":
             my_ret_val = self._handle_test_connectivity(param)
 
-        elif operation_type == 'intelligence':
+        elif operation_type == "intelligence":
             omap = INTELLIGENCE_MAP
             path_info_tmplt, fields, tag, do_quote = omap[entity_type]
             param_tag = UnicodeDammit(param[tag]).unicode_markup
             my_ret_val = self._handle_intelligence(param, param_tag, entity_type)
-        elif operation_type == 'reputation':
+        elif operation_type == "reputation":
             # phantom entity type file has to be changed to hash
-            if entity_type == 'file':
-                tag = 'hash'
+            if entity_type == "file":
+                tag = "hash"
             else:
                 tag = entity_type
             param_tag = UnicodeDammit(param[tag]).unicode_markup
             my_ret_val = self._handle_reputation(param, tag, param_tag)
 
-        elif action_id == 'threat_assessment':
+        elif action_id == "threat_assessment":
             # todo: need to check the in-parameters
             my_ret_val = self._handle_triage(param)
 
-        elif action_id == 'list_contexts':
+        elif action_id == "list_contexts":
             # todo: need to check the in-parameters
             my_ret_val = self._handle_list_contexts(param)
 
-        elif action_id == 'alert_rule_search':
-            self.debug_print('DEBUG: started fetching rules')
+        elif action_id == "alert_rule_search":
+            self.debug_print("DEBUG: started fetching rules")
             my_ret_val = self._handle_alert_rule_search(param)
 
-        elif action_id == 'alert_search':
+        elif action_id == "alert_search":
             my_ret_val = self._handle_alert_search(param)
 
-        elif action_id == 'alert_lookup':
+        elif action_id == "alert_lookup":
             my_ret_val = self._handle_alert_lookup(param)
 
-        elif action_id == 'alert_update':
+        elif action_id == "alert_update":
             my_ret_val = self._handle_alert_update(param)
 
-        elif action_id == 'on_poll':
+        elif action_id == "on_poll":
             my_ret_val = self._on_poll(param)
 
-        elif entity_type == 'list':
+        elif entity_type == "list":
             my_ret_val = self._handle_list_actions(param, operation_type)
 
-        elif action_id == 'playbook_alerts_search':
+        elif action_id == "playbook_alerts_search":
             my_ret_val = self._handle_playbook_alerts_search(param)
 
-        elif action_id == 'update_playbook_alert':
+        elif action_id == "update_playbook_alert":
             my_ret_val = self._handle_playbook_alert_update(param)
 
-        elif action_id == 'playbook_alert_details':
+        elif action_id == "playbook_alert_details":
             my_ret_val = self._handle_playbook_alert_details(param)
 
-        elif action_id == 'entity_search':
+        elif action_id == "entity_search":
             my_ret_val = self._handle_entities_search(param)
 
-        elif action_id == 'links_search':
+        elif action_id == "links_search":
             my_ret_val = self._handle_links_search(param)
 
-        elif action_id == 'detection_rule_search':
+        elif action_id == "detection_rule_search":
             my_ret_val = self._handle_detection_rule_search(param)
 
-        elif action_id == 'threat_actor_intelligence':
+        elif action_id == "threat_actor_intelligence":
             my_ret_val = self._handle_threat_actor_intelligence(param)
 
-        elif action_id == 'threat_map':
+        elif action_id == "threat_map":
             my_ret_val = self._handle_threat_map(param)
 
-        elif action_id == 'collective_insights_submit':
+        elif action_id == "collective_insights_submit":
             my_ret_val = self._handle_collective_insights_submission(param)
 
         return my_ret_val
@@ -1847,9 +1850,9 @@ class RecordedfutureConnector(BaseConnector):
         optional_config_name = config.get('optional_config_name')
         """
 
-        self._base_url = config.get('recordedfuture_base_url')
+        self._base_url = config.get("recordedfuture_base_url")
 
-        self.set_validator('ipv6', self._is_ip)
+        self.set_validator("ipv6", self._is_ip)
 
         return phantom.APP_SUCCESS
 
@@ -1859,7 +1862,7 @@ class RecordedfutureConnector(BaseConnector):
         return phantom.APP_SUCCESS
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # noinspection PyUnresolvedReferences
     import argparse
 
@@ -1869,9 +1872,9 @@ if __name__ == '__main__':
 
     argparser = argparse.ArgumentParser()
 
-    argparser.add_argument('input_test_json', help='Input Test JSON file')
-    argparser.add_argument('-u', '--username', help='username', required=False)
-    argparser.add_argument('-p', '--password', help='password', required=False)
+    argparser.add_argument("input_test_json", help="Input Test JSON file")
+    argparser.add_argument("-u", "--username", help="username", required=False)
+    argparser.add_argument("-p", "--password", help="password", required=False)
 
     args = argparser.parse_args()
     session_id = None
@@ -1883,29 +1886,29 @@ if __name__ == '__main__':
         # User specified a username but not a password, so ask
         import getpass
 
-        password = getpass.getpass('Password: ')
+        password = getpass.getpass("Password: ")
 
     if username and password:
-        login_url = BaseConnector._get_phantom_base_url() + 'login'
+        login_url = BaseConnector._get_phantom_base_url() + "login"
         try:
-            print('Accessing the Login page')
+            print("Accessing the Login page")
             r = requests.get(login_url, verify=True, timeout=timeout)
-            csrftoken = r.cookies['csrftoken']
+            csrftoken = r.cookies["csrftoken"]
 
             data = dict()
-            data['username'] = username
-            data['password'] = password
-            data['csrfmiddlewaretoken'] = csrftoken
+            data["username"] = username
+            data["password"] = password
+            data["csrfmiddlewaretoken"] = csrftoken
 
             headers = dict()
-            headers['Cookie'] = 'csrftoken=' + csrftoken
-            headers['Referer'] = login_url
+            headers["Cookie"] = "csrftoken=" + csrftoken
+            headers["Referer"] = login_url
 
-            print('Logging into Platform to get the session id')
+            print("Logging into Platform to get the session id")
             r2 = requests.post(
                 login_url, verify=True, data=data, headers=headers, timeout=timeout
             )
-            session_id = r2.cookies['sessionid']
+            session_id = r2.cookies["sessionid"]
         except Exception as e:
             print("Unable to get session id from the platform. Error: " + str(e))
             sys.exit(1)
@@ -1919,9 +1922,9 @@ if __name__ == '__main__':
         connector.print_progress_message = True
 
         if session_id is not None:
-            in_json['user_session_token'] = session_id
+            in_json["user_session_token"] = session_id
             # noinspection PyProtectedMember
-            connector._set_csrf_info(csrftoken, headers['Referer'])
+            connector._set_csrf_info(csrftoken, headers["Referer"])
 
         ret_val = connector._handle_action(json.dumps(in_json), None)
         print(json.dumps(json.loads(ret_val), indent=4))
