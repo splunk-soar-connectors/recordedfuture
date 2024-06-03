@@ -1,6 +1,5 @@
 **Unreleased**
-* Improved visibility of support documents
-* Renaming of app headers
-* Fixing issues with hardcoded path for Cloud
-* Improved format for Intelligence Command Widgets
-* Added status config options for fetching standard and playbook alerts
+
+- Changes to polling of alerts; now requires a comma seperated list to pull in alerts
+- Fixing logic issue blocking the polling of alerts
+- Fixing issues with hardcoded path for Cloud
