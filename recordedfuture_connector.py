@@ -49,6 +49,7 @@ from bs4 import BeautifulSoup, UnicodeDammit
 from phantom.action_result import ActionResult
 # noinspection PyUnresolvedReferences
 from phantom.base_connector import BaseConnector
+from phantom_common import paths
 
 # Usage of the consts file is recommended
 from recordedfuture_consts import *
@@ -360,7 +361,8 @@ class RecordedfutureConnector(BaseConnector):
                 timeout=timeout,
                 **kwargs,
             )
-        except requests.exceptions.Timeout:
+        except requests.exceptions.Timeout as e:
+            self.error_print("Timeout Exception", dump_object=e)
             return RetVal(
                 action_result.set_status(
                     phantom.APP_ERROR, "Timeout error when connecting to server"
@@ -368,6 +370,7 @@ class RecordedfutureConnector(BaseConnector):
                 resp_json,
             )
         except Exception as err:
+            self.error_print("Request exception", dump_object=err)
             error_code, error_message = self._get_error_message_from_exception(err)
             return RetVal(
                 action_result.set_status(
@@ -381,6 +384,7 @@ class RecordedfutureConnector(BaseConnector):
 
         if resp.status_code in [200, 201]:
             return self._process_response(resp, action_result, **kwargs)
+
         elif resp.status_code == 401:
             return RetVal(
                 action_result.set_status(
@@ -857,7 +861,11 @@ class RecordedfutureConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _write_file_to_vault(self, container, file_data, file_name):
-        file_path = os.path.join("/opt/splunk-soar/vault/tmp", file_name)
+        if hasattr(vault.Vault, "get_vault_tmp_dir"):
+            file_path = os.path.join(vault.Vault.get_vault_tmp_dir(), file_name)
+        else:
+            file_path = os.path.join(os.path.join(paths.PHANTOM_VAULT, "/tmp"), file_name)
+
         with open(file_path, "wb") as file:
             file.write(file_data)
             _, message, _ = vault.vault_add(
@@ -878,13 +886,15 @@ class RecordedfutureConnector(BaseConnector):
     def _on_poll_playbook_alerts(self, param, config, action_result):
         """Polling for triggered playbook alerts"""
         params = {}
+        # Return early if no playbook alert categories are specified.
+        if not config.get("on_poll_playbook_alert_type"):
+            self.save_progress("No Playbook Alert Categories have been specified for polling")
+            return []
 
         if self.is_poll_now():
             param["max_count"] = param.get("container_count", MAX_CONTAINERS)
             params["from_date"] = None
         else:
-            if not config.get("on_poll_playbook_alert_type"):
-                return []
             # Different number of max containers if first run
             if self._state.get("first_run", True):
                 # set the config to _not_ first run hereafter
@@ -911,11 +921,15 @@ class RecordedfutureConnector(BaseConnector):
             for el in config.get("on_poll_playbook_alert_type", "").split(",")
             if el.strip()
         ]
-        params["priorities"] = (
-            [el.strip() for el in config["on_poll_playbook_alert_priority"].split(",")]
-            if config.get("on_poll_playbook_alert_priority")
-            else None
-        )
+        params["statuses"] = [
+            el.strip()
+            for el in config.get("on_poll_playbook_alert_status", "").split(",")
+            if el.strip()
+        ]
+        params["priorities"] = [
+            el.strip()
+            for el in config["on_poll_playbook_alert_priority"].split(",")
+        ] if config.get("on_poll_playbook_alert_priority") else None
 
         # Make the rest call
         my_ret_val, containers = self._make_rest_call(
@@ -933,26 +947,32 @@ class RecordedfutureConnector(BaseConnector):
     def _on_poll(self, param):
         """Entry point for obtaining alerts and rules."""
         # new containers and artifacts will be stored in containers[]
-
         self.save_progress(
             "In action handler for: {0}".format(self.get_action_identifier())
         )
         action_result = self.add_action_result(ActionResult(dict(param)))
         config = self.get_config()
 
+        self.save_progress("Polling Playbook Alerts")
         containers = self._on_poll_playbook_alerts(param, config, action_result)
-        for container in containers:
-            screenshots = container.pop("images", [])
-            ret_val, msg, cid = self.save_container(container)
-            self._add_screenshots_to_container(cid, screenshots)
-            if phantom.is_fail(ret_val):
-                self.save_progress("Error saving containers: {}".format(msg))
-                self.debug_print(
-                    "Error saving containers: {} -- CID: {}".format(msg, cid)
-                )
-                return action_result.set_status(
-                    phantom.APP_ERROR, "Error while trying to add the containers"
-                )
+        try:
+            for container in containers:
+                screenshots = container.pop("images", [])
+                ret_val, msg, cid = self.save_container(container)
+                self._add_screenshots_to_container(cid, screenshots)
+                if phantom.is_fail(ret_val):
+                    self.save_progress("Error saving containers: {}".format(msg))
+                    self.error_print(
+                        "Error saving containers: {} -- CID: {}".format(msg, cid)
+                    )
+                    return action_result.set_status(
+                        phantom.APP_ERROR, "Error while trying to add the containers"
+                    )
+        except TypeError:
+            if not containers:
+                self.save_progress("Error in API request, please see spawn.log for more details")
+            else:
+                self.save_progress("API response provided no new playbook alert containers to ingest")
 
         action_result.set_status(phantom.APP_SUCCESS)
         self._state["last_playbook_alerts_fetch_time"] = datetime.now().isoformat()
@@ -960,44 +980,53 @@ class RecordedfutureConnector(BaseConnector):
         if not config.get("on_poll_alert_ruleids"):
             return action_result.get_status()
 
+        self.save_progress("Polling Alerts")
         containers = self._on_poll_alerts(param, config, action_result)
-        for container in containers:
-            ret_val, msg, cid = self.save_container(container)
+        try:
+            for container in containers:
+                ret_val, msg, cid = self.save_container(container)
 
-            if phantom.is_fail(ret_val):
-                self.save_progress("Error saving containers: {}".format(msg))
-                self.debug_print(
-                    "Error saving containers: {} -- CID: {}".format(msg, cid)
+                if phantom.is_fail(ret_val):
+                    self.save_progress("Error saving containers: {}".format(msg))
+                    self.debug_print(
+                        "Error saving containers: {} -- CID: {}".format(msg, cid)
+                    )
+                    return action_result.set_status(
+                        phantom.APP_ERROR, "Error while trying to add the containers"
+                    )
+
+                # Always update the alerts with new status to ensure that they are not left in limbo
+                # description has string in the format -> "Container created from alert {alert_id}"
+                # we get alert_id from it.
+                params = [
+                    {"id": container["description"].split(" ")[4], "status": "Pending"}
+                ]
+                my_ret_val, response = self._make_rest_call(
+                    "/alert/update", action_result, json=params, method="post"
                 )
-                return action_result.set_status(
-                    phantom.APP_ERROR, "Error while trying to add the containers"
-                )
 
-            # Always update the alerts with new status to ensure that they are not left in limbo
-            # description has string in the format -> "Container created from alert {alert_id}"
-            # we get alert_id from it.
-            params = [
-                {"id": container["description"].split(" ")[4], "status": "Pending"}
-            ]
-            my_ret_val, response = self._make_rest_call(
-                "/alert/update", action_result, json=params, method="post"
-            )
-
-            # Something went wrong
-            if phantom.is_fail(my_ret_val):
-                return action_result.get_status()
-
-        self._state["start_time"] = time.time()
+                # Something went wrong
+                if phantom.is_fail(my_ret_val):
+                    return action_result.get_status()
+        except TypeError:
+            if not containers:
+                self.save_progress("Error in API request, please see spawn.log for more details")
+            else:
+                self.save_progress("API response provided no new playbook alert containers to ingest")
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _on_poll_alerts(self, param, config, action_result):
         """Polling for triggered alerts given a list of rule IDs."""
+        start_time = time.time()
+        rollback_start_time = start_time
+        if "start_time" in self._state:
+            rollback_start_time = self._state["start_time"]
 
         # obtain the list of rule ids to use to obtain alerts
         list_of_rules = config.get("on_poll_alert_ruleids")
         if not list_of_rules:
-            self.save_progress("Need to specify Alert Rule IDs use for polling")
+            self.save_progress("No Alert Rule IDs have been specified for polling")
             return action_result.set_status(phantom.APP_ERROR)
         rule_list = [x.strip() for x in list_of_rules.split(",")]
 
@@ -1009,6 +1038,7 @@ class RecordedfutureConnector(BaseConnector):
             if self._state.get("first_run", True):
                 # set the config to _not_ first run hereafter
                 self._state["first_run"] = False
+                self._state["start_time"] = start_time
                 param["max_count"] = config.get("first_max_count", MAX_CONTAINERS)
                 self.save_progress("First time Ingestion detected.")
                 timeframe = ""
@@ -1016,8 +1046,9 @@ class RecordedfutureConnector(BaseConnector):
                 param["max_count"] = config.get("max_count", MAX_CONTAINERS)
                 # calculate time since last fetch
                 interval = (
-                    ceil((time.time() - self._state.get("start_time")) / 3600) + 3
+                    ceil((start_time - self._state.get("start_time", start_time)) / 3600) + 3
                 )
+                self._state["start_time"] = start_time
                 timeframe = f"-{interval}h to now"
 
         # Asset Settings in Asset Configuration allows a negative number
@@ -1031,6 +1062,11 @@ class RecordedfutureConnector(BaseConnector):
             "severity": config.get("on_poll_alert_severity"),
             "limit": param.get("max_count", 100),
         }
+        params['status'] = [
+            el.strip()
+            for el in config.get("on_poll_alert_status", "").split(",")
+            if el.strip()
+        ]
 
         # Make the rest call
         my_ret_val, containers = self._make_rest_call(
@@ -1039,9 +1075,14 @@ class RecordedfutureConnector(BaseConnector):
             json=params,
             method="post",
         )
+
         # Something went wrong
         if phantom.is_fail(my_ret_val):
-            return action_result.get_status()
+            status = action_result.get_status()
+            # make sure to revert to the old start time,
+            # so that next iteration will try again with a longer interval.
+            self._state["start_time"] = rollback_start_time
+            return status
 
         # sort the containers to get the oldest first
         containers.sort(key=lambda k: k["triggered"], reverse=False)
@@ -1835,7 +1876,7 @@ class RecordedfutureConnector(BaseConnector):
         if not isinstance(self._state, dict):
             self.debug_print("Resetting the state file with the default format")
             self._state = {"app_version": self.get_app_json().get("app_version")}
-            return self.set_status(phantom.APP_ERROR, RF_STATE_FILE_CORRUPT_ERR)
+            return self.set_status(phantom.APP_ERROR, RF_STATE_FILE_CORRUPT_ERROR)
 
         # get the asset config
         config = self.get_config()

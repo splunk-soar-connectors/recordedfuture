@@ -2,11 +2,11 @@
 # Recorded Future For Splunk SOAR
 
 Publisher: Recorded Future, Inc  
-Connector Version: 4.3.2  
+Connector Version: 4.3.3
 Product Vendor: Recorded Future, Inc  
 Product Name: Recorded Future App for Phantom  
 Product Version Supported (regex): ".\*"  
-Minimum Product Version: 6.1.1  
+Minimum Product Version: 6.1.1
 
 This app implements investigative actions to perform lookups for quick reputation information, contextual threat intelligence and external threat alerts
 
@@ -31,10 +31,12 @@ This app implements investigative actions to perform lookups for quick reputatio
 [comment]: # "either express or implied. See the License for the specific language governing permissions"
 [comment]: # "and limitations under the License."
 [comment]: # ""
-Recorded Future App for Phantom allows clients to work smarter, respond faster, and strengthen their
-defenses through automation and orchestration. The Recorded Future App provides a number of actions
-that enable the creation of Playbooks to do automated enrichment, correlation, threat hunting, and
-alert handling.
+Recorded Future App for Splunk SOAR allows clients to work smarter, respond faster, and strengthen their 
+defenses through automation and orchestration. The Recorded Future App provides a number of actions that enable 
+the creation of Playbooks to do automated enrichment, correlation, threat hunting, and alert handling.
+
+Access playbook templates created by Recorded Future automation experts to embed intelligence in your new 
+and existing security workflows: https://support.recordedfuture.com/hc/en-us/articles/12294483605523-Splunk-SOAR-Template-Playbooks-Library
 
 # Ingest alerts into events
 
@@ -383,6 +385,7 @@ action_result.data.\*.evidence.\*.rule | string |  `recordedfuture evidence rule
 action_result.data.\*.evidence.\*.timestamp | string |  `recordedfuture evidence timestamp`  |  
 action_result.summary.alert_title | string |  |  
 action_result.summary.triggered | string |  |  
+action_result.summary.ai_insights | string | `recorded future AI Insights` |  
 action_result.message | string |  `recordedfuture result message`  |  
 summary.total_objects | numeric |  `recordedfuture total objects`  |   1 
 summary.total_objects_successful | numeric |  `recordedfuture total objects successful`  |   1   
@@ -465,7 +468,7 @@ action_result.data.\*.risk.rules | numeric |  `recordedfuture risk rules`  |
 action_result.data.\*.risk.score | numeric |  `recordedfuture risk score`  |  
 action_result.data.\*.timestamps.firstSeen | string |  `recordedfuture evidence firstseen`  |  
 action_result.data.\*.timestamps.lastSeen | string |  `recordedfuture evidence lastseen`  |  
-action_result.data.\*.ai_insights | string |  `recorded future AI Insights`  |   Here is some AI generated text related to this entity 
+action_result.data.\*.ai_insights | string | `recorded future AI Insights` |  
 action_result.summary.criticalityLabel | string |  `recordedfuture risk criticality label`  |   Very Malicious  Malicious  Suspicious  Unusual 
 action_result.summary.lastSeen | string |  `recordedfuture evidence lastseen`  |  
 action_result.summary.riskSummary | string |  `recordedfuture risk summary`  |  
@@ -579,7 +582,7 @@ action_result.data.\*.risk.rules | numeric |  `recordedfuture risk rules`  |
 action_result.data.\*.risk.score | numeric |  `recordedfuture risk score`  |  
 action_result.data.\*.timestamps.firstSeen | string |  `recordedfuture evidence firstseen`  |  
 action_result.data.\*.timestamps.lastSeen | string |  `recordedfuture evidence lastseen`  |  
-action_result.data.\*.ai_insights | string |  `recorded future AI Insights`  |   Here is some AI generated text related to this entity 
+action_result.data.\*.ai_insights | string | `recorded future AI Insights` |  
 action_result.summary.criticalityLabel | string |  `recordedfuture risk criticality label`  |  
 action_result.summary.lastSeen | string |  `recordedfuture evidence lastseen`  |  
 action_result.summary.riskSummary | string |  `recordedfuture risk summary`  |  
@@ -684,7 +687,7 @@ action_result.data.\*.risk.rules | numeric |  `recordedfuture risk rules`  |
 action_result.data.\*.risk.score | numeric |  `recordedfuture risk score`  |  
 action_result.data.\*.timestamps.firstSeen | string |  `recordedfuture evidence firstseen`  |  
 action_result.data.\*.timestamps.lastSeen | string |  `recordedfuture evidence lastseen`  |  
-action_result.data.\*.ai_insights | string |  `recorded future AI Insights`  |   Here is some AI generated text related to this entity 
+action_result.data.\*.ai_insights | string | `recorded future AI Insights` |  
 action_result.summary.criticalityLabel | string |  `recordedfuture risk criticality label`  |   Malicious 
 action_result.summary.lastSeen | string |  `recordedfuture evidence lastseen`  |  
 action_result.summary.riskSummary | string |  `recordedfuture risk summary`  |  
@@ -790,7 +793,7 @@ action_result.data.\*.threatLists.\*.name | string |  `recordedfuture threatlist
 action_result.data.\*.threatLists.\*.type | string |  `recordedfuture threatlist type`  |  
 action_result.data.\*.timestamps.firstSeen | string |  `recordedfuture evidence firstseen`  |  
 action_result.data.\*.timestamps.lastSeen | string |  `recordedfuture evidence lastseen`  |  
-action_result.data.\*.ai_insights | string |  `recorded future AI Insights`  |   Here is some AI generated text related to this entity 
+action_result.data.\*.ai_insights | string | `recorded future AI Insights` |  
 action_result.summary.criticalityLabel | string |  `recordedfuture risk criticality label`  |   Very Malicious 
 action_result.summary.lastSeen | string |  `recordedfuture evidence lastseen`  |  
 action_result.summary.riskSummary | string |  `recordedfuture risk summary`  |  
@@ -901,7 +904,7 @@ action_result.data.\*.risk.rules | numeric |  `recordedfuture risk rules`  |
 action_result.data.\*.risk.score | numeric |  `recordedfuture risk score`  |  
 action_result.data.\*.timestamps.firstSeen | string |  `recordedfuture evidence firstseen`  |  
 action_result.data.\*.timestamps.lastSeen | string |  `recordedfuture evidence lastseen`  |  
-action_result.data.\*.ai_insights | string |  `recorded future AI Insights`  |   Here is some AI generated text related to this entity 
+action_result.data.\*.ai_insights | string | `recorded future AI Insights` |  
 action_result.summary.criticalityLabel | string |  `recordedfuture risk criticality label`  |   Very Malicious 
 action_result.summary.lastSeen | string |  `recordedfuture evidence lastseen`  |  
 action_result.summary.riskSummary | string |  `recordedfuture risk summary`  |  
@@ -1732,7 +1735,6 @@ action_result.data.\*.links.Username.\*.risk_level | numeric |  `recordedfuture 
 action_result.data.\*.links.Username.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
 action_result.data.\*.links.Username.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
 action_result.data.\*.location.country | string |  `country location for the threat actor`  |   Ukraine 
-action_result.data.\*.ai_insights | string |  `recorded future AI Insights`  |   Here is some AI generated text related to this entity 
 action_result.summary | string |  |  
 action_result.message | string |  `recordedfuture result message`  |  
 summary.total_objects | numeric |  `recordedfuture total objects`  |   1 
