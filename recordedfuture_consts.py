@@ -20,7 +20,7 @@
 # and limitations under the License.
 
 # Define your constants here
-version = "4.3.3"
+version = "4.4.0"
 buildid = "344"
 
 # timeout for our http requests to bfi_phantom
