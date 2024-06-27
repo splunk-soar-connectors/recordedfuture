@@ -1,17 +1,17 @@
 {
     "appid": "6efe0e1b-76ac-4ffd-8fa0-ac58fd6efd77",
     "name": "Recorded Future For Splunk SOAR",
-    "description": "This app implements investigative actions to perform lookups for quick reputation information, contextual threat intelligence and external threat alerts",
+    "description": "Enhance your security posture with Recorded Future for Splunk SOAR.\nKey Capabilities:\n\u2022Swift Threat Assessments: Access Recorded Future's extensive IOC data for swift and accurate assessments",
     "publisher": "Recorded Future, Inc",
     "type": "reputation",
     "main_module": "recordedfuture_connector.py",
-    "app_version": "4.3.2",
+    "app_version": "4.4.0",
     "utctime_updated": "2022-05-30T07:33:58.826014Z",
     "package_name": "phantom_recordedfuture",
     "product_name": "Recorded Future App for Phantom",
     "product_vendor": "Recorded Future, Inc",
     "product_version_regex": ".*",
-    "min_phantom_version": "6.1.1",
+    "min_phantom_version": "6.2.1",
     "python_version": "3",
     "fips_compliant": true,
     "latest_tested_versions": [
@@ -47,22 +47,6 @@
             "default": true,
             "order": 4
         },
-        "ph1": {
-            "data_type": "ph",
-            "order": 6
-        },
-        "ph2": {
-            "data_type": "ph",
-            "order": 8
-        },
-        "ph3": {
-            "data_type": "ph",
-            "order": 10
-        },
-        "ph4": {
-            "data_type": "ph",
-            "order": 12
-        },
         "on_poll_alert_ruleids": {
             "data_type": "string",
             "order": 1,
@@ -79,32 +63,66 @@
                 "Low"
             ]
         },
-        "on_poll_playbook_alert_priority": {
+        "on_poll_alert_status": {
             "data_type": "string",
-            "order": 9,
-            "description": "Comma separated On Poll Playbook Alerts priority threshold (High,Moderate,Informational)"
+            "order": 5,
+            "description": "Comma separated list of alert statuses to poll (New, Pending, Dismissed, Resolved are now supported)"
         },
-        "on_poll_playbook_alert_type": {
-            "data_type": "string",
-            "order": 11,
-            "description": "Comma-separated list of Playbook alert types. (domain_abuse, cyber_vulnerability, code_repo_leakage are now supported)"
-        },
-        "on_poll_playbook_alert_start_time": {
-            "data_type": "string",
-            "order": 13,
-            "description": "Poll playbook alerts created after (date in ISO format: 2022-12-01T11:00:00+00)"
+        "ph1": {
+            "data_type": "ph",
+            "order": 6
         },
         "max_count": {
             "data_type": "numeric",
-            "order": 5,
+            "order": 7,
             "description": "Max events to ingest for scheduled polling",
             "default": 100
         },
+        "ph2": {
+            "data_type": "ph",
+            "order": 8
+        },
         "first_max_count": {
             "data_type": "numeric",
-            "order": 7,
+            "order": 9,
             "description": "Max events to ingest for scheduled polling first time",
             "default": 100
+        },
+        "ph3": {
+            "data_type": "ph",
+            "order": 10
+        },
+        "on_poll_playbook_alert_priority": {
+            "data_type": "string",
+            "order": 11,
+            "description": "Comma separated On Poll Playbook Alerts priority threshold (High,Moderate,Informational)"
+        },
+        "ph4": {
+            "data_type": "ph",
+            "order": 12
+        },
+        "on_poll_playbook_alert_type": {
+            "data_type": "string",
+            "order": 13,
+            "description": "Comma-separated list of Playbook alert types. (domain_abuse, cyber_vulnerability, code_repo_leakage are now supported)"
+        },
+        "ph6": {
+            "data_type": "ph",
+            "order": 14
+        },
+        "on_poll_playbook_alert_status": {
+            "data_type": "string",
+            "order": 15,
+            "description": "Comma-separated list of Playbook alert statuses. (New, InProgress, Dismissed, Resolved are now supported)"
+        },
+        "ph7": {
+            "data_type": "ph",
+            "order": 16
+        },
+        "on_poll_playbook_alert_start_time": {
+            "data_type": "string",
+            "order": 17,
+            "description": "Poll playbook alerts created after (date in ISO format: 2022-12-01T11:00:00+00)"
         }
     },
     "actions": [
@@ -325,6 +343,10 @@
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.review.note",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.alerts.*.ai_insights",
                     "data_type": "string"
                 },
                 {
@@ -1251,6 +1273,10 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.summary.triggered",
+                    "data_type": "string"
+                },
+                {
                     "data_path": "summary.total_objects",
                     "data_type": "numeric",
                     "contains": [
@@ -2098,6 +2124,10 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.ai_insights",
+                    "data_type": "string"
+                },
+                {
                     "data_path": "action_result.data.*.nvdDescription",
                     "data_type": "string",
                     "contains": [
@@ -2754,6 +2784,10 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.ai_insights",
+                    "data_type": "string"
+                },
+                {
                     "data_path": "action_result.data.*.recordedfutureLinks.entities.domain.*.name",
                     "data_type": "string",
                     "contains": [
@@ -3377,6 +3411,10 @@
                     "contains": [
                         "recordedfuture intelligence card url"
                     ]
+                },
+                {
+                    "data_path": "action_result.data.*.ai_insights",
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.recordedfutureLinks.entities.domain.*.name",
@@ -4024,6 +4062,10 @@
                     "contains": [
                         "recordedfuture intelligence card url"
                     ]
+                },
+                {
+                    "data_path": "action_result.data.*.ai_insights",
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.location.asn",
@@ -6467,13 +6509,11 @@
                 "entity_id": {
                     "description": "Entity ID (Do not specify ID when use 'name'+'type')",
                     "data_type": "string",
-                    "primary": true,
                     "order": 0
                 },
                 "entity_name": {
                     "description": "Entity name (can be used only with selected type)",
                     "data_type": "string",
-                    "primary": true,
                     "order": 1
                 },
                 "entity_type": {
@@ -7006,9 +7046,6 @@
                     "data_type": "string",
                     "contains": [
                         "recordedfuture link id"
-                    ],
-                    "example_values": [
-                        ""
                     ]
                 },
                 {
@@ -7922,13 +7959,11 @@
                 "entity_id": {
                     "description": "Entity ID (Do not specify ID when use 'name'+'type')",
                     "data_type": "string",
-                    "primary": true,
                     "order": 0
                 },
                 "entity_name": {
                     "description": "Entity name (can be used only with selected type)",
                     "data_type": "string",
-                    "primary": true,
                     "order": 1
                 },
                 "entity_type": {
@@ -8157,7 +8192,6 @@
                 "threat_actor": {
                     "description": "Threat actor name to look up",
                     "data_type": "string",
-                    "primary": true,
                     "required": true,
                     "order": 0
                 },
@@ -8257,6 +8291,10 @@
                     "example_values": [
                         "https://app.recordedfuture.com/live/sc/entity/L37nw-"
                     ]
+                },
+                {
+                    "data_path": "action_result.data.*.ai_insights",
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.links.IpAddress.*.type",
@@ -8673,9 +8711,6 @@
                     "data_type": "string",
                     "contains": [
                         "recordedfuture link id"
-                    ],
-                    "example_values": [
-                        ""
                     ]
                 },
                 {
@@ -9689,6 +9724,10 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.ai_insights",
+                    "data_type": "string"
+                },
+                {
                     "data_path": "action_result.summary",
                     "data_type": "string"
                 },
@@ -9939,27 +9978,9 @@
         }
     ],
     "pip_dependencies": {
-        "wheel": [
-            {
-                "module": "beautifulsoup4",
-                "input_file": "wheels/py3/beautifulsoup4-4.9.1-py3-none-any.whl"
-            },
-            {
-                "module": "soupsieve",
-                "input_file": "wheels/py3/soupsieve-2.3.2.post1-py3-none-any.whl"
-            }
-        ]
+        "wheel": []
     },
     "pip39_dependencies": {
-        "wheel": [
-            {
-                "module": "beautifulsoup4",
-                "input_file": "wheels/py3/beautifulsoup4-4.9.1-py3-none-any.whl"
-            },
-            {
-                "module": "soupsieve",
-                "input_file": "wheels/py3/soupsieve-2.5-py3-none-any.whl"
-            }
-        ]
+        "wheel": []
     }
 }

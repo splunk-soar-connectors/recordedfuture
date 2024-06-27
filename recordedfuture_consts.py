@@ -20,11 +20,11 @@
 # and limitations under the License.
 
 # Define your constants here
-version = "4.3.2"
-buildid = "331"
+version = "4.4.0"
+buildid = "344"
 
 # timeout for our http requests to bfi_phantom
-timeout = 63
+timeout = 300
 MAX_CONTAINERS = 100
 
 # These dicts map which path_info, which fields, what the Recorded Future

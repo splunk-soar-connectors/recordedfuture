@@ -2,13 +2,15 @@
 # Recorded Future For Splunk SOAR
 
 Publisher: Recorded Future, Inc  
-Connector Version: 4.3.2  
+Connector Version: 4.4.0  
 Product Vendor: Recorded Future, Inc  
 Product Name: Recorded Future App for Phantom  
 Product Version Supported (regex): ".\*"  
-Minimum Product Version: 6.1.1  
+Minimum Product Version: 6.2.1  
 
-This app implements investigative actions to perform lookups for quick reputation information, contextual threat intelligence and external threat alerts
+Enhance your security posture with Recorded Future for Splunk SOAR.
+Key Capabilities:
+•Swift Threat Assessments: Access Recorded Future's extensive IOC data for swift and accurate assessments
 
 [comment]: # " File: README.md"
 [comment]: # ""
@@ -60,17 +62,21 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 **recordedfuture_base_url** |  required  | string | Recorded Future API basename
 **recordedfuture_api_token** |  required  | password | Recorded Future API token
 **recordedfuture_verify_ssl** |  optional  | boolean | Verify SSL certificates
-**ph1** |  optional  | ph | 
-**ph2** |  optional  | ph | 
-**ph3** |  optional  | ph | 
-**ph4** |  optional  | ph | 
 **on_poll_alert_ruleids** |  optional  | string | Comma-separated list of alert rule IDs
 **on_poll_alert_severity** |  optional  | string | Severity to apply to the alert event
-**on_poll_playbook_alert_priority** |  optional  | string | Comma separated On Poll Playbook Alerts priority threshold (High,Moderate,Informational)
-**on_poll_playbook_alert_type** |  optional  | string | Comma-separated list of Playbook alert types. (domain_abuse, cyber_vulnerability, code_repo_leakage are now supported)
-**on_poll_playbook_alert_start_time** |  optional  | string | Poll playbook alerts created after (date in ISO format: 2022-12-01T11:00:00+00)
+**on_poll_alert_status** |  optional  | string | Comma separated list of alert statuses to poll (New, Pending, Dismissed, Resolved are now supported)
+**ph1** |  optional  | ph | 
 **max_count** |  optional  | numeric | Max events to ingest for scheduled polling
+**ph2** |  optional  | ph | 
 **first_max_count** |  optional  | numeric | Max events to ingest for scheduled polling first time
+**ph3** |  optional  | ph | 
+**on_poll_playbook_alert_priority** |  optional  | string | Comma separated On Poll Playbook Alerts priority threshold (High,Moderate,Informational)
+**ph4** |  optional  | ph | 
+**on_poll_playbook_alert_type** |  optional  | string | Comma-separated list of Playbook alert types. (domain_abuse, cyber_vulnerability, code_repo_leakage are now supported)
+**ph6** |  optional  | ph | 
+**on_poll_playbook_alert_status** |  optional  | string | Comma-separated list of Playbook alert statuses. (New, InProgress, Dismissed, Resolved are now supported)
+**ph7** |  optional  | ph | 
+**on_poll_playbook_alert_start_time** |  optional  | string | Poll playbook alerts created after (date in ISO format: 2022-12-01T11:00:00+00)
 
 ### Supported Actions  
 [test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity  
@@ -176,6 +182,7 @@ action_result.data.\*.alerts.\*.entities.alert.\* | string |  `recordedfuture al
 action_result.data.\*.alerts.\*.id | string |  `recordedfuture alert id`  |  
 action_result.data.\*.alerts.\*.review.assignee | string |  |  
 action_result.data.\*.alerts.\*.review.note | string |  |  
+action_result.data.\*.alerts.\*.ai_insights | string |  |  
 action_result.data.\*.alerts.\*.review.noteAuthor | string |  |  
 action_result.data.\*.alerts.\*.review.noteDate | string |  |  
 action_result.data.\*.alerts.\*.review.status | string |  |  
@@ -384,6 +391,7 @@ action_result.data.\*.evidence.\*.timestamp | string |  `recordedfuture evidence
 action_result.summary.alert_title | string |  |  
 action_result.summary.triggered | string |  |  
 action_result.message | string |  `recordedfuture result message`  |  
+action_result.summary.triggered | string |  |  
 summary.total_objects | numeric |  `recordedfuture total objects`  |   1 
 summary.total_objects_successful | numeric |  `recordedfuture total objects successful`  |   1   
 
@@ -538,6 +546,7 @@ action_result.data.\*.entity.id | string |  `recordedfuture entity id`  |
 action_result.data.\*.entity.name | string |  `cve`  `vulnerability`  |  
 action_result.data.\*.entity.type | string |  `recordedfuture entity type`  |  
 action_result.data.\*.intelCard | string |  `recordedfuture intelligence card url`  |  
+action_result.data.\*.ai_insights | string |  |  
 action_result.data.\*.nvdDescription | string |  `nvd description`  |  
 action_result.data.\*.recordedfutureLinks.entities.domain.\*.name | string |  `domain`  |  
 action_result.data.\*.recordedfutureLinks.entities.domain.\*.score | string |  `recordedfuture entity risk score`  |  
@@ -645,6 +654,7 @@ action_result.data.\*.entity.name | string |  `file`  `hash`  `sha256`  `sha1`  
 action_result.data.\*.entity.type | string |  `recordedfuture entity type`  |   Hash 
 action_result.data.\*.hashAlgorithm | string |  `recordedfuture hash algorithm`  |   MD5 
 action_result.data.\*.intelCard | string |  `recordedfuture intelligence card url`  |  
+action_result.data.\*.ai_insights | string |  |  
 action_result.data.\*.recordedfutureLinks.entities.domain.\*.name | string |  `domain`  |  
 action_result.data.\*.recordedfutureLinks.entities.domain.\*.score | string |  `recordedfuture entity risk score`  |  
 action_result.data.\*.recordedfutureLinks.entities.domain.\*.type | string |  `recordedfuture research links entity type`  |  
@@ -747,6 +757,7 @@ action_result.data.\*.entity.id | string |  `recordedfuture entity id`  |
 action_result.data.\*.entity.name | string |  `domain`  |  
 action_result.data.\*.entity.type | string |  `recordedfuture entity type`  |  
 action_result.data.\*.intelCard | string |  `recordedfuture intelligence card url`  |  
+action_result.data.\*.ai_insights | string |  |  
 action_result.data.\*.recordedfutureLinks.entities.domain.\*.name | string |  `domain`  |  
 action_result.data.\*.recordedfutureLinks.entities.domain.\*.score | string |  `recordedfuture entity risk score`  |  
 action_result.data.\*.recordedfutureLinks.entities.domain.\*.type | string |  `recordedfuture research links entity type`  |  
@@ -854,6 +865,7 @@ action_result.data.\*.entity.id | string |  `recordedfuture entity id`  |
 action_result.data.\*.entity.name | string |  `ip`  `ipv6`  |  
 action_result.data.\*.entity.type | string |  `recordedfuture entity type`  |  
 action_result.data.\*.intelCard | string |  `recordedfuture intelligence card url`  |  
+action_result.data.\*.ai_insights | string |  |  
 action_result.data.\*.location.asn | string |  `recordedfuture location asn`  |  
 action_result.data.\*.location.cidr.id | string |  `recordedfuture location cidr id`  |  
 action_result.data.\*.location.cidr.name | string |  `recordedfuture location cidr name`  |  
@@ -1446,7 +1458,7 @@ action_result.data.\*.links.CyberVulnerability.\*.risk_level | numeric |  `recor
 action_result.data.\*.links.CyberVulnerability.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
 action_result.data.\*.links.CyberVulnerability.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
 action_result.data.\*.links.CyberThreatActorCategory.\*.type | string |  `recordedfuture link type`  |   type:CyberThreatActorCategory 
-action_result.data.\*.links.CyberThreatActorCategory.\*.id | string |  `recordedfuture link id`  |    
+action_result.data.\*.links.CyberThreatActorCategory.\*.id | string |  `recordedfuture link id`  |  
 action_result.data.\*.links.CyberThreatActorCategory.\*.name | string |  `recordedfuture link name`  |   8c09f9146cd9f53a768baf1dea8718ae98d73d9f2528eb0a7e970f50411c318d 
 action_result.data.\*.links.CyberThreatActorCategory.\*.source | string |  `recordedfuture link source`  |   technical 
 action_result.data.\*.links.CyberThreatActorCategory.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
@@ -1603,6 +1615,7 @@ action_result.data.\*.intent | numeric |  `recorded future threat actor intent s
 action_result.data.\*.opportunity | numeric |  `recorded future threat actor opportunity score`  |   95 
 action_result.data.\*.severity | string |  `recorded future threat actor severity`  |   High 
 action_result.data.\*.intelCard | string |  `recorded future threat actor intel card link`  |   https://app.recordedfuture.com/live/sc/entity/L37nw- 
+action_result.data.\*.ai_insights | string |  |  
 action_result.data.\*.links.IpAddress.\*.type | string |  `recordedfuture link type`  |   type:IpAddress 
 action_result.data.\*.links.IpAddress.\*.id | string |  `recordedfuture link id`  |   ip:8.8.8.8 
 action_result.data.\*.links.IpAddress.\*.name | string |  `recordedfuture link name`  |   8.8.8.8 
@@ -1644,7 +1657,7 @@ action_result.data.\*.links.CyberVulnerability.\*.risk_level | numeric |  `recor
 action_result.data.\*.links.CyberVulnerability.\*.risk_score | numeric |  `recordedfuture link risk score`  |   75 
 action_result.data.\*.links.CyberVulnerability.\*.criticality | string |  `recordedfuture link criticality`  |   Unusual 
 action_result.data.\*.links.CyberThreatActorCategory.\*.type | string |  `recordedfuture link type`  |   type:CyberThreatActorCategory 
-action_result.data.\*.links.CyberThreatActorCategory.\*.id | string |  `recordedfuture link id`  |    
+action_result.data.\*.links.CyberThreatActorCategory.\*.id | string |  `recordedfuture link id`  |  
 action_result.data.\*.links.CyberThreatActorCategory.\*.name | string |  `recordedfuture link name`  |   8c09f9146cd9f53a768baf1dea8718ae98d73d9f2528eb0a7e970f50411c318d 
 action_result.data.\*.links.CyberThreatActorCategory.\*.source | string |  `recordedfuture link source`  |   technical 
 action_result.data.\*.links.CyberThreatActorCategory.\*.section | string |  `recordedfuture link section`  |   iU_ZsG 
@@ -1758,6 +1771,7 @@ action_result.data.\*.threatActor.\*.intent | numeric |  `recorded future threat
 action_result.data.\*.threatActor.\*.opportunity | numeric |  `recorded future threat actor opportunity score`  |   95 
 action_result.data.\*.threatActor.\*.severity | string |  `recorded future threat actor severity`  |   High 
 action_result.data.\*.threatActor.\*.intelCard | string |  `recorded future threat actor intel card link`  |   https://app.recordedfuture.com/live/sc/entity/L37nw- 
+action_result.data.\*.ai_insights | string |  |  
 action_result.summary | string |  |  
 action_result.message | string |  `recordedfuture result message`  |  
 summary.total_objects | numeric |  `recordedfuture total objects`  |   1 
