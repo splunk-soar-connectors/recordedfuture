@@ -1,1 +1,4 @@
 **Unreleased**
+* Changes to polling of alerts; now requires a comma seperated list to pull in alerts
+* Fixing logic issue blocking the polling of alerts
+* Fixing issues with hardcoded path for Cloud
