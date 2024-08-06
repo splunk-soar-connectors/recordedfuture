@@ -12,7 +12,7 @@ This app implements investigative actions to perform lookups for quick reputatio
 
 [comment]: # " File: README.md"
 [comment]: # ""
-[comment]: # "Copyright (c) Recorded Future, Inc, 2019-2023"
+[comment]: # "Copyright (c) Recorded Future, Inc, 2019-2024"
 [comment]: # ""
 [comment]: # "This unpublished material is proprietary to Recorded Future. All"
 [comment]: # "rights reserved. The methods and techniques described herein are"
