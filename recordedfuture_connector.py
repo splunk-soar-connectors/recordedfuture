@@ -22,7 +22,6 @@
 #
 # Phantom App imports
 import base64
-import hashlib
 # noinspection PyCompatibility
 import ipaddress
 import json
@@ -340,16 +339,6 @@ class RecordedfutureConnector(BaseConnector):
         # fingerprint:  can be used to verify that the correct API key is used
         self.debug_print("_make_rest_call url: {}".format(url))
         self.debug_print("_make_rest_call kwargs {}".format(kwargs))
-        try:
-            self.debug_print(
-                "_make_rest_call api key fingerprint: %s"
-                % hashlib.md5(api_key).hexdigest()[:6]  # nosemgrep
-            )
-        except Exception:
-            self.debug_print(
-                "_make_rest_call exception: %s"
-                % hashlib.md5(api_key.encode("utf-8")).hexdigest()[:6]  # nosemgrep
-            )
 
         # Make the call
         try:
