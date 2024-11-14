@@ -21,8 +21,12 @@ def build(c):
             --exclude=*.pyc \
             --exclude=.github \
             --exclude=tasks.py \
-            --exclude=.git
+            --exclude=.git \
+            --exclude=*.tgz \
+            --exclude=venv \
+            --exclude=pkg_build \
     """)
+
 
 @task(build)
 def package(c):
