@@ -44,9 +44,7 @@ PLAYBOOK_ALERT_CATEGORY_DISPLAY_MAPPING = {
 
 def format_datetime_string(datetime_string):
     try:
-        return datetime.strptime(datetime_string, "%Y-%m-%dT%H:%M:%S.%f%z").strftime(
-            "%Y-%m-%d, %H:%M"
-        )
+        return datetime.strptime(datetime_string, "%Y-%m-%dT%H:%M:%S.%f%z").strftime("%Y-%m-%d, %H:%M")
     except ValueError:
         return datetime_string
 
@@ -61,12 +59,8 @@ def format_domain_abuse_details_result(result):
         retval["data"] = data
         return retval
 
-    data["panel_status"]["created"] = format_datetime_string(
-        data["panel_status"]["created"]
-    )
-    data["panel_status"]["updated"] = format_datetime_string(
-        data["panel_status"]["updated"]
-    )
+    data["panel_status"]["created"] = format_datetime_string(data["panel_status"]["created"])
+    data["panel_status"]["updated"] = format_datetime_string(data["panel_status"]["updated"])
 
     panel_evidence_whois = data.get("panel_evidence_whois", {})
     if panel_evidence_whois and not isinstance(panel_evidence_whois.get("body"), list):
@@ -102,20 +96,12 @@ def format_result(result, all_data=False):
 
         # add cvss info only if present (should only be applicable by vulnerabilities)
         if data and "cvss" in retval["data"] and "published" in retval["data"]["cvss"]:
-            retval["data"]["cvss"]["publishedShort"] = retval["data"]["cvss"][
-                "published"
-            ][:10]
-            retval["data"]["cvss"]["lastModifiedShort"] = retval["data"]["cvss"][
-                "lastModified"
-            ][:10]
+            retval["data"]["cvss"]["publishedShort"] = retval["data"]["cvss"]["published"][:10]
+            retval["data"]["cvss"]["lastModifiedShort"] = retval["data"]["cvss"]["lastModified"][:10]
 
         # format date and time to be shorter and easier to read
-        retval["data"]["timestamps"]["firstSeenShort"] = retval["data"]["timestamps"][
-            "firstSeen"
-        ][:10]
-        retval["data"]["timestamps"]["lastSeenShort"] = retval["data"]["timestamps"][
-            "lastSeen"
-        ][:10]
+        retval["data"]["timestamps"]["firstSeenShort"] = retval["data"]["timestamps"]["firstSeen"][:10]
+        retval["data"]["timestamps"]["lastSeenShort"] = retval["data"]["timestamps"]["lastSeen"][:10]
     except Exception:
         retval["data"] = None
 
@@ -387,9 +373,7 @@ def list_status_results(provides, all_app_runs, context):
             result_data = result.get_data()
             if result_data:
                 result_data = result_data[0]
-                result_data["status"] = ENTITY_LIST_STATUS_VALUE_TO_LITERAL_MAPPING.get(
-                    result_data["status"]
-                )
+                result_data["status"] = ENTITY_LIST_STATUS_VALUE_TO_LITERAL_MAPPING.get(result_data["status"])
             results.append({"param": result.get_param(), "data": result_data})
 
     return "list_status_results.html"
@@ -405,9 +389,7 @@ def list_entities_results(provides, all_app_runs, context):
                 result_data = result_data[0]
                 for entity in result_data:
                     entity["added"] = format_datetime_string(entity["added"])
-                    entity["status"] = ENTITY_LIST_STATUS_VALUE_TO_LITERAL_MAPPING.get(
-                        entity["status"]
-                    )
+                    entity["status"] = ENTITY_LIST_STATUS_VALUE_TO_LITERAL_MAPPING.get(entity["status"])
             results.append({"param": result.get_param(), "data": result_data})
 
     return "list_entities_results.html"
@@ -421,9 +403,7 @@ def list_entities_management_results(provides, all_app_runs, context):
             result_data = result.get_data()
             if result_data:
                 result_data = result_data[0]
-                result_data["result"] = ENTITY_LIST_STATUS_VALUE_TO_LITERAL_MAPPING.get(
-                    result_data["result"]
-                )
+                result_data["result"] = ENTITY_LIST_STATUS_VALUE_TO_LITERAL_MAPPING.get(result_data["result"])
             results.append({"param": result.get_param(), "data": result_data})
 
     return "list_entities_management_results.html"
@@ -438,18 +418,10 @@ def playbook_alert_search_results(provides, all_app_runs, context):
             if result_data:
                 result_data = result_data[0]
                 for search_result in result_data:
-                    search_result["created"] = format_datetime_string(
-                        search_result["created"]
-                    )
-                    search_result["updated"] = format_datetime_string(
-                        search_result["updated"]
-                    )
-                    search_result["status"] = RF_PLAYBOOK_STATUS_MAP.get(
-                        search_result["status"], search_result["status"]
-                    )
-                    search_result[
-                        "category_display"
-                    ] = PLAYBOOK_ALERT_CATEGORY_DISPLAY_MAPPING.get(
+                    search_result["created"] = format_datetime_string(search_result["created"])
+                    search_result["updated"] = format_datetime_string(search_result["updated"])
+                    search_result["status"] = RF_PLAYBOOK_STATUS_MAP.get(search_result["status"], search_result["status"])
+                    search_result["category_display"] = PLAYBOOK_ALERT_CATEGORY_DISPLAY_MAPPING.get(
                         search_result["category"], search_result["category"]
                     )
 
@@ -527,10 +499,7 @@ def threat_actor_intelligence_results(provides, all_app_runs, context):
             result_data = result.get_data()
             if result_data:
                 result_data = result_data[0]
-                result_data["categories"] = [
-                    category.get("name")
-                    for category in result_data.get("categories", [])
-                ]
+                result_data["categories"] = [category.get("name") for category in result_data.get("categories", [])]
             results.append({"param": result.get_param(), "data": result_data})
     return "threat_actor_intelligence_results.html"
 
@@ -544,9 +513,7 @@ def threat_map_results(provides, all_app_runs, context):
             if result_data:
                 result_data = result_data[0]
                 for actor in result_data.get("threatActor", []):
-                    actor["categories"] = [
-                        category.get("name") for category in actor.get("categories", [])
-                    ]
+                    actor["categories"] = [category.get("name") for category in actor.get("categories", [])]
             results.append({"param": result.get_param(), "data": result_data})
     return "threat_map_results.html"
 

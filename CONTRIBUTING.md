@@ -4,6 +4,15 @@ For more information about contributing to Splunk SOAR Apps please take a look a
 
 ## Developing
 
-To develop locally first install `pip install invoke`.
+Run
+```shell
+pip install -r dev-requirements.txt
+```
 
 Then type in `invoke --list` to see the list of available tasks.
+
+To package the app run.
+
+```shell
+invoke package
+```
