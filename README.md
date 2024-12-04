@@ -6,9 +6,11 @@ Connector Version: 4.4.3
 Product Vendor: Recorded Future, Inc  
 Product Name: Recorded Future App for Phantom  
 Product Version Supported (regex): ".\*"  
-Minimum Product Version: 6.2.1  
+Minimum Product Version: 6.3.0  
 
-This app implements investigative actions to perform lookups for quick reputation information, contextual threat intelligence and external threat alerts
+Enhance your security posture with Recorded Future for Splunk SOAR.
+Key Capabilities:
+•Swift Threat Assessments: Access Recorded Future's extensive IOC data for swift and accurate assessments
 
 [comment]: # " File: README.md"
 [comment]: # ""
@@ -31,12 +33,10 @@ This app implements investigative actions to perform lookups for quick reputatio
 [comment]: # "either express or implied. See the License for the specific language governing permissions"
 [comment]: # "and limitations under the License."
 [comment]: # ""
-Recorded Future App for Splunk SOAR allows clients to work smarter, respond faster, and strengthen their 
-defenses through automation and orchestration. The Recorded Future App provides a number of actions that enable 
-the creation of Playbooks to do automated enrichment, correlation, threat hunting, and alert handling.
-
-Access playbook templates created by Recorded Future automation experts to embed intelligence in your new 
-and existing security workflows: https://support.recordedfuture.com/hc/en-us/articles/12294483605523-Splunk-SOAR-Template-Playbooks-Library
+Recorded Future App for Phantom allows clients to work smarter, respond faster, and strengthen their
+defenses through automation and orchestration. The Recorded Future App provides a number of actions
+that enable the creation of Playbooks to do automated enrichment, correlation, threat hunting, and
+alert handling.
 
 # Ingest alerts into events
 
