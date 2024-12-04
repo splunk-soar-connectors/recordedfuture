@@ -1,1 +1,2 @@
 **Unreleased**
+* Remove usage of md5 to be compatible with FIPS
