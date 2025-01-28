@@ -36,18 +36,26 @@ This table lists the configuration variables required to operate Recorded Future
 
 VARIABLE | REQUIRED | TYPE | DESCRIPTION
 -------- | -------- | ---- | -----------
-**recordedfuture_base_url** | required | string | Recorded Future API basename |
-**recordedfuture_api_token** | required | password | Recorded Future API token |
-**recordedfuture_verify_ssl** | optional | boolean | Verify SSL certificates |
-**on_poll_alert_ruleids** | optional | string | Comma-separated list of alert rule IDs |
-**on_poll_alert_severity** | optional | string | Severity to apply to the alert event |
-**on_poll_alert_status** | optional | string | Comma separated list of alert statuses to poll (New, Pending, Dismissed, Resolved are now supported) |
-**max_count** | optional | numeric | Max events to ingest for scheduled polling |
-**first_max_count** | optional | numeric | Max events to ingest for scheduled polling first time |
-**on_poll_playbook_alert_priority** | optional | string | Comma separated On Poll Playbook Alerts priority threshold (High,Moderate,Informational) |
-**on_poll_playbook_alert_type** | optional | string | Comma-separated list of Playbook alert types. (domain_abuse, cyber_vulnerability, code_repo_leakage are now supported) |
-**on_poll_playbook_alert_status** | optional | string | Comma-separated list of Playbook alert statuses. (New, InProgress, Dismissed, Resolved are now supported) |
-**on_poll_playbook_alert_start_time** | optional | string | Poll playbook alerts created after (date in ISO format: 2022-12-01T11:00:00+00) |
+**recordedfuture_base_url** |  required  | string | Recorded Future API basename
+**recordedfuture_api_token** |  required  | password | Recorded Future API token
+**recordedfuture_verify_ssl** |  optional  | boolean | Verify SSL certificates
+**on_poll_alert_ruleids** |  optional  | string | Comma-separated list of alert rule IDs
+**on_poll_alert_severity** |  optional  | string | Severity to apply to the alert event
+**on_poll_alert_status** |  optional  | string | Comma separated list of alert statuses to poll (New, Pending, Dismissed, Resolved are now supported)
+**on_poll_alert_full_alert** |  optional  | string | Scope of artifact ingestion
+**ph1** |  optional  | ph | 
+**max_count** |  optional  | numeric | Max events to ingest for scheduled polling
+**ph2** |  optional  | ph | 
+**first_max_count** |  optional  | numeric | Max events to ingest for scheduled polling first time
+**ph3** |  optional  | ph | 
+**on_poll_playbook_alert_priority** |  optional  | string | Comma separated On Poll Playbook Alerts priority threshold (High,Moderate,Informational)
+**ph4** |  optional  | ph | 
+**on_poll_playbook_alert_type** |  optional  | string | Comma-separated list of Playbook alert types. (domain_abuse, cyber_vulnerability, code_repo_leakage are now supported)
+**ph6** |  optional  | ph | 
+**on_poll_playbook_alert_status** |  optional  | string | Comma-separated list of Playbook alert statuses. (New, InProgress, Dismissed, Resolved are now supported)
+**ph7** |  optional  | ph | 
+**on_poll_playbook_alert_start_time** |  optional  | string | Poll playbook alerts created after (date in ISO format: 2022-12-01T11:00:00+00)
+
 
 ### Supported Actions
 
