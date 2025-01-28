@@ -65,6 +65,7 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 **on_poll_alert_ruleids** |  optional  | string | Comma-separated list of alert rule IDs
 **on_poll_alert_severity** |  optional  | string | Severity to apply to the alert event
 **on_poll_alert_status** |  optional  | string | Comma separated list of alert statuses to poll (New, Pending, Dismissed, Resolved are now supported)
+**on_poll_alert_full_alert** |  optional  | string | Scope of artifact ingestion
 **ph1** |  optional  | ph | 
 **max_count** |  optional  | numeric | Max events to ingest for scheduled polling
 **ph2** |  optional  | ph | 
