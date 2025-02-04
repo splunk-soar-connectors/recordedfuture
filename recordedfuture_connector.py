@@ -959,6 +959,7 @@ class RecordedfutureConnector(BaseConnector):
             "rules": rule_list,
             "severity": config.get("on_poll_alert_severity"),
             "limit": param.get("max_count", 100),
+            "limited_entity_scope": config.get("on_poll_alert_full_alert") != "All entities",
         }
         params["status"] = [el.strip() for el in config.get("on_poll_alert_status", "").split(",") if el.strip()]
 
