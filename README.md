@@ -6,14 +6,36 @@ Product Vendor: Recorded Future, Inc \
 Product Name: Recorded Future App for Phantom \
 Minimum Product Version: 6.3.0
 
-Enhance your security posture with Recorded Future for Splunk SOAR.
-Key Capabilities:
-•Swift Threat Assessments: Access Recorded Future's extensive IOC data for swift and accurate assessments
+This app implements investigative actions to perform lookups for quick reputation information, contextual threat intelligence and external threat alerts
 
-Recorded Future App for Phantom allows clients to work smarter, respond faster, and strengthen their
-defenses through automation and orchestration. The Recorded Future App provides a number of actions
-that enable the creation of Playbooks to do automated enrichment, correlation, threat hunting, and
-alert handling.
+[comment]: # " File: README.md"
+[comment]: # ""
+[comment]: # "Copyright (c) Recorded Future, Inc, 2019-2024"
+[comment]: # ""
+[comment]: # "This unpublished material is proprietary to Recorded Future. All"
+[comment]: # "rights reserved. The methods and techniques described herein are"
+[comment]: # "considered trade secrets and/or confidential. Reproduction or"
+[comment]: # "distribution, in whole or in part, is forbidden except by express"
+[comment]: # "written permission of Recorded Future."
+[comment]: # ""
+[comment]: # "Licensed under the Apache License, Version 2.0 (the 'License');"
+[comment]: # "you may not use this file except in compliance with the License."
+[comment]: # "You may obtain a copy of the License at"
+[comment]: # ""
+[comment]: # "    http://www.apache.org/licenses/LICENSE-2.0"
+[comment]: # ""
+[comment]: # "Unless required by applicable law or agreed to in writing, software distributed under"
+[comment]: # "the License is distributed on an 'AS IS' BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,"
+[comment]: # "either express or implied. See the License for the specific language governing permissions"
+[comment]: # "and limitations under the License."
+[comment]: # ""
+Recorded Future App for Splunk SOAR allows clients to work smarter, respond faster, and strengthen their 
+defenses through automation and orchestration. The Recorded Future App provides a number of actions that enable 
+the creation of Playbooks to do automated enrichment, correlation, threat hunting, and alert handling.
+
+Access playbook templates created by Recorded Future automation experts to embed intelligence in your new 
+and existing security workflows: https://support.recordedfuture.com/hc/en-us/articles/12294483605523-Splunk-SOAR-Template-Playbooks-Library
+
 
 # Ingest alerts into events
 
