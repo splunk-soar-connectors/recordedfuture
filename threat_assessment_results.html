@@ -1,17 +1,17 @@
 {% extends 'widgets/widget_template.html' %}
 {% load custom_template %}
-
-{% block custom_title_prop %}{% if title_logo %}style="background-size: auto 60%; background-position: 50%; background-repeat: no-repeat; background-image: url('/app_resource/{{ title_logo }}');"{% endif %}{% endblock %}
+{% block custom_title_prop %}
+  {% if title_logo %}
+    style="background-size: auto 60%; background-position: 50%; background-repeat: no-repeat; background-image: url('/app_resource/{{ title_logo }}');"
+  {% endif %}
+{% endblock %}
 {% block title1 %}{{ title1 }}{% endblock %}
 {% block title2 %}{{ title2 }}{% endblock %}
-{% block custom_tools %}
-{% endblock %}
-
-{% block widget_content %} <!-- Main Start Block -->
-
-<!-- File: threat_assessment_results.html
-
-Copyright (c) Recorded Future, Inc, 2019-2024
+{% block custom_tools %}{% endblock %}
+{% block widget_content %}
+  <!-- Main Start Block -->
+  <!-- File: threat_assessment_results.html
+Copyright (c) Recorded Future, Inc, 2019-2025
 
 This unpublished material is proprietary to Recorded Future. All
 rights reserved. The methods and techniques described herein are
@@ -30,13 +30,11 @@ the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
 either express or implied. See the License for the specific language governing permissions
 and limitations under the License.
 -->
-
-<!--
+  <!--
 Style elements are defined in a separate file, named below,
 and will be merged during compilation:
        recordedfuture_style.css          -->
-<style>
-
+  <style>
   /*  ||  RECORDED FUTURE COLOR */
 
   :root{
@@ -192,30 +190,30 @@ and will be merged during compilation:
   .rf-playbook-alert-evidence-data-row-title {
     width: 20%;
   }
-</style>
-
-<div class="rf-widget">
-  <!-- Main Div -->
-  {% for result in results %} <!-- loop for each result -->
-
-    <!------------------- For each Result ---------------------->
-
-    <div class="rf-box">
-      {% if result.data %} <!-- else case will handle errors and no data found responses -->
-        <table class="rf-table">
-          <tr>
-            <td colspan="4">
-              {{ result.data.context|title }} Threat Assessment:
-              {% if result.data.verdict %}
-                <span class="highlighted">Suspected Malicious</span>
+  </style>
+  <div class="rf-widget">
+    <!-- Main Div -->
+    {% for result in results %}
+      <!-- loop for each result -->
+      <!------------------- For each Result ---------------------->
+      <div class="rf-box">
+        {% if result.data %}
+          <!-- else case will handle errors and no data found responses -->
+          <table class="rf-table">
+            <tr>
+              <td colspan="4">
+                {{ result.data.context|title }} Threat Assessment:
+                {% if result.data.verdict %}
+                  <span class="highlighted">Suspected Malicious</span>
                 {% else %}
-                <span class="highlighted">Non-malicious</span>
-              {% endif %}
-              with score: {{ result.data.triage_riskscore }}
-            </td>
-          </tr>
-          <!-- Entities and their evidence -->
-            {% for entry in result.data.entities %} <!-- loop for each result -->
+                  <span class="highlighted">Non-malicious</span>
+                {% endif %}
+                with score: {{ result.data.triage_riskscore }}
+              </td>
+            </tr>
+            <!-- Entities and their evidence -->
+            {% for entry in result.data.entities %}
+              <!-- loop for each result -->
               {% if entry.riskscore %}
                 {% if entry.evidence %}
                   <td colspan="4">
@@ -229,18 +227,19 @@ and will be merged during compilation:
                   <tr>
                     <td class="rf-criticality-level-{{ evidence.level }}"></td>
                     <td>
-                      <span class="non-highlighted">Rule</span> <br/>
+                      <span class="non-highlighted">Rule</span>
+                      <br />
                       {{ evidence.rule }}
                     </td>
                     <td>
-                      <span class="non-highlighted">Evidence</span> <br/>
+                      <span class="non-highlighted">Evidence</span>
+                      <br />
                       {{ evidence.description }}
                     </td>
                     <td>
-                      <span class="non-highlighted">Timestamp</span> <br/>
-                      <span title="{{ evidence.timestamp }}">
-                        {{ evidence.timestamp|slice:"0:10" }}
-                      </span>
+                      <span class="non-highlighted">Timestamp</span>
+                      <br />
+                      <span title="{{ evidence.timestamp }}">{{ evidence.timestamp|slice:"0:10" }}</span>
                     </td>
                   </tr>
                 {% endfor %}
@@ -248,7 +247,8 @@ and will be merged during compilation:
             {% endif %}
           {% endfor %}
         </table>
-      {% else %} <!-- handle no data responses -->
+      {% else %}
+        <!-- handle no data responses -->
         <table class="rf-table">
           <tr>
             <th>Status</th>
@@ -262,7 +262,9 @@ and will be merged during compilation:
       {% endif %}
     </div>
     <!------------------- For each Result END ---------------------->
-  {% endfor %} <!-- loop for each result end -->
-</div> <!-- Main Div -->
-
-{% endblock %} <!-- Main Start Block -->
+  {% endfor %}
+  <!-- loop for each result end -->
+</div>
+<!-- Main Div -->
+{% endblock %}
+<!-- Main Start Block -->

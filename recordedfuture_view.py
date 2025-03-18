@@ -1,6 +1,6 @@
 # File: recordedfuture_view.py
 #
-# Copyright (c) Recorded Future, Inc, 2019-2024
+# Copyright (c) Recorded Future, Inc, 2019-2025
 #
 # This unpublished material is proprietary to Recorded Future. All
 # rights reserved. The methods and techniques described herein are
@@ -21,6 +21,7 @@
 from datetime import datetime
 
 from recordedfuture_consts import RF_PLAYBOOK_STATUS_MAP
+
 
 APP_URL = "https://app.recordedfuture.com/live/sc/entity/%s%%3A%s"
 VULN_APP_URL = "https://app.recordedfuture.com/live/sc/entity/%s"

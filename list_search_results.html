@@ -1,17 +1,17 @@
 {% extends 'widgets/widget_template.html' %}
 {% load custom_template %}
-
-{% block custom_title_prop %}{% if title_logo %}style="background-size: auto 60%; background-position: 50%; background-repeat: no-repeat; background-image: url('/app_resource/{{ title_logo }}');"{% endif %}{% endblock %}
+{% block custom_title_prop %}
+  {% if title_logo %}
+    style="background-size: auto 60%; background-position: 50%; background-repeat: no-repeat; background-image: url('/app_resource/{{ title_logo }}');"
+  {% endif %}
+{% endblock %}
 {% block title1 %}{{ title1 }}{% endblock %}
 {% block title2 %}{{ title2 }}{% endblock %}
-{% block custom_tools %}
-{% endblock %}
-
-{% block widget_content %} <!-- Main Start Block -->
-
-<!-- File: list_search_results.html
-
-Copyright (c) Recorded Future, Inc, 2019-2024
+{% block custom_tools %}{% endblock %}
+{% block widget_content %}
+  <!-- Main Start Block -->
+  <!-- File: list_search_results.html
+Copyright (c) Recorded Future, Inc, 2019-2025
 
 This unpublished material is proprietary to Recorded Future. All
 rights reserved. The methods and techniques described herein are
@@ -30,13 +30,11 @@ the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
 either express or implied. See the License for the specific language governing permissions
 and limitations under the License.
 -->
-
-<!--
+  <!--
 Style elements are defined in a separate file, named below,
 and will be merged during compilation:
        recordedfuture_style.css          -->
-<style>
-
+  <style>
   /*  ||  RECORDED FUTURE COLOR */
 
   :root{
@@ -192,56 +190,47 @@ and will be merged during compilation:
   .rf-playbook-alert-evidence-data-row-title {
     width: 20%;
   }
-</style>
-
-<div class="rf-widget"> <!-- Main Div -->
-  <!------------------- For each Result ---------------------->
-  {% for result in results %}
+  </style>
+  <div class="rf-widget">
+    <!-- Main Div -->
+    <!------------------- For each Result ---------------------->
+    {% for result in results %}
       {% if not result.data %}
         <h4>No data found</h4>
       {% else %}
         <div class="rf-full-widh-box">
           <table class="rf-table">
-          <tr>
-            <td>
-              <h6>List Name</h6>
-            </td>
-            <td>
-              <h6>List ID</h6>
-            </td>
-            <td>
-              <h6>Entity Types</h6>
-            </td>
-            <td>
-              <h6>Created By</h6>
-            </td>
-            <td>
-              <h6>Organisation</h6>
-            </td>
-          </tr>
-          {% for el in result.data %}
             <tr>
               <td>
-                  {{ el.name  }}
+                <h6>List Name</h6>
               </td>
               <td>
-                  {{ el.id  }}
+                <h6>List ID</h6>
               </td>
               <td>
-                  {{ el.type  }}
+                <h6>Entity Types</h6>
               </td>
               <td>
-                {{ el.owner_name  }}
+                <h6>Created By</h6>
               </td>
               <td>
-                {{ el.organisation_name }}
+                <h6>Organisation</h6>
               </td>
             </tr>
-          {% endfor %}
-        </table>
-      </div>
+            {% for el in result.data %}
+              <tr>
+                <td>{{ el.name }}</td>
+                <td>{{ el.id }}</td>
+                <td>{{ el.type }}</td>
+                <td>{{ el.owner_name }}</td>
+                <td>{{ el.organisation_name }}</td>
+              </tr>
+            {% endfor %}
+          </table>
+        </div>
       {% endif %}
-  {% endfor %}
-</div> <!-- Main Div -->
-
-{% endblock %} <!-- Main Start Block -->
+    {% endfor %}
+  </div>
+  <!-- Main Div -->
+{% endblock %}
+<!-- Main Start Block -->
