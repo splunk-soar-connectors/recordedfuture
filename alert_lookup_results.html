@@ -1,17 +1,17 @@
 {% extends 'widgets/widget_template.html' %}
 {% load custom_template %}
-
-{% block custom_title_prop %}{% if title_logo %}style="background-size: auto 60%; background-position: 50%; background-repeat: no-repeat; background-image: url('/app_resource/{{ title_logo }}');"{% endif %}{% endblock %}
+{% block custom_title_prop %}
+  {% if title_logo %}
+    style="background-size: auto 60%; background-position: 50%; background-repeat: no-repeat; background-image: url('/app_resource/{{ title_logo }}');"
+  {% endif %}
+{% endblock %}
 {% block title1 %}{{ title1 }}{% endblock %}
 {% block title2 %}{{ title2 }}{% endblock %}
-{% block custom_tools %}
-{% endblock %}
-
-{% block widget_content %} <!-- Main Start Block -->
-
-<!-- File: alert_search_results.html
-
-Copyright (c) Recorded Future, Inc, 2019-2024
+{% block custom_tools %}{% endblock %}
+{% block widget_content %}
+  <!-- Main Start Block -->
+  <!-- File: alert_search_results.html
+Copyright (c) Recorded Future, Inc, 2019-2025
 
 This unpublished material is proprietary to Recorded Future. All
 rights reserved. The methods and techniques described herein are
@@ -30,13 +30,11 @@ the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
 either express or implied. See the License for the specific language governing permissions
 and limitations under the License.
 -->
-
-<!--
+  <!--
 Style elements are defined in a separate file, named below,
 and will be merged during compilation:
        recordedfuture_style.css          -->
-<style>
-
+  <style>
   /*  ||  RECORDED FUTURE COLOR */
 
   :root{
@@ -192,106 +190,130 @@ and will be merged during compilation:
   .rf-playbook-alert-evidence-data-row-title {
     width: 20%;
   }
-</style>
-
-<div class="rf-widget"> <!-- Main Div -->
-  <!------------------- For each Result ---------------------->
-  {% for result in results %}
-    {% if not result.data %}
-      <h4>No data found</h4>
-    {% else %}
-      {% for alert in result.data %}
-        <div class="rf-box">
-          <table class="rf-table">
-            <tr>
-              <td colspan="3">
-                <span class="non-highlighted">Alert (Alert ID)</span><br/>
-                {{ alert.title }}
-                (<a href="javascript:;" onclick="context_menu(this, [{'contains': ['recordedfuture alert id'], 'value': '{{ alert.id }}' }], 0, {{ container.id }}, null, false);">
+  </style>
+  <div class="rf-widget">
+    <!-- Main Div -->
+    <!------------------- For each Result ---------------------->
+    {% for result in results %}
+      {% if not result.data %}
+        <h4>No data found</h4>
+      {% else %}
+        {% for alert in result.data %}
+          <div class="rf-box">
+            <table class="rf-table">
+              <tr>
+                <td colspan="3">
+                  <span class="non-highlighted">Alert (Alert ID)</span>
+                  <br />
+                  {{ alert.title }}
+                  (<a href="javascript:;"
+   onclick="context_menu(this, [{'contains': ['recordedfuture alert id'], 'value': '{{ alert.id }}' }], 0, {{ container.id }}, null, false);">
                   <span class="highlighted">{{ alert.id }})</span>&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
                 </a>
               </td>
               <td>
-                <span class="non-highlighted">Links to Recorded Future</span><br/>
-                <a href="{{ alert.url }}" target="new" >Alert</a> /
+                <span class="non-highlighted">Links to Recorded Future</span>
+                <br />
+                <a href="{{ alert.url }}" target="new">Alert</a> /
                 <a href="{{ alert.rule.url }}" target="new">Alert Rule</a>
               </td>
             </tr>
             <tr>
               <td>
-                <span class="non-highlighted">Triggered</span><br/>
-                {{ alert.triggered|slice:"0:10"  }}
+                <span class="non-highlighted">Triggered</span>
+                <br />
+                {{ alert.triggered|slice:"0:10" }}
               </td>
               <td>
-                <span class="non-highlighted">Status</span><br/>
+                <span class="non-highlighted">Status</span>
+                <br />
                 {{ alert.review.status }}
               </td>
               <td>
-                <span class="non-highlighted">Assignee</span><br/>
+                <span class="non-highlighted">Assignee</span>
+                <br />
                 {{ alert.review.assignee }}
               </td>
               <td>
-                <span class="non-highlighted">Alerting Rule (Rule ID)</span><br/>
+                <span class="non-highlighted">Alerting Rule (Rule ID)</span>
+                <br />
                 {{ alert.rule.name }}
-                (<a href="javascript:;" onclick="context_menu(this, [{'contains': ['recordedfuture alert rule id'], 'value': '{{ alert.rule.id }}' }], 0, {{ container.id }}, null, false);">
+                (<a href="javascript:;"
+   onclick="context_menu(this, [{'contains': ['recordedfuture alert rule id'], 'value': '{{ alert.rule.id }}' }], 0, {{ container.id }}, null, false);">
                 <span class="highlighted">{{ alert.rule.id }})</span>&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
               </td>
             </tr>
             <tr>
               <td colspan="3">
-                <span class="non-highlighted">Note</span><br/>
-                {{ alert.review.note  }}
+                <span class="non-highlighted">Note</span>
+                <br />
+                {{ alert.review.note }}
               </td>
             </tr>
             <tr>
               <td colspan="3">
-                <span class="non-highlighted">Recorded Future AI Insights</span><br/>
-                {{ alert.ai_insights  }}
+                <span class="non-highlighted">Recorded Future AI Insights</span>
+                <br />
+                {{ alert.ai_insights }}
               </td>
             </tr>
           </table>
         </div>
-
         <!-- Risk Rules Triggered -->
         {% if result.data.evidence %}
-        <div class="rf-box">
-          <table class="rf-table">
-            <tr><td colspan="4">Risk Rules Triggered</td></tr>
-            {% for rule in result.data.evidence|dictsortreversed:"level" %}
-            <tr>
-              <td class="rf-criticality-level-{{ rule.level }}"></td>
-              <td><span class="non-highlighted">Risk Rule</span> <br/>
-                {{ rule.rule }}
-              </td>
-              <td><span class="non-highlighted">Evidence</span> <br/>
-                {{ rule.description }}
-              </td>
-              <td>
-                <span class="non-highlighted">Timestamp</span> <br/>
-                <span title="{{ rule.timestamp }}">{{ rule.timestamp|slice:"0:10" }}</span>
-              </td>
-            </tr>
-            {% endfor %}
-          </table>
-        </div>
+          <div class="rf-box">
+            <table class="rf-table">
+              <tr>
+                <td colspan="4">Risk Rules Triggered</td>
+              </tr>
+              {% for rule in result.data.evidence|dictsortreversed:"level" %}
+                <tr>
+                  <td class="rf-criticality-level-{{ rule.level }}"></td>
+                  <td>
+                    <span class="non-highlighted">Risk Rule</span>
+                    <br />
+                    {{ rule.rule }}
+                  </td>
+                  <td>
+                    <span class="non-highlighted">Evidence</span>
+                    <br />
+                    {{ rule.description }}
+                  </td>
+                  <td>
+                    <span class="non-highlighted">Timestamp</span>
+                    <br />
+                    <span title="{{ rule.timestamp }}">{{ rule.timestamp|slice:"0:10" }}</span>
+                  </td>
+                </tr>
+              {% endfor %}
+            </table>
+          </div>
         {% endif %}
-
         {% if alert.entities %}
           {% for entity_type, entities in alert.entities.items %}
             <div class="rf-box">
               <table class="rf-table">
-                <tr><td colspan="5">{{ entity_type|upper }} Entities</td></tr>
+                <tr>
+                  <td colspan="5">{{ entity_type|upper }} Entities</td>
+                </tr>
                 {% for entity in entities %}
                   <tr>
                     <td>
                       <span class="non-highlighted">Entity</span>:
-                      <a href="javascript:;" onclick="context_menu(this, [{'contains': ['{{ entity_type }}'], 'value': '{{ entity.entity }}' }], 0, {{ container.id }}, null, false);">
-                        <span class="highlighted">{{ entity.entity }}</span>&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a><br/>
-                      <span class="non-highlighted">Source</span>: {{ entity.source }}<br/>
-                      <span class="non-highlighted">Authors</span>: {{ entity.authors }}<br/>
-                      <span class="non-highlighted">Title</span>: {{ entity.title }}<br/>
-                      <span class="non-highlighted">SourceURL</span>: {{ entity.sourceUrl }}<br/>
-                      <span class="non-highlighted">Fragment</span>: {{ entity.fragment }}<br/>
+                      <a href="javascript:;"
+                         onclick="context_menu(this, [{'contains': ['{{ entity_type }}'], 'value': '{{ entity.entity }}' }], 0, {{ container.id }}, null, false);">
+                        <span class="highlighted">{{ entity.entity }}</span>&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
+                      <br />
+                      <span class="non-highlighted">Source</span>: {{ entity.source }}
+                      <br />
+                      <span class="non-highlighted">Authors</span>: {{ entity.authors }}
+                      <br />
+                      <span class="non-highlighted">Title</span>: {{ entity.title }}
+                      <br />
+                      <span class="non-highlighted">SourceURL</span>: {{ entity.sourceUrl }}
+                      <br />
+                      <span class="non-highlighted">Fragment</span>: {{ entity.fragment }}
+                      <br />
                     </td>
                   </tr>
                 {% endfor %}
@@ -302,6 +324,7 @@ and will be merged during compilation:
       {% endfor %}
     {% endif %}
   {% endfor %}
-</div> <!-- Main Div -->
-
-{% endblock %} <!-- Main Start Block -->
+</div>
+<!-- Main Div -->
+{% endblock %}
+<!-- Main Start Block -->
