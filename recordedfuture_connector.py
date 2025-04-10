@@ -197,8 +197,8 @@ class RecordedfutureConnector(BaseConnector):
                 msg = resp_json.get("error").get("message")
 
         # You should process the error returned in the json
-        message = f"Error from server. Status Code: {resp.status_code} Data from server: {UnicodeDammit(msg).unicode_markup}"
 
+        message = f"Error from server. Status Code: {resp.status_code} Data from server: {UnicodeDammit(msg).unicode_markup}"
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
     def _process_response(self, resp, action_result, **kwargs):
@@ -234,7 +234,6 @@ class RecordedfutureConnector(BaseConnector):
         # everything else is actually an error at this point
         error_msg = UnicodeDammit(resp.text.replace("{", "{{").replace("}", "}}")).unicode_markup
         message = f"Can't process response from server. Status Code: {resp.status_code} Data from server: {error_msg}"
-
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
     def _get_error_message_from_exception(self, e):
