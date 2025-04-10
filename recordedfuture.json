@@ -1,7 +1,7 @@
 {
     "appid": "6efe0e1b-76ac-4ffd-8fa0-ac58fd6efd77",
     "name": "Recorded Future For Splunk SOAR",
-    "description": "Enhance your security posture with Recorded Future for Splunk SOAR.\nKey Capabilities:\n\u2022Swift Threat Assessments: Access Recorded Future's extensive IOC data for swift and accurate assessments",
+    "description": "Enhance your security posture with Recorded Future for Splunk SOAR.\nKey Capabilities:\n•Swift Threat Assessments: Access Recorded Future's extensive IOC data for swift and accurate assessments",
     "publisher": "Recorded Future, Inc",
     "type": "reputation",
     "main_module": "recordedfuture_connector.py",
@@ -9976,11 +9976,5 @@
             },
             "versions": "EQ(*)"
         }
-    ],
-    "pip_dependencies": {
-        "wheel": []
-    },
-    "pip39_dependencies": {
-        "wheel": []
-    }
+    ]
 }
