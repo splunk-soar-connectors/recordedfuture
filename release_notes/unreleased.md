@@ -1,4 +1,3 @@
 **Unreleased**
 
-* chore: batch changes
-
+* chore(ci): update pre-commit config
