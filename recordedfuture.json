@@ -6444,11 +6444,21 @@
                     "description": "Entity Type",
                     "data_type": "string",
                     "value_list": [
-                        "ip",
-                        "domain",
-                        "url",
-                        "hash",
-                        "vulnerability"
+                        "IpAddress",
+                        "InternetDomainName",
+                        "Hash",
+                        "CyberVulnerability",
+                        "CyberThreatActorCategory",
+                        "AttackVector",
+                        "Company",
+                        "FileContent",
+                        "Malware",
+                        "MalwareCategory",
+                        "MalwareSignature",
+                        "MitreAttackIdentifier",
+                        "Organization",
+                        "Person",
+                        "Username"
                     ],
                     "order": 1
                 },
