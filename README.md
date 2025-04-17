@@ -150,23 +150,25 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 
 DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 --------- | ---- | -------- | --------------
-action_result.status | string | | success failed |
-action_result.parameter.alert_id | string | `recordedfuture alert id` | |
-action_result.parameter.alert_note | string | | |
-action_result.parameter.alert_status | string | | |
-action_result.data.\*.id | string | | |
-action_result.data.\*.note.author | string | | |
-action_result.data.\*.note.date | string | | |
-action_result.data.\*.note.text | string | | |
-action_result.data.\*.status | string | | |
-action_result.data.\*.statusChangeBy | string | | |
-action_result.data.\*.statusDate | string | | |
-action_result.data.\*.title | string | | |
-action_result.summary.reason | string | | |
-action_result.summary.update | string | | |
-action_result.message | string | | |
-summary.total_objects | numeric | `recordedfuture total objects` | 1 |
-summary.total_objects_successful | numeric | `recordedfuture total objects successful` | 1 |
+action_result.status | string |  |   success  failed 
+action_result.parameter.alert_id | string |  `recordedfuture alert id`  |  
+action_result.parameter.alert_note | string |  |  
+action_result.parameter.alert_status | string |  |  
+action_result.data.\*.id | string |  |  
+action_result.data.\*.url | string |  |  
+action_result.data.\*.note.author | string |  |  
+action_result.data.\*.note.date | string |  |  
+action_result.data.\*.note.text | string |  |  
+action_result.data.\*.status | string |  |  
+action_result.data.\*.statusChangeBy | string |  |  
+action_result.data.\*.statusDate | string |  |  
+action_result.data.\*.title | string |  |  
+action_result.summary.reason | string |  |  
+action_result.summary.update | string |  |  
+action_result.message | string |  |  
+summary.total_objects | numeric |  `recordedfuture total objects`  |   1 
+summary.total_objects_successful | numeric |  `recordedfuture total objects successful`  |   1   
+
 
 ## action: 'alert search'
 
