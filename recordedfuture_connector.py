@@ -197,7 +197,7 @@ class RecordedfutureConnector(BaseConnector):
                 msg = resp_json.get("error").get("message")
 
         # You should process the error returned in the json
-        message = "Error from server. Status Code: {0} " "Data from server: {1}".format(resp.status_code, UnicodeDammit(msg).unicode_markup)
+        message = "Error from server. Status Code: {0} Data from server: {1}".format(resp.status_code, UnicodeDammit(msg).unicode_markup)
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
@@ -233,7 +233,7 @@ class RecordedfutureConnector(BaseConnector):
 
         # everything else is actually an error at this point
         error_msg = UnicodeDammit((resp.text.replace("{", "{{").replace("}", "}}"))).unicode_markup
-        message = "Can't process response from server. Status Code: {0} " "Data from server: {1}".format(resp.status_code, error_msg)
+        message = "Can't process response from server. Status Code: {0} Data from server: {1}".format(resp.status_code, error_msg)
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
@@ -312,7 +312,7 @@ class RecordedfutureConnector(BaseConnector):
             requests_id=requests.__version__,
             platform_id=platform_id,
         )
-        user_agent_tplt = "{app_name}/{container_id} ({os_id}) " "{pkg_name}/{pkg_version} " "python-requests/{requests_id} ({platform_id})"
+        user_agent_tplt = "{app_name}/{container_id} ({os_id}) {pkg_name}/{pkg_version} python-requests/{requests_id} ({platform_id})"
         user_agent = user_agent_tplt.format(**pdict)
         # headers
         api_key = config.get("recordedfuture_api_token")
@@ -959,6 +959,7 @@ class RecordedfutureConnector(BaseConnector):
             "rules": rule_list,
             "severity": config.get("on_poll_alert_severity"),
             "limit": param.get("max_count", 100),
+            "limited_entity_scope": config.get("on_poll_alert_full_alert") != "All entities",
         }
         params["status"] = [el.strip() for el in config.get("on_poll_alert_status", "").split(",") if el.strip()]
 
@@ -1032,7 +1033,7 @@ class RecordedfutureConnector(BaseConnector):
             action_result.set_summary(summary)
             return action_result.set_status(
                 phantom.APP_SUCCESS,
-                "No alerts triggered from rule %s " 'within timerange "%s"' % (rule_id, timeframe),
+                'No alerts triggered from rule %s within timerange "%s"' % (rule_id, timeframe),
             )
 
         # Add info about the rule to summary and action_result['data']
@@ -1261,14 +1262,14 @@ class RecordedfutureConnector(BaseConnector):
 
         # make rest call
         my_ret_val, response = self._make_rest_call(
-            f'/playbook_alert/{param["alert_id"]}',
+            f"/playbook_alert/{param['alert_id']}",
             action_result,
         )
 
         self.debug_print(
             "_handle_playbook_alert_details",
             {
-                "path_info": f'/playbook_alert/domain_abuse/{param["alert_id"]}',
+                "path_info": f"/playbook_alert/domain_abuse/{param['alert_id']}",
                 "action_result": action_result,
                 "my_ret_val": my_ret_val,
                 "response": response,
@@ -1301,7 +1302,7 @@ class RecordedfutureConnector(BaseConnector):
 
         # make rest call
         my_ret_val, response = self._make_rest_call(
-            f'/playbook_alert/{param["alert_id"]}',
+            f"/playbook_alert/{param['alert_id']}",
             json=params,
             action_result=action_result,
             method="put",
@@ -1310,7 +1311,7 @@ class RecordedfutureConnector(BaseConnector):
         self.debug_print(
             "_handle_playbook_alert_update",
             {
-                "path_info": f'/playbook_alert/{param["alert_id"]}',
+                "path_info": f"/playbook_alert/{param['alert_id']}",
                 "action_result": action_result,
                 "my_ret_val": my_ret_val,
                 "response": response,
