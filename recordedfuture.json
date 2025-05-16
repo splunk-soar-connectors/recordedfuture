@@ -10268,6 +10268,244 @@
                 "title": "Fetch Analyst Notes"
             },
             "versions": "EQ(*)"
+        },
+        {
+            "action": "identity leaked credentials search",
+            "identifier": "identity_leaked_credentials",
+            "description": "Retrieve leaked credentials from Recorded Future",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {
+                "organization_id": {
+                    "description": "Comma-separated list of Organization IDs to filter detections",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [
+                        "recordedfuture organization id"
+                    ],
+                    "allow_list": true,
+                    "order": 0
+                },
+                "domains": {
+                    "description": "Comma-separated list of domains to search for detections",
+                    "data_type": "string",
+                    "required": true,
+                    "contains": [
+                        "domain"
+                    ],
+                    "allow_list": true,
+                    "order": 1
+                },
+                "novel_only": {
+                    "description": "Only fetch novel detections (True/False)",
+                    "data_type": "boolean",
+                    "required": false,
+                    "default": true,
+                    "example_values": [
+                        false,
+                        true
+                    ],
+                    "order": 2
+                },
+                "detection_type": {
+                    "description": "Type of detection to fetch",
+                    "data_type": "string",
+                    "required": false,
+                    "value_list": [
+                        "External",
+                        "Workforce"
+                    ],
+                    "default": "Workforce",
+                    "order": 3
+                },
+                "created_after": {
+                    "description": "Detections created after this date (ISO 8601 format)",
+                    "data_type": "string",
+                    "required": false,
+                    "example_values": [
+                        "2025-01-01T00:00:00Z"
+                    ],
+                    "order": 4
+                },
+                "created_before": {
+                    "description": "Detections created before this date (ISO 8601 format)",
+                    "data_type": "string",
+                    "required": false,
+                    "example_values": [
+                        "2025-02-01T00:00:00Z"
+                    ],
+                    "order": 5
+                },
+                "limit": {
+                    "description": "Number of results to return",
+                    "data_type": "numeric",
+                    "required": false,
+                    "default": 100,
+                    "order": 6
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.organization_id",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture organization id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.id",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture detection id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.organization_id",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture organization id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.subject",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.novel",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.password.cleartext_hint",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.password.cleartext",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.authorization_service.url",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.authorization_service.domains",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.cookies.*.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.cookies.*.value",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.malware_family.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.dump.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.dump.description",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.dump.location.city",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.dump.location.country.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.dump.breaches.*.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.created",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.summary.total_detections",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture result message"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": [
+                        "recordedfuture total objects successful"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.domains",
+                    "data_type": "string",
+                    "contains": [
+                        "domain"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.novel_only",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.parameter.detection_type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.created_after",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.created_before",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.limit",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "custom",
+                "width": 15,
+                "height": 8,
+                "view": "recordedfuture_view.identity_leaked_credentials_results",
+                "title": "Recorded Future Leaked Credentials"
+            },
+            "versions": "EQ(*)"
         }
     ]
 }

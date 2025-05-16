@@ -519,6 +519,45 @@ def threat_map_results(provides, all_app_runs, context):
     return "views/threat_map_results.html"
 
 
+def leaked_credentials_results(provides, all_app_runs, context):
+    """Setup the view for leaked credentials results."""
+    context["results"] = results = []
+
+    for summary, action_results in all_app_runs:
+        for result in action_results:
+            result_data = result.get_data()
+
+            if not result_data:
+                continue
+
+            formatted_detections = []
+            for detection in result_data:
+                detection_entry = {
+                    "id": detection.get("id"),
+                    "organization_id": detection.get("organization_id"),
+                    "novel": detection.get("novel"),
+                    "type": detection.get("type"),
+                    "subject": detection.get("subject"),
+                    "password": detection.get("password") or {},
+                    "authorization_service": detection.get("authorization_service") or {},
+                    "cookies": detection.get("cookies") or [],
+                    "malware_family": detection.get("malware_family") or {},
+                    "dump": detection.get("dump") or {},
+                    "created": detection.get("created"),
+                }
+                formatted_detections.append(detection_entry)
+
+            results.append(
+                {
+                    "param": result.get_param(),
+                    "detections": formatted_detections,
+                    "summary": result.get_summary(),
+                }
+            )
+
+    return "views/leaked_credentials_results.html"
+
+
 def collective_insights_submission_results(provides, all_app_runs, context):
     """Setup the view for collective insights submission."""
     return "views/collective_insights_submission_results.html"

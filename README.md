@@ -89,7 +89,8 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 [threat map](#action-threat-map) - Get threat map \
 [collective insights submit](#action-collective-insights-submit) - Enables contribute data, `collective insights`, into the Recorded Future Intelligence Cloud \
 [on poll](#action-on-poll) - Ingest alerts from Recorded Future \
-[fetch analyst notes](#action-fetch-analyst-notes) - Search for analyst notes
+[fetch analyst notes](#action-fetch-analyst-notes) - Search for analyst notes \
+[identity leaked credentials search](#action-identity-leaked-credentials-search) - Retrieve leaked credentials from Recorded Future
 
 ## action: 'test connectivity'
 
@@ -1976,6 +1977,60 @@ action_result.parameter.serialization | string | | |
 summary.total_objects_successful | numeric | | |
 summary.total_objects | numeric | | |
 action_result.message | string | | |
+
+## action: 'identity leaked credentials search'
+
+Retrieve leaked credentials from Recorded Future
+
+Type: **investigate** \
+Read only: **True**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**organization_id** | optional | Comma-separated list of Organization IDs to filter detections | string | `recordedfuture organization id` |
+**domains** | required | Comma-separated list of domains to search for detections | string | `domain` |
+**novel_only** | optional | Only fetch novel detections (True/False) | boolean | |
+**detection_type** | optional | Type of detection to fetch | string | |
+**created_after** | optional | Detections created after this date (ISO 8601 format) | string | |
+**created_before** | optional | Detections created before this date (ISO 8601 format) | string | |
+**limit** | optional | Number of results to return | numeric | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string | | success failed |
+action_result.parameter.organization_id | string | `recordedfuture organization id` | |
+action_result.data.\*.id | string | `recordedfuture detection id` | |
+action_result.data.\*.organization_id | string | `recordedfuture organization id` | |
+action_result.data.\*.subject | string | | |
+action_result.data.\*.type | string | | |
+action_result.data.\*.novel | boolean | | |
+action_result.data.\*.password.cleartext_hint | string | | |
+action_result.data.\*.password.cleartext | string | | |
+action_result.data.\*.authorization_service.url | string | | |
+action_result.data.\*.authorization_service.domains | string | | |
+action_result.data.\*.cookies.\*.name | string | | |
+action_result.data.\*.cookies.\*.value | string | | |
+action_result.data.\*.malware_family.name | string | | |
+action_result.data.\*.dump.name | string | | |
+action_result.data.\*.dump.description | string | | |
+action_result.data.\*.dump.location.city | string | | |
+action_result.data.\*.dump.location.country.name | string | | |
+action_result.data.\*.dump.breaches.\*.name | string | | |
+action_result.data.\*.created | string | | |
+action_result.summary.total_detections | numeric | | |
+action_result.message | string | `recordedfuture result message` | |
+summary.total_objects | numeric | `recordedfuture total objects` | 1 |
+summary.total_objects_successful | numeric | `recordedfuture total objects successful` | 1 |
+action_result.parameter.domains | string | `domain` | |
+action_result.parameter.novel_only | boolean | | |
+action_result.parameter.detection_type | string | | |
+action_result.parameter.created_after | string | | |
+action_result.parameter.created_before | string | | |
+action_result.parameter.limit | numeric | | |
 
 ______________________________________________________________________
 

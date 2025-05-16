@@ -1691,6 +1691,80 @@ class RecordedfutureConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
+    def _handle_identity_leaked_credentials_search(self, param):
+        """Handle the identity_leaked_credentials action."""
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
+
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        organization_id = param.get("organization_id")
+        if organization_id:
+            organization_id = [x.strip() for x in organization_id.split(",") if x.strip()]
+
+        include_enterprise_level = param.get("include_enterprise_level", True)
+        domains_lst = param.get("domains")
+        novel_only = param.get("novel_only", True)
+        detection_type = param.get("detection_type", "Workforce")
+        created_after = param.get("created_after")
+        created_before = param.get("created_before")
+        limit = param.get("limit", 100)
+
+        if not domains_lst:
+            return action_result.set_status(phantom.APP_ERROR, "At least one domain must be provided")
+        domains = [x.strip() for x in domains_lst.split(",") if x.strip()]
+
+        # Build 'created' filter if dates provided
+        created_filter = {}
+        if created_after:
+            created_filter["gte"] = created_after
+        if created_before:
+            created_filter["lt"] = created_before
+        created_filter = created_filter or None
+
+        # Build 'filter' object
+        filter_obj = {}
+        filter_obj["domains"] = domains
+
+        if novel_only is not None:
+            filter_obj["novel_only"] = novel_only
+        if detection_type:
+            filter_obj["detection_type"] = detection_type
+        if created_filter:
+            filter_obj["created"] = created_filter
+
+        # If no filters at all, set to None
+        filter_obj = filter_obj if filter_obj else None
+
+        payload = {
+            "organization_id": organization_id,
+            "include_enterprise_level": include_enterprise_level,
+            "filter": filter_obj,
+            "limit": limit,
+        }
+
+        # make rest call
+        my_ret_val, response = self._make_rest_call("/identity/leaked-credentials", action_result, json=payload, method="post")
+        # Handle failure
+        if phantom.is_fail(my_ret_val):
+            return action_result.get_status()
+
+        # Summary
+        summary = action_result.get_summary()
+        action_result.add_data(response)
+        action_result.set_summary(summary)
+
+        self.debug_print(
+            "_handle_identity_leaked_credentials",
+            {
+                "path_info": "/identity/leaked-credentials",
+                "action_result": action_result,
+                "my_ret_val": my_ret_val,
+                "response": response["detections"],
+            },
+        )
+
+        return action_result.set_status(phantom.APP_SUCCESS)
+
     def handle_action(self, param):
         """Handle a call to the app, switch depending on action."""
         my_ret_val = phantom.APP_SUCCESS
@@ -1781,6 +1855,9 @@ class RecordedfutureConnector(BaseConnector):
 
         elif action_id == "fetch_analyst_notes":
             my_ret_val = self._handle_fetch_analyst_notes(param)
+
+        elif action_id == "identity_leaked_credentials":
+            my_ret_val = self._handle_identity_leaked_credentials_search(param)
 
         return my_ret_val
 
