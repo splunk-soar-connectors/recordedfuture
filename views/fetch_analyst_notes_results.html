@@ -1,0 +1,270 @@
+{% extends 'widgets/widget_template.html' %}
+{% load custom_template %}
+{% block custom_title_prop %}
+  {% if title_logo %}
+    style="background-size: auto 60%; background-position: 50%; background-repeat: no-repeat; background-image: url('/app_resource/{{ title_logo }}');"
+  {% endif %}
+{% endblock %}
+{% block title1 %}{{ title1 }}{% endblock %}
+{% block title2 %}{{ title2 }}{% endblock %}
+{% block custom_tools %}{% endblock %}
+{% block widget_content %}
+  <!-- Main Start Block -->
+  <!-- File: alert_search_results.html
+Copyright (c) Recorded Future, Inc, 2019-2025
+This unpublished material is proprietary to Recorded Future. All
+rights reserved. The methods and techniques described herein are
+considered trade secrets and/or confidential. Reproduction or
+distribution, in whole or in part, is forbidden except by express
+written permission of Recorded Future.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software distributed under
+the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+either express or implied. See the License for the specific language governing permissions
+and limitations under the License.
+-->
+  <!--
+Style elements are defined in a separate file, named below,
+and will be merged during compilation:
+       recordedfuture_style.css          -->
+  <style>
+  /*  ||  RECORDED FUTURE COLOR */
+
+  :root{
+    --RecordedFutureBlue: #2673B3;
+    --CriticalityHigh: #cf0a2c;
+    --CriticalityModerate: #FFCE00;
+    --CriticalityLow: #e1e6eb;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .rf-widget {
+    overflow: auto;
+    width: 100%;
+    height: 100%;
+    padding-left:10px;
+    padding-right:10px;
+  }
+
+  .rf-box {
+    width: 750px;
+    padding: 5px;
+    margin: 0 5px;
+    font-size: 12px;
+  }
+
+  .highlighted {
+    font-weight: 700;
+  }
+
+  .non-highlighted {
+    font-size: x-small;
+  }
+
+  .rf-box th {
+    text-align: left;
+  }
+
+  .rf-table {
+    width: 98%;
+    border-collapse: collapse;
+    margin: 5px 5px 5px 0;
+    padding: 10px;
+    font-size: 12px;
+  }
+
+  td.rf-criticality-level-3, td.rf-criticality-level-4,
+  td.rf-criticality-level-5 {
+    background: var(--CriticalityHigh);
+    width: 0 !important;
+    padding: 0 2px 0 3px !important;
+  }
+  td.rf-criticality-level-2 {
+    background: var(--CriticalityModerate);
+    width: 0 !important;
+    padding: 0 2px 0 3px !important;
+  }
+  td.rf-criticality-level-1 {
+    background: var(--CriticalityLow);
+    width: 0 !important;
+    padding: 0 2px 0 3px !important;
+  }
+
+  .rf-table td {
+    vertical-align: text-top;
+    padding: 10px;
+  }
+
+  td.rf-timestamp {
+    min-width: 13ex !important;
+  }
+
+  .rf-hover-info {
+    font-weight: normal;
+  }
+
+  .rf-hover-info:hover {
+    font-weight: bold;
+  }
+  .rf-full-width-box {
+    width: 100%;
+    border-bottom: 1px solid #3c444d;
+    padding: 5px;
+    margin: 0 5px;
+    font-size: 12px;
+  }
+  .rf-circle {
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+  }
+  .rf-alert-panel {
+    width: 96%;
+    margin-left: 2%;
+    border: 1px solid #3c444d;
+    padding: 10px;
+  }
+  .rf-chip-box {
+    border-radius: 10px;
+    background-color: darkred;
+    padding: 3px;
+    text-align: center;
+  }
+  .rf-priority-level-High {
+    background: var(--CriticalityHigh);
+  }
+  .rf-priority-level-Moderate {
+    background: var(--CriticalityModerate);
+  }
+  .rf-priority-level-Informational {
+    background: var(--CriticalityLow);
+  }
+  .rf-criticality-level-High {
+    background: var(--CriticalityHigh);
+  }
+  .rf-criticality-level-Medium {
+    background: var(--CriticalityModerate);
+  }
+  .rf-criticality-level-Low {
+    background: var(--CriticalityLow);
+  }
+  .rf-playbook-alert-screenshot {
+    margin-bottom: 20px;
+    width: 100%;
+    height: 720px;
+  }
+  .rf-playbook-alert-data-row {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    gap: 20px;
+    margin-bottom: 5px;
+  }
+  .rf-playbook-alert-dns-data-row {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    gap: 5px;
+  }
+  .rf-playbook-alert-panel-title {
+    margin-left: 2%;
+  }
+  .rf-playbook-alert-whois-data-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .rf-playbook-alert-data-row-title {
+    width: 10%;
+  }
+  .rf-playbook-alert-evidence-data-row-title {
+    width: 20%;
+  }
+  </style>
+  <div class="rf-widget">
+    <!-- Main Div -->
+    <!------------------- For each Result ---------------------->
+    {% for result in results %}
+      {% for note in result.data %}
+        <div class="rf-box">
+          <h3>{{ note.title }}</h3>
+          <div class="rf-section">
+            <b>Published:</b> {{ note.published|default:"N/A"|slice:"0:10" }}
+          </div>
+          <div class="rf-section">
+            <b>Content:</b>
+            <br>
+            {{ note.text|default:"<i>No content</i>"|safe }}
+          </div>
+          {% if note.context_entities %}
+            <div class="rf-section">
+              <b>Context Entities:</b>
+              {% for entity in note.context_entities %}
+                {{ entity.name }} ({{ entity.type }})
+                {% if not forloop.last %},{% endif %}
+              {% endfor %}
+            </div>
+          {% endif %}
+          {% if note.note_entities %}
+            <div class="rf-section">
+              <b>Note Entities:</b>
+              {% for entity in note.note_entities %}
+                {{ entity.name }} ({{ entity.type }})
+                {% if not forloop.last %},{% endif %}
+              {% endfor %}
+            </div>
+          {% endif %}
+          {% if note.recommended_queries %}
+            <div class="rf-section">
+              <b>Recommended Queries:</b>
+              <br>
+              <ul>
+                {% for query in note.recommended_queries %}
+                  <li>
+                    {{ query.title }}
+                    {% if query.url %}
+                      :
+                      <a href="{{ query.url.name }}" target="_blank">{{ query.url.name }}</a>
+                    {% endif %}
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+          {% if note.topic %}
+            <div class="rf-section">
+              <b>Topics:</b>
+              {% for topic in note.topic %}
+                {{ topic.name }}
+                {% if topic.description %}- {{ topic.description }}{% endif %}
+                {% if not forloop.last %},{% endif %}
+              {% endfor %}
+            </div>
+          {% endif %}
+          {% if note.validation_urls %}
+            <div class="rf-section">
+              <b>Validation URLs:</b>
+              {% for url in note.validation_urls %}
+                <a href="{{ url.name }}" target="_blank">{{ url.name }}</a>
+                {% if not forloop.last %},{% endif %}
+              {% endfor %}
+            </div>
+          {% endif %}
+          {% if note.source %}
+            <div class="rf-section">
+              <b>Source:</b> {{ note.source.name }} ({{ note.source.type }})
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    {% endfor %}
+  </div>
+  <!-- Main Div -->
+{% endblock %}
+<!-- Main Start Block -->

@@ -522,3 +522,21 @@ def threat_map_results(provides, all_app_runs, context):
 def collective_insights_submission_results(provides, all_app_runs, context):
     """Setup the view for collective insights submission."""
     return "views/collective_insights_submission_results.html"
+
+
+def fetch_analyst_notes_results(provides, all_app_runs, context):
+    """Setup the view for displaying fetched analyst notes."""
+    context["results"] = results = []
+
+    for summary, action_results in all_app_runs:
+        for result in action_results:
+            formatted = {
+                "param": result.get_param(),
+                "data": result.get_data(),
+                "summary": result.get_summary(),
+            }
+            if not formatted.get("data"):
+                continue
+            results.append(formatted)
+
+    return "views/fetch_analyst_notes_results.html"
