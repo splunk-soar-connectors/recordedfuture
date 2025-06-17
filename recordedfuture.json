@@ -35,17 +35,16 @@
             "default": "https://api.recordedfuture.com/gw/phantom",
             "order": 0
         },
+        "on_poll_alert_ruleids": {
+            "data_type": "string",
+            "order": 1,
+            "description": "Comma-separated list of alert rule IDs"
+        },
         "recordedfuture_api_token": {
             "description": "Recorded Future API token",
             "data_type": "password",
             "required": true,
             "order": 2
-        },
-
-        "on_poll_alert_ruleids": {
-            "data_type": "string",
-            "order": 1,
-            "description": "Comma-separated list of alert rule IDs"
         },
         "on_poll_alert_severity": {
             "data_type": "string",
@@ -57,6 +56,12 @@
                 "Medium",
                 "Low"
             ]
+        },
+        "recordedfuture_verify_ssl": {
+            "description": "Verify SSL certificates",
+            "data_type": "boolean",
+            "default": true,
+            "order": 4
         },
         "on_poll_alert_full_alert": {
             "description": "Scope of artifact ingestion",
@@ -73,70 +78,64 @@
             "order": 6,
             "description": "Comma separated list of alert statuses to poll (New, Pending, Dismissed, Resolved are now supported)"
         },
-        "recordedfuture_verify_ssl": {
-            "description": "Verify SSL certificates",
-            "data_type": "boolean",
-            "default": true,
-            "order": 4
-        },
         "ph0": {
-            "data_type": "ph",
-            "order": 6
-        },
-        "ph1": {
             "data_type": "ph",
             "order": 7
         },
+        "ph1": {
+            "data_type": "ph",
+            "order": 8
+        },
         "max_count": {
             "data_type": "numeric",
-            "order": 8,
+            "order": 9,
             "description": "Max events to ingest for scheduled polling",
             "default": 100
         },
         "ph2": {
             "data_type": "ph",
-            "order": 9
+            "order": 10
         },
         "first_max_count": {
             "data_type": "numeric",
-            "order": 10,
+            "order": 11,
             "description": "Max events to ingest for scheduled polling first time",
             "default": 100
         },
         "ph3": {
             "data_type": "ph",
-            "order": 11
+            "order": 12
         },
         "on_poll_playbook_alert_priority": {
             "data_type": "string",
-            "order": 12,
+            "order": 13,
             "description": "Comma separated On Poll Playbook Alerts priority threshold (High,Moderate,Informational)"
         },
         "ph4": {
             "data_type": "ph",
-            "order": 13
+            "order": 14
         },
         "on_poll_playbook_alert_type": {
             "data_type": "string",
-            "order": 14,
+            "order": 15,
             "description": "Comma-separated list of Playbook alert types. (domain_abuse, cyber_vulnerability, code_repo_leakage are now supported)"
         },
         "ph6": {
             "data_type": "ph",
-            "order": 15
+            "order": 16
         },
         "on_poll_playbook_alert_status": {
             "data_type": "string",
-            "order": 16,
+            "order": 17,
             "description": "Comma-separated list of Playbook alert statuses. (New, InProgress, Dismissed, Resolved are now supported)"
         },
         "ph7": {
             "data_type": "ph",
-            "order": 17
+            "order": 18
         },
         "on_poll_playbook_alert_start_time": {
             "data_type": "string",
-            "order": 18,
+            "order": 19,
             "description": "Poll playbook alerts created after (date in ISO format: 2022-12-01T11:00:00+00)"
         }
     },
