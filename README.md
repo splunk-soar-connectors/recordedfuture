@@ -1,42 +1,19 @@
 # Recorded Future For Splunk SOAR
 
-Publisher: Recorded Future, Inc  
-Connector Version: 4.5.0  
-Product Vendor: Recorded Future, Inc  
-Product Name: Recorded Future App for Phantom  
-Product Version Supported (regex): ".\*"  
+Publisher: Recorded Future, Inc \
+Connector Version: 4.5.0 \
+Product Vendor: Recorded Future, Inc \
+Product Name: Recorded Future App for Phantom \
 Minimum Product Version: 6.3.0
 
-This app implements investigative actions to perform lookups for quick reputation information, contextual threat intelligence and external threat alerts
+Enhance your security posture with Recorded Future for Splunk SOAR.
+Key Capabilities:
+•Swift Threat Assessments: Access Recorded Future's extensive IOC data for swift and accurate assessments
 
-[comment]: # " File: README.md"
-[comment]: # ""
-[comment]: # "Copyright (c) Recorded Future, Inc, 2019-2024"
-[comment]: # ""
-[comment]: # "This unpublished material is proprietary to Recorded Future. All"
-[comment]: # "rights reserved. The methods and techniques described herein are"
-[comment]: # "considered trade secrets and/or confidential. Reproduction or"
-[comment]: # "distribution, in whole or in part, is forbidden except by express"
-[comment]: # "written permission of Recorded Future."
-[comment]: # ""
-[comment]: # "Licensed under the Apache License, Version 2.0 (the 'License');"
-[comment]: # "you may not use this file except in compliance with the License."
-[comment]: # "You may obtain a copy of the License at"
-[comment]: # ""
-[comment]: # "    http://www.apache.org/licenses/LICENSE-2.0"
-[comment]: # ""
-[comment]: # "Unless required by applicable law or agreed to in writing, software distributed under"
-[comment]: # "the License is distributed on an 'AS IS' BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,"
-[comment]: # "either express or implied. See the License for the specific language governing permissions"
-[comment]: # "and limitations under the License."
-[comment]: # ""
-Recorded Future App for Splunk SOAR allows clients to work smarter, respond faster, and strengthen their 
-defenses through automation and orchestration. The Recorded Future App provides a number of actions that enable 
-the creation of Playbooks to do automated enrichment, correlation, threat hunting, and alert handling.
-
-Access playbook templates created by Recorded Future automation experts to embed intelligence in your new 
-and existing security workflows: https://support.recordedfuture.com/hc/en-us/articles/12294483605523-Splunk-SOAR-Template-Playbooks-Library
-
+Recorded Future App for Phantom allows clients to work smarter, respond faster, and strengthen their
+defenses through automation and orchestration. The Recorded Future App provides a number of actions
+that enable the creation of Playbooks to do automated enrichment, correlation, threat hunting, and
+alert handling.
 
 # Ingest alerts into events
 
@@ -59,26 +36,19 @@ This table lists the configuration variables required to operate Recorded Future
 
 VARIABLE | REQUIRED | TYPE | DESCRIPTION
 -------- | -------- | ---- | -----------
-**recordedfuture_base_url** |  required  | string | Recorded Future API basename
-**recordedfuture_api_token** |  required  | password | Recorded Future API token
-**recordedfuture_verify_ssl** |  optional  | boolean | Verify SSL certificates
-**on_poll_alert_ruleids** |  optional  | string | Comma-separated list of alert rule IDs
-**on_poll_alert_severity** |  optional  | string | Severity to apply to the alert event
-**on_poll_alert_status** |  optional  | string | Comma separated list of alert statuses to poll (New, Pending, Dismissed, Resolved are now supported)
-**on_poll_alert_full_alert** |  optional  | string | Scope of artifact ingestion
-**ph1** |  optional  | ph | 
-**max_count** |  optional  | numeric | Max events to ingest for scheduled polling
-**ph2** |  optional  | ph | 
-**first_max_count** |  optional  | numeric | Max events to ingest for scheduled polling first time
-**ph3** |  optional  | ph | 
-**on_poll_playbook_alert_priority** |  optional  | string | Comma separated On Poll Playbook Alerts priority threshold (High,Moderate,Informational)
-**ph4** |  optional  | ph | 
-**on_poll_playbook_alert_type** |  optional  | string | Comma-separated list of Playbook alert types. (domain_abuse, cyber_vulnerability, code_repo_leakage are now supported)
-**ph6** |  optional  | ph | 
-**on_poll_playbook_alert_status** |  optional  | string | Comma-separated list of Playbook alert statuses. (New, InProgress, Dismissed, Resolved are now supported)
-**ph7** |  optional  | ph | 
-**on_poll_playbook_alert_start_time** |  optional  | string | Poll playbook alerts created after (date in ISO format: 2022-12-01T11:00:00+00)
-
+**recordedfuture_base_url** | required | string | Recorded Future API basename |
+**on_poll_alert_ruleids** | optional | string | Comma-separated list of alert rule IDs |
+**recordedfuture_api_token** | required | password | Recorded Future API token |
+**on_poll_alert_severity** | optional | string | Severity to apply to the alert event |
+**recordedfuture_verify_ssl** | optional | boolean | Verify SSL certificates |
+**on_poll_alert_full_alert** | optional | string | Scope of artifact ingestion |
+**on_poll_alert_status** | optional | string | Comma separated list of alert statuses to poll (New, Pending, Dismissed, Resolved are now supported) |
+**max_count** | optional | numeric | Max events to ingest for scheduled polling |
+**first_max_count** | optional | numeric | Max events to ingest for scheduled polling first time |
+**on_poll_playbook_alert_priority** | optional | string | Comma separated On Poll Playbook Alerts priority threshold (High,Moderate,Informational) |
+**on_poll_playbook_alert_type** | optional | string | Comma-separated list of Playbook alert types. (domain_abuse, cyber_vulnerability, code_repo_leakage are now supported) |
+**on_poll_playbook_alert_status** | optional | string | Comma-separated list of Playbook alert statuses. (New, InProgress, Dismissed, Resolved are now supported) |
+**on_poll_playbook_alert_start_time** | optional | string | Poll playbook alerts created after (date in ISO format: 2022-12-01T11:00:00+00) |
 
 ### Supported Actions
 
@@ -151,25 +121,23 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 
 DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 --------- | ---- | -------- | --------------
-action_result.status | string |  |   success  failed 
-action_result.parameter.alert_id | string |  `recordedfuture alert id`  |  
-action_result.parameter.alert_note | string |  |  
-action_result.parameter.alert_status | string |  |  
-action_result.data.\*.id | string |  |  
-action_result.data.\*.url | string |  |  
-action_result.data.\*.note.author | string |  |  
-action_result.data.\*.note.date | string |  |  
-action_result.data.\*.note.text | string |  |  
-action_result.data.\*.status | string |  |  
-action_result.data.\*.statusChangeBy | string |  |  
-action_result.data.\*.statusDate | string |  |  
-action_result.data.\*.title | string |  |  
-action_result.summary.reason | string |  |  
-action_result.summary.update | string |  |  
-action_result.message | string |  |  
-summary.total_objects | numeric |  `recordedfuture total objects`  |   1 
-summary.total_objects_successful | numeric |  `recordedfuture total objects successful`  |   1   
-
+action_result.status | string | | success failed |
+action_result.parameter.alert_id | string | `recordedfuture alert id` | |
+action_result.parameter.alert_note | string | | |
+action_result.parameter.alert_status | string | | |
+action_result.data.\*.id | string | | |
+action_result.data.\*.note.author | string | | |
+action_result.data.\*.note.date | string | | |
+action_result.data.\*.note.text | string | | |
+action_result.data.\*.status | string | | |
+action_result.data.\*.statusChangeBy | string | | |
+action_result.data.\*.statusDate | string | | |
+action_result.data.\*.title | string | | |
+action_result.summary.reason | string | | |
+action_result.summary.update | string | | |
+action_result.message | string | | |
+summary.total_objects | numeric | `recordedfuture total objects` | 1 |
+summary.total_objects_successful | numeric | `recordedfuture total objects successful` | 1 |
 
 ## action: 'alert search'
 
@@ -321,6 +289,7 @@ DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 action_result.status | string | `recordedfuture result status` | success failed |
 action_result.parameter.alert_id | string | `recordedfuture alert id` | |
 action_result.data.\*.entities.alert.\* | string | `recordedfuture alert id` | |
+action_result.data.\*.url | string | `recordedfuture alert URL` | https://app.recordedfuture.com/live/sc/notification/?id=exampleId |
 action_result.data.\*.entities.city.\*.authors | string | | |
 action_result.data.\*.entities.city.\*.entity | string | | |
 action_result.data.\*.entities.city.\*.fragment | string | | |
@@ -1229,7 +1198,7 @@ Read only: **True**
 
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
-**threat_context** | required | Context to use | string | `recordedfuture threat assessment context` |
+**threat_context** | required | Context is one of c2, malware or phishing | string | `recordedfuture threat assessment context` |
 **ip** | optional | IP to query | string | `ip` `ipv6` |
 **domain** | optional | Domain to query | string | `domain` |
 **url** | optional | URL to query | string | `url` |
