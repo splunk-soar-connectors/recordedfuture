@@ -1,12 +1,12 @@
 {
     "appid": "6efe0e1b-76ac-4ffd-8fa0-ac58fd6efd77",
     "name": "Recorded Future For Splunk SOAR",
-    "description": "Enhance your security posture with Recorded Future for Splunk SOAR.\nKey Capabilities:\n•Swift Threat Assessments: Access Recorded Future's extensive IOC data for swift and accurate assessments",
+    "description": "Enhance your security posture with Recorded Future for Splunk SOAR.\nKey Capabilities:\n\u2022Swift Threat Assessments: Access Recorded Future's extensive IOC data for swift and accurate assessments",
     "publisher": "Recorded Future, Inc",
     "type": "reputation",
     "main_module": "recordedfuture_connector.py",
     "app_version": "4.5.0",
-    "utctime_updated": "2024-07-08T11:40:50.000000Z",
+    "utctime_updated": "2025-06-18T17:06:59.610375Z",
     "package_name": "phantom_recordedfuture",
     "product_name": "Recorded Future App for Phantom",
     "product_vendor": "Recorded Future, Inc",
@@ -66,7 +66,7 @@
         "on_poll_alert_full_alert": {
             "description": "Scope of artifact ingestion",
             "data_type": "string",
-            "default":  "All entities",
+            "default": "All entities",
             "order": 5,
             "value_list": [
                 "All entities",
