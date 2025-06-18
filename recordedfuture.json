@@ -5,7 +5,7 @@
     "publisher": "Recorded Future, Inc",
     "type": "reputation",
     "main_module": "recordedfuture_connector.py",
-    "app_version": "4.4.3",
+    "app_version": "4.5.0",
     "utctime_updated": "2024-07-08T11:40:50.000000Z",
     "package_name": "phantom_recordedfuture",
     "product_name": "Recorded Future App for Phantom",
@@ -35,22 +35,16 @@
             "default": "https://api.recordedfuture.com/gw/phantom",
             "order": 0
         },
+        "on_poll_alert_ruleids": {
+            "data_type": "string",
+            "order": 1,
+            "description": "Comma-separated list of alert rule IDs"
+        },
         "recordedfuture_api_token": {
             "description": "Recorded Future API token",
             "data_type": "password",
             "required": true,
             "order": 2
-        },
-        "recordedfuture_verify_ssl": {
-            "description": "Verify SSL certificates",
-            "data_type": "boolean",
-            "default": true,
-            "order": 4
-        },
-        "on_poll_alert_ruleids": {
-            "data_type": "string",
-            "order": 1,
-            "description": "Comma-separated list of alert rule IDs"
         },
         "on_poll_alert_severity": {
             "data_type": "string",
@@ -63,65 +57,85 @@
                 "Low"
             ]
         },
+        "recordedfuture_verify_ssl": {
+            "description": "Verify SSL certificates",
+            "data_type": "boolean",
+            "default": true,
+            "order": 4
+        },
+        "on_poll_alert_full_alert": {
+            "description": "Scope of artifact ingestion",
+            "data_type": "string",
+            "default":  "All entities",
+            "order": 5,
+            "value_list": [
+                "All entities",
+                "Only entities that triggered alert"
+            ]
+        },
         "on_poll_alert_status": {
             "data_type": "string",
-            "order": 5,
+            "order": 6,
             "description": "Comma separated list of alert statuses to poll (New, Pending, Dismissed, Resolved are now supported)"
+        },
+        "ph0": {
+            "data_type": "ph",
+            "order": 7
         },
         "ph1": {
             "data_type": "ph",
-            "order": 6
+            "order": 8
         },
         "max_count": {
             "data_type": "numeric",
-            "order": 7,
+            "order": 9,
             "description": "Max events to ingest for scheduled polling",
             "default": 100
         },
         "ph2": {
             "data_type": "ph",
-            "order": 8
+            "order": 10
         },
         "first_max_count": {
             "data_type": "numeric",
-            "order": 9,
+            "order": 11,
             "description": "Max events to ingest for scheduled polling first time",
             "default": 100
         },
         "ph3": {
             "data_type": "ph",
-            "order": 10
+            "order": 12
         },
         "on_poll_playbook_alert_priority": {
             "data_type": "string",
-            "order": 11,
+            "order": 13,
             "description": "Comma separated On Poll Playbook Alerts priority threshold (High,Moderate,Informational)"
         },
         "ph4": {
             "data_type": "ph",
-            "order": 12
+            "order": 14
         },
         "on_poll_playbook_alert_type": {
             "data_type": "string",
-            "order": 13,
+            "order": 15,
             "description": "Comma-separated list of Playbook alert types. (domain_abuse, cyber_vulnerability, code_repo_leakage are now supported)"
         },
         "ph6": {
             "data_type": "ph",
-            "order": 14
+            "order": 16
         },
         "on_poll_playbook_alert_status": {
             "data_type": "string",
-            "order": 15,
+            "order": 17,
             "description": "Comma-separated list of Playbook alert statuses. (New, InProgress, Dismissed, Resolved are now supported)"
         },
         "ph7": {
             "data_type": "ph",
-            "order": 16
+            "order": 18
         },
         "on_poll_playbook_alert_start_time": {
             "data_type": "string",
-            "order": 17,
+            "order": 19,
             "description": "Poll playbook alerts created after (date in ISO format: 2022-12-01T11:00:00+00)"
         }
     },
@@ -877,6 +891,16 @@
                     "data_type": "string",
                     "contains": [
                         "recordedfuture alert id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.url",
+                    "data_type": "string",
+                    "contains": [
+                        "recordedfuture alert URL"
+                    ],
+                    "example_values": [
+                        "https://app.recordedfuture.com/live/sc/notification/?id=exampleId"
                     ]
                 },
                 {
@@ -5417,9 +5441,14 @@
             "read_only": true,
             "parameters": {
                 "threat_context": {
-                    "description": "Context to use",
+                    "description": "Context is one of c2, malware or phishing",
                     "data_type": "string",
                     "required": true,
+                    "value_list": [
+                        "c2",
+                        "malware",
+                        "phishing"
+                    ],
                     "order": 0,
                     "contains": [
                         "recordedfuture threat assessment context"
@@ -6413,6 +6442,23 @@
                 "entity_type": {
                     "description": "Entity Type",
                     "data_type": "string",
+                    "value_list": [
+                        "IpAddress",
+                        "InternetDomainName",
+                        "Hash",
+                        "CyberVulnerability",
+                        "CyberThreatActorCategory",
+                        "AttackVector",
+                        "Company",
+                        "FileContent",
+                        "Malware",
+                        "MalwareCategory",
+                        "MalwareSignature",
+                        "MitreAttackIdentifier",
+                        "Organization",
+                        "Person",
+                        "Username"
+                    ],
                     "order": 1
                 },
                 "limit": {

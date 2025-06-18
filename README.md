@@ -1,7 +1,7 @@
 # Recorded Future For Splunk SOAR
 
 Publisher: Recorded Future, Inc \
-Connector Version: 4.4.3 \
+Connector Version: 4.5.0 \
 Product Vendor: Recorded Future, Inc \
 Product Name: Recorded Future App for Phantom \
 Minimum Product Version: 6.3.0
@@ -37,10 +37,11 @@ This table lists the configuration variables required to operate Recorded Future
 VARIABLE | REQUIRED | TYPE | DESCRIPTION
 -------- | -------- | ---- | -----------
 **recordedfuture_base_url** | required | string | Recorded Future API basename |
-**recordedfuture_api_token** | required | password | Recorded Future API token |
-**recordedfuture_verify_ssl** | optional | boolean | Verify SSL certificates |
 **on_poll_alert_ruleids** | optional | string | Comma-separated list of alert rule IDs |
+**recordedfuture_api_token** | required | password | Recorded Future API token |
 **on_poll_alert_severity** | optional | string | Severity to apply to the alert event |
+**recordedfuture_verify_ssl** | optional | boolean | Verify SSL certificates |
+**on_poll_alert_full_alert** | optional | string | Scope of artifact ingestion |
 **on_poll_alert_status** | optional | string | Comma separated list of alert statuses to poll (New, Pending, Dismissed, Resolved are now supported) |
 **max_count** | optional | numeric | Max events to ingest for scheduled polling |
 **first_max_count** | optional | numeric | Max events to ingest for scheduled polling first time |
@@ -288,6 +289,7 @@ DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 action_result.status | string | `recordedfuture result status` | success failed |
 action_result.parameter.alert_id | string | `recordedfuture alert id` | |
 action_result.data.\*.entities.alert.\* | string | `recordedfuture alert id` | |
+action_result.data.\*.url | string | `recordedfuture alert URL` | https://app.recordedfuture.com/live/sc/notification/?id=exampleId |
 action_result.data.\*.entities.city.\*.authors | string | | |
 action_result.data.\*.entities.city.\*.entity | string | | |
 action_result.data.\*.entities.city.\*.fragment | string | | |
@@ -1196,7 +1198,7 @@ Read only: **True**
 
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
-**threat_context** | required | Context to use | string | `recordedfuture threat assessment context` |
+**threat_context** | required | Context is one of c2, malware or phishing | string | `recordedfuture threat assessment context` |
 **ip** | optional | IP to query | string | `ip` `ipv6` |
 **domain** | optional | Domain to query | string | `domain` |
 **url** | optional | URL to query | string | `url` |
