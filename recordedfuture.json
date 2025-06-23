@@ -137,6 +137,34 @@
             "data_type": "string",
             "order": 19,
             "description": "Poll playbook alerts created after (date in ISO format: 2022-12-01T11:00:00+00)"
+        },
+        "ph8": {
+            "data_type": "ph",
+            "order": 20
+        },
+        "on_poll_leaked_credentials_domains": {
+            "data_type": "string",
+            "order": 21,
+            "description": "Comma-separated list of domains to be searched for leaked credentials. You consent to pulling and storing identity and credential data in the system."
+        },
+        "ph9": {
+            "data_type": "ph",
+            "order": 22
+        },
+        "on_poll_leaked_credentials_novel_only": {
+            "description": "Only return novel credentials",
+            "data_type": "boolean",
+            "default": true,
+            "order": 23
+        },
+        "ph10": {
+            "data_type": "ph",
+            "order": 24
+        },
+        "on_poll_leaked_credentials_created_after": {
+            "data_type": "string",
+            "order": 25,
+            "description": "Poll leaked credentials created after this date (ISO format: 2022-12-01T11:00:00+00)"
         }
     },
     "actions": [
@@ -9985,7 +10013,7 @@
         {
             "action": "on poll",
             "description": "Ingest alerts from Recorded Future",
-            "verbose": "This action will fetch alerts / Playbook Alerts for the specified rule IDs and within the specified timeframe. When limiting the number of events to ingest, it will ingest the most recent events.<br><br>",
+            "verbose": "This action will fetch alerts / Playbook Alerts for the specified rule IDs and leaked credentials within the specified timeframe. When limiting the number of events to ingest, it will ingest the most recent events.<br><br>",
             "type": "ingest",
             "identifier": "on_poll",
             "read_only": true,
