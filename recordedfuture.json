@@ -12,7 +12,7 @@
     "product_vendor": "Recorded Future, Inc",
     "product_version_regex": ".*",
     "min_phantom_version": "6.3.0",
-    "python_version": "3",
+    "python_version": ["3.9", "3.13"],
     "fips_compliant": true,
     "latest_tested_versions": [
         "Cloud API v2 on 3/13/2020",
