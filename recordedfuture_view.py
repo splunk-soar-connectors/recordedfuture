@@ -555,7 +555,7 @@ def leaked_credentials_results(provides, all_app_runs, context):
                 }
             )
 
-    return "views/leaked_credentials_results.html"
+    return "views/identity_leaked_credentials.html"
 
 
 def collective_insights_submission_results(provides, all_app_runs, context):
