@@ -1934,7 +1934,7 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 **limit** | optional | Limit the number of analyst notes to retrieve (max 1000). | numeric | |
 **tagged_text** | optional | Whether to return notes with tagged text. | boolean | |
 **escape_html** | optional | Whether to escape HTML in note content. | boolean | |
-**serialization** | optional | Serialization format for note content ('full' or 'summary'). | string | |
+**serialization** | optional | Serialization format for note content. | string | |
 
 #### Action Output
 
