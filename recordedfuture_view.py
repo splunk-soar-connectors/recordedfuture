@@ -519,7 +519,7 @@ def threat_map_results(provides, all_app_runs, context):
     return "views/threat_map_results.html"
 
 
-def leaked_credentials_results(provides, all_app_runs, context):
+def identity_leaked_credentials_results(provides, all_app_runs, context):
     """Setup the view for leaked credentials results."""
     context["results"] = results = []
 
