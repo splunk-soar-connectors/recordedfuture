@@ -530,17 +530,18 @@ def identity_leaked_credentials_results(provides, all_app_runs, context):
             if not result_data:
                 continue
 
+            response_obj = result_data[0]
+            detections = response_obj.get("detections", [])
+
             formatted_detections = []
-            for detection in result_data:
+            for detection in detections:
                 detection_entry = {
                     "id": detection.get("id"),
                     "organization_id": detection.get("organization_id"),
                     "novel": detection.get("novel"),
                     "type": detection.get("type"),
                     "subject": detection.get("subject"),
-                    "password": detection.get("password") or {},
                     "authorization_service": detection.get("authorization_service") or {},
-                    "cookies": detection.get("cookies") or [],
                     "malware_family": detection.get("malware_family") or {},
                     "dump": detection.get("dump") or {},
                     "created": detection.get("created"),
