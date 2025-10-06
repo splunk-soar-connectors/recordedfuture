@@ -5,7 +5,7 @@
     "publisher": "Recorded Future, Inc",
     "type": "reputation",
     "main_module": "recordedfuture_connector.py",
-    "app_version": "4.5.0",
+    "app_version": "4.6.0",
     "utctime_updated": "2025-06-18T17:06:59.610375Z",
     "package_name": "phantom_recordedfuture",
     "product_name": "Recorded Future App for Phantom",
