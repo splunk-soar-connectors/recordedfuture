@@ -33,7 +33,7 @@ import platform
 import sys
 import time
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from html import escape
 from math import ceil
 from typing import Literal
@@ -54,7 +54,16 @@ from phantom.action_result import ActionResult
 
 # noinspection PyUnresolvedReferences
 from phantom.base_connector import BaseConnector
-from phantom_common import paths
+
+
+try:
+    from phantom_common import paths
+except ImportError:
+    # Fallback stub for testing
+    class _FakePaths:
+        PHANTOM_VAULT = "/tmp/fake_vault_path"
+
+    paths = _FakePaths()
 
 # Usage of the consts file is recommended
 from recordedfuture_consts import *
@@ -856,12 +865,45 @@ class RecordedfutureConnector(BaseConnector):
 
         return containers
 
+    def _on_poll_leaked_credentials_wrapper(self, param, config, action_result):
+        """Wrapper for on poll leaked credentials.
+
+        Args:
+            param (dict): parameters for action.
+            config (dict): configuration of the instance.
+            action_result (ActionResult): instance of ActionResult for the current action.
+
+        Returns:
+            None|int: None if success. Code of the status if the problem occurred.
+        """
+        self.save_progress("Polling Leaked Credentials")
+        containers = self._on_poll_leaked_credentials(param, config, action_result)
+        try:
+            for container in containers["detections"]:
+                ret_val, msg, cid = self.save_container(container)
+                if phantom.is_fail(ret_val):
+                    self.save_progress(f"Error saving containers: {msg}")
+                    self.error_print(f"Error saving containers: {msg} -- CID: {cid}")
+                    return action_result.set_status(phantom.APP_ERROR, "Error while trying to add the containers")
+        except TypeError:
+            if containers is False:
+                self.save_progress("Error in API request, please see spawn.log for more details")
+            else:
+                self.save_progress("API response provided no new leaked credentials containers to ingest")
+
+        action_result.set_status(phantom.APP_SUCCESS)
+        self._state["last_leaked_credentials_fetch_time"] = datetime.now(tz=timezone.utc).isoformat()
+
     def _on_poll(self, param):
-        """Entry point for obtaining alerts and rules."""
+        """Entry point for obtaining alerts, rules, and leaked credentials."""
         # new containers and artifacts will be stored in containers[]
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         action_result = self.add_action_result(ActionResult(dict(param)))
         config = self.get_config()
+
+        on_poll_result = self._on_poll_leaked_credentials_wrapper(param, config, action_result)
+        if on_poll_result is not None:
+            return on_poll_result
 
         self.save_progress("Polling Playbook Alerts")
         containers = self._on_poll_playbook_alerts(param, config, action_result)
@@ -913,6 +955,62 @@ class RecordedfutureConnector(BaseConnector):
                 self.save_progress("API response provided no new playbook alert containers to ingest")
 
         return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _on_poll_leaked_credentials(self, param, config, action_result):
+        """Polling for leaked credentials."""
+        filter_ = {}
+        params = {"filter": filter_}
+        # Return early if no domains are specified.
+        if not config.get("on_poll_leaked_credentials_domains"):
+            self.save_progress("No domains for leaked credentials have been specified for polling")
+            return {"detections": []}
+        elif not self._state.get("leaked_creds_consent_given"):
+            self._make_rest_call(
+                "/identity/consent",
+                action_result,
+                json={"consent_given": True},
+                method="post",
+            )
+            self._state["leaked_creds_consent_given"] = True
+
+        if self.is_poll_now():
+            param["max_count"] = param.get("container_count", MAX_CONTAINERS)
+        else:
+            # Different number of max containers if first run
+            if self._state.get("first_run", True):
+                # set the config to _not_ first run hereafter
+                self._state["first_run"] = False
+                param["max_count"] = config.get("first_max_count", MAX_CONTAINERS)
+                self.save_progress("First time Ingestion detected.")
+                filter_["created"] = {"gte": config.get("on_poll_leaked_credentials_created_after")}
+            else:
+                param["max_count"] = config.get("max_count", MAX_CONTAINERS)
+                # For all the runs after the first one we get alerts filtered by update_data instead of create_date.
+                filter_["created"] = {
+                    "gte": self._state.get("last_leaked_credentials_fetch_time") or config.get("on_poll_leaked_credentials_created_after")
+                }
+
+        # Asset Settings in Asset Configuration allows a negative number
+        if int(param["max_count"]) <= 0:
+            param["max_count"] = MAX_CONTAINERS
+
+        # Prepare the REST call to get all leaked creds within the timeframe
+        params["limit"] = param.get("max_count", MAX_CONTAINERS)
+        filter_["domains"] = [el.strip() for el in config.get("on_poll_leaked_credentials_domains").split(",") if el.strip()]
+        filter_["novel_only"] = config.get("on_poll_leaked_credentials_novel_only")
+
+        # Make the rest call
+        my_ret_val, containers = self._make_rest_call(
+            "/identity/on_poll",
+            action_result,
+            json=params,
+            method="post",
+        )
+        # Something went wrong
+        if phantom.is_fail(my_ret_val):
+            return action_result.get_status()
+
+        return containers
 
     def _on_poll_alerts(self, param, config, action_result):
         """Polling for triggered alerts given a list of rule IDs."""
@@ -1541,6 +1639,132 @@ class RecordedfutureConnector(BaseConnector):
         )
         return action_result.set_status(phantom.APP_SUCCESS)
 
+    def _handle_fetch_analyst_notes(self, param):
+        """Handle the fetch_analyst_notes action."""
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
+
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        topic = param.get("topic")
+        published = param.get("published", "-2d")
+        limit = int(param.get("limit", 100))
+        tagged_text = param.get("tagged_text", False)
+        escape_html = param.get("escape_html", False)
+        serialization = param.get("serialization", "full")
+
+        payload = {
+            "topic": topic,
+            "published": published,
+            "limit": limit,
+            "tagged_text": tagged_text,
+            "escape_html": escape_html,
+            "serialization": serialization,
+        }
+
+        self.debug_print(f"Sending payload: {payload}")
+
+        my_ret_val, response = self._make_rest_call("/analyst_note/fetch_notes", action_result, json=payload, method="post")
+
+        # Handle failure
+        if phantom.is_fail(my_ret_val):
+            return action_result.get_status()
+
+        # Summary
+        action_result.add_data(response)
+        self.debug_print(
+            "_handle_fetch_analyst_notes",
+            {
+                "path_info": "/analyst_note/fetch_notes",
+                "action_result": action_result,
+                "my_ret_val": my_ret_val,
+                "response": response,
+            },
+        )
+
+        notes = response if isinstance(response, list) else []
+
+        # Add each note to action_result
+        for note in notes:
+            action_result.add_data(note)
+
+        action_result.set_summary({"total_notes": len(notes), "message": f"Fetched {len(notes)} analyst note(s)"})
+
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _handle_identity_leaked_credentials_search(self, param):
+        """Handle the identity_leaked_credentials action."""
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
+
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        organization_id = param.get("organization_id")
+        if organization_id:
+            organization_id = [x.strip() for x in organization_id.split(",") if x.strip()]
+
+        include_enterprise_level = param.get("include_enterprise_level", True)
+        domains_lst = param.get("domains")
+        novel_only = param.get("novel_only", True)
+        detection_type = param.get("detection_type", "Workforce")
+        created_after = param.get("created_after")
+        created_before = param.get("created_before")
+        limit = param.get("limit", 100)
+
+        if not domains_lst:
+            return action_result.set_status(phantom.APP_ERROR, "At least one domain must be provided")
+        domains = [x.strip() for x in domains_lst.split(",") if x.strip()]
+
+        # Build 'created' filter if dates provided
+        created_filter = {}
+        if created_after:
+            created_filter["gte"] = created_after
+        if created_before:
+            created_filter["lt"] = created_before
+        created_filter = created_filter or None
+
+        # Build 'filter' object
+        filter_obj = {}
+        filter_obj["domains"] = domains
+
+        if novel_only is not None:
+            filter_obj["novel_only"] = novel_only
+        if detection_type:
+            filter_obj["detection_type"] = detection_type
+        if created_filter:
+            filter_obj["created"] = created_filter
+
+        # If no filters at all, set to None
+        filter_obj = filter_obj if filter_obj else None
+
+        payload = {
+            "organization_id": organization_id,
+            "include_enterprise_level": include_enterprise_level,
+            "filter": filter_obj,
+            "limit": limit,
+        }
+
+        # make rest call
+        my_ret_val, response = self._make_rest_call("/identity/leaked-credentials", action_result, json=payload, method="post")
+        # Handle failure
+        if phantom.is_fail(my_ret_val):
+            return action_result.get_status()
+
+        # Summary
+        summary = action_result.get_summary()
+        action_result.add_data(response)
+        action_result.set_summary(summary)
+
+        self.debug_print(
+            "_handle_identity_leaked_credentials",
+            {
+                "path_info": "/identity/leaked-credentials",
+                "action_result": action_result,
+                "my_ret_val": my_ret_val,
+                "response": response["detections"],
+            },
+        )
+
+        return action_result.set_status(phantom.APP_SUCCESS)
+
     def handle_action(self, param):
         """Handle a call to the app, switch depending on action."""
         my_ret_val = phantom.APP_SUCCESS
@@ -1629,6 +1853,12 @@ class RecordedfutureConnector(BaseConnector):
         elif action_id == "collective_insights_submit":
             my_ret_val = self._handle_collective_insights_submission(param)
 
+        elif action_id == "fetch_analyst_notes":
+            my_ret_val = self._handle_fetch_analyst_notes(param)
+
+        elif action_id == "identity_leaked_credentials":
+            my_ret_val = self._handle_identity_leaked_credentials_search(param)
+
         return my_ret_val
 
     def _is_ip(self, input_ip_address):
@@ -1671,7 +1901,11 @@ class RecordedfutureConnector(BaseConnector):
 
         self._base_url = config.get("recordedfuture_base_url")
 
-        self.set_validator("ipv6", self._is_ip)
+        try:
+            self.set_validator("ipv6", self._is_ip)
+        except NotImplementedError:
+            # for testing
+            pass
 
         return phantom.APP_SUCCESS
 

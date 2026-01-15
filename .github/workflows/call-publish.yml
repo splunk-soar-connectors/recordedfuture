@@ -7,6 +7,7 @@ on:
 
 jobs:
   call-publish:
+    if: github.repository == 'splunk-soar-connectors/recordedfuture'
     uses: splunk-soar-connectors/.github/.github/workflows/publish.yml@main
     secrets:
       release_queue_url: ${{ secrets.RELEASE_QUEUE_URL }}

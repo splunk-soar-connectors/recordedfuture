@@ -519,6 +519,64 @@ def threat_map_results(provides, all_app_runs, context):
     return "views/threat_map_results.html"
 
 
+def identity_leaked_credentials_results(provides, all_app_runs, context):
+    """Setup the view for leaked credentials results."""
+    context["results"] = results = []
+
+    for summary, action_results in all_app_runs:
+        for result in action_results:
+            result_data = result.get_data()
+
+            if not result_data:
+                continue
+
+            response_obj = result_data[0]
+            detections = response_obj.get("detections", [])
+
+            formatted_detections = []
+            for detection in detections:
+                detection_entry = {
+                    "id": detection.get("id"),
+                    "organization_id": detection.get("organization_id"),
+                    "novel": detection.get("novel"),
+                    "type": detection.get("type"),
+                    "subject": detection.get("subject"),
+                    "authorization_service": detection.get("authorization_service") or {},
+                    "malware_family": detection.get("malware_family") or {},
+                    "dump": detection.get("dump") or {},
+                    "created": detection.get("created"),
+                }
+                formatted_detections.append(detection_entry)
+
+            results.append(
+                {
+                    "param": result.get_param(),
+                    "detections": formatted_detections,
+                    "summary": result.get_summary(),
+                }
+            )
+
+    return "views/identity_leaked_credentials_results.html"
+
+
 def collective_insights_submission_results(provides, all_app_runs, context):
     """Setup the view for collective insights submission."""
     return "views/collective_insights_submission_results.html"
+
+
+def fetch_analyst_notes_results(provides, all_app_runs, context):
+    """Setup the view for displaying fetched analyst notes."""
+    context["results"] = results = []
+
+    for summary, action_results in all_app_runs:
+        for result in action_results:
+            formatted = {
+                "param": result.get_param(),
+                "data": result.get_data(),
+                "summary": result.get_summary(),
+            }
+            if not formatted.get("data"):
+                continue
+            results.append(formatted)
+
+    return "views/fetch_analyst_notes_results.html"

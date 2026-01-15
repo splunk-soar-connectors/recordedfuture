@@ -1,7 +1,7 @@
 # Recorded Future For Splunk SOAR
 
 Publisher: Recorded Future, Inc \
-Connector Version: 4.5.0 \
+Connector Version: 4.6.0 \
 Product Vendor: Recorded Future, Inc \
 Product Name: Recorded Future App for Phantom \
 Minimum Product Version: 6.3.0
@@ -49,6 +49,9 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 **on_poll_playbook_alert_type** | optional | string | Comma-separated list of Playbook alert types. (domain_abuse, cyber_vulnerability, code_repo_leakage are now supported) |
 **on_poll_playbook_alert_status** | optional | string | Comma-separated list of Playbook alert statuses. (New, InProgress, Dismissed, Resolved are now supported) |
 **on_poll_playbook_alert_start_time** | optional | string | Poll playbook alerts created after (date in ISO format: 2022-12-01T11:00:00+00) |
+**on_poll_leaked_credentials_domains** | optional | string | Comma-separated list of domains to be searched for leaked credentials. You consent to pulling and storing identity and credential data in the system. |
+**on_poll_leaked_credentials_novel_only** | optional | boolean | Only return novel credentials |
+**on_poll_leaked_credentials_created_after** | optional | string | Poll leaked credentials created after this date (ISO format: 2022-12-01T11:00:00+00) |
 
 ### Supported Actions
 
@@ -85,7 +88,9 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 [threat actor intelligence](#action-threat-actor-intelligence) - Get threat actor intelligence \
 [threat map](#action-threat-map) - Get threat map \
 [collective insights submit](#action-collective-insights-submit) - Enables contribute data, `collective insights`, into the Recorded Future Intelligence Cloud \
-[on poll](#action-on-poll) - Ingest alerts from Recorded Future
+[on poll](#action-on-poll) - Ingest alerts from Recorded Future \
+[fetch analyst notes](#action-fetch-analyst-notes) - Search for analyst notes \
+[identity leaked credentials search](#action-identity-leaked-credentials-search) - Retrieve leaked credentials from Recorded Future
 
 ## action: 'test connectivity'
 
@@ -1898,7 +1903,7 @@ Ingest alerts from Recorded Future
 Type: **ingest** \
 Read only: **True**
 
-This action will fetch alerts / Playbook Alerts for the specified rule IDs and within the specified timeframe. When limiting the number of events to ingest, it will ingest the most recent events.<br><br>
+This action will fetch alerts / Playbook Alerts for the specified rule IDs and leaked credentials within the specified timeframe. When limiting the number of events to ingest, it will ingest the most recent events.<br><br>
 
 #### Action Parameters
 
@@ -1912,6 +1917,120 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 #### Action Output
 
 No Output
+
+## action: 'fetch analyst notes'
+
+Search for analyst notes
+
+Type: **generic** \
+Read only: **False**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**topic** | optional | Topic ID to search analyst notes. | string | |
+**published** | optional | Published time filter (e.g., '-2d' or ISO timestamp). | string | |
+**limit** | optional | Limit the number of analyst notes to retrieve (max 1000). | numeric | |
+**tagged_text** | optional | Whether to return notes with tagged text. | boolean | |
+**escape_html** | optional | Whether to escape HTML in note content. | boolean | |
+**serialization** | optional | Serialization format for note content. | string | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string | | success failed |
+action_result.parameter.topic | string | | |
+action_result.data.ticket_id | string | `recordedfuture ticket id` | |
+action_result.data.note_count | numeric | | |
+action_result.data.notes.\*.id | string | `recordedfuture analyst note id` | |
+action_result.data.notes.\*.title | string | | |
+action_result.data.notes.\*.text | string | | |
+action_result.data.notes.\*.published | string | | |
+action_result.data.notes.\*.context_entities.\*.id | string | | |
+action_result.data.notes.\*.context_entities.\*.name | string | | |
+action_result.data.notes.\*.context_entities.\*.type | string | | |
+action_result.data.notes.\*.note_entities.\*.id | string | | |
+action_result.data.notes.\*.note_entities.\*.name | string | | |
+action_result.data.notes.\*.note_entities.\*.type | string | | |
+action_result.data.notes.\*.recommended_queries.\*.title | string | | |
+action_result.data.notes.\*.recommended_queries.\*.url.id | string | | |
+action_result.data.notes.\*.recommended_queries.\*.url.name | string | `url` | |
+action_result.data.notes.\*.recommended_queries.\*.url.type | string | | |
+action_result.data.notes.\*.topic.\*.id | string | | |
+action_result.data.notes.\*.topic.\*.name | string | | |
+action_result.data.notes.\*.topic.\*.type | string | | |
+action_result.data.notes.\*.topic.\*.description | string | | |
+action_result.data.notes.\*.validation_urls.\*.id | string | `url` | |
+action_result.data.notes.\*.validation_urls.\*.name | string | | |
+action_result.data.notes.\*.validation_urls.\*.type | string | | |
+action_result.data.notes.\*.source.id | string | | |
+action_result.data.notes.\*.source.name | string | | |
+action_result.data.notes.\*.source.type | string | | |
+action_result.summary.message | string | | |
+action_result.parameter.published | string | | |
+action_result.parameter.limit | numeric | | |
+action_result.parameter.tagged_text | boolean | | |
+action_result.parameter.escape_html | boolean | | |
+action_result.parameter.serialization | string | | |
+summary.total_objects_successful | numeric | | |
+summary.total_objects | numeric | | |
+action_result.message | string | | |
+
+## action: 'identity leaked credentials search'
+
+Retrieve leaked credentials from Recorded Future
+
+Type: **investigate** \
+Read only: **True**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**organization_id** | optional | Comma-separated list of Organization IDs to filter detections | string | `recordedfuture organization id` |
+**domains** | required | Comma-separated list of domains to search for detections | string | `domain` |
+**novel_only** | optional | Only fetch novel detections (True/False) | boolean | |
+**detection_type** | optional | Type of detection to fetch | string | |
+**created_after** | optional | Detections created after this date (ISO 8601 format) | string | |
+**created_before** | optional | Detections created before this date (ISO 8601 format) | string | |
+**limit** | optional | Number of results to return | numeric | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string | | success failed |
+action_result.parameter.organization_id | string | `recordedfuture organization id` | |
+action_result.data.\*.id | string | `recordedfuture detection id` | |
+action_result.data.\*.organization_id | string | `recordedfuture organization id` | |
+action_result.data.\*.subject | string | | |
+action_result.data.\*.type | string | | |
+action_result.data.\*.novel | boolean | | |
+action_result.data.\*.password.cleartext_hint | string | | |
+action_result.data.\*.password.cleartext | string | | |
+action_result.data.\*.authorization_service.url | string | | |
+action_result.data.\*.authorization_service.domains | string | | |
+action_result.data.\*.cookies.\*.name | string | | |
+action_result.data.\*.cookies.\*.value | string | | |
+action_result.data.\*.malware_family.name | string | | |
+action_result.data.\*.dump.name | string | | |
+action_result.data.\*.dump.description | string | | |
+action_result.data.\*.dump.location.city | string | | |
+action_result.data.\*.dump.location.country.name | string | | |
+action_result.data.\*.dump.breaches.\*.name | string | | |
+action_result.data.\*.created | string | | |
+action_result.summary.total_detections | numeric | | |
+action_result.message | string | `recordedfuture result message` | |
+summary.total_objects | numeric | `recordedfuture total objects` | 1 |
+summary.total_objects_successful | numeric | `recordedfuture total objects successful` | 1 |
+action_result.parameter.domains | string | `domain` | |
+action_result.parameter.novel_only | boolean | | |
+action_result.parameter.detection_type | string | | |
+action_result.parameter.created_after | string | | |
+action_result.parameter.created_before | string | | |
+action_result.parameter.limit | numeric | | |
 
 ______________________________________________________________________
 
