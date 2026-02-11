@@ -1,6 +1,6 @@
 # File: recordedfuture_connector.py
 #
-# Copyright (c) Recorded Future, Inc, 2019-2025
+# Copyright (c) Recorded Future, Inc, 2019-2026
 #
 # This unpublished material is proprietary to Recorded Future. All
 # rights reserved. The methods and techniques described herein are
@@ -418,7 +418,7 @@ class RecordedfutureConnector(BaseConnector):
         params = {"output-format": "application/json"}
 
         # make rest call - further info: https://docs.splunk.com/Documentation/Phantom/4.10/DevelopApps/Tutorial
-        my_ret_val, response = self._make_rest_call("/helo", action_result, params=params)
+        my_ret_val, _response = self._make_rest_call("/helo", action_result, params=params)
 
         if phantom.is_fail(my_ret_val):
             self.save_progress("Connectivity test failed. API endpoint not reachable")
@@ -428,7 +428,7 @@ class RecordedfutureConnector(BaseConnector):
 
         self.save_progress("Verifying Recorded Future API token")
 
-        my_ret_val, response = self._make_rest_call("/config/info", action_result)
+        my_ret_val, _response = self._make_rest_call("/config/info", action_result)
 
         # this is never run as we don't take care of a non-successful reply properly
         if phantom.is_fail(my_ret_val):
@@ -943,7 +943,7 @@ class RecordedfutureConnector(BaseConnector):
                 # description has string in the format -> "Container created from alert {alert_id}"
                 # we get alert_id from it.
                 params = [{"id": container["description"].split(" ")[4], "status": "Pending"}]
-                my_ret_val, response = self._make_rest_call("/alert/update", action_result, json=params, method="post")
+                my_ret_val, _response = self._make_rest_call("/alert/update", action_result, json=params, method="post")
 
                 # Something went wrong
                 if phantom.is_fail(my_ret_val):
@@ -1787,7 +1787,7 @@ class RecordedfutureConnector(BaseConnector):
 
         elif operation_type == "intelligence":
             omap = INTELLIGENCE_MAP
-            path_info_tmplt, fields, tag, do_quote = omap[entity_type]
+            _path_info_tmplt, _fields, tag, _do_quote = omap[entity_type]
             param_tag = UnicodeDammit(param[tag]).unicode_markup
             my_ret_val = self._handle_intelligence(param, param_tag, entity_type)
         elif operation_type == "reputation":
