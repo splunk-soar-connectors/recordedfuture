@@ -1,6 +1,6 @@
 # File: recordedfuture_view.py
 #
-# Copyright (c) Recorded Future, Inc, 2019-2025
+# Copyright (c) Recorded Future, Inc, 2019-2026
 #
 # This unpublished material is proprietary to Recorded Future. All
 # rights reserved. The methods and techniques described herein are

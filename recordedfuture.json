@@ -20,7 +20,7 @@
     ],
     "logo": "logo_recordedfuture.svg",
     "logo_dark": "logo_recordedfuture_dark.svg",
-    "license": "Copyright (c) Recorded Future, Inc, 2019-2025",
+    "license": "Copyright (c) Recorded Future, Inc, 2019-2026",
     "contributors": [
         {
             "name": "Recorded Future - Premier Integrations",
@@ -10512,5 +10512,11 @@
             },
             "versions": "EQ(*)"
         }
-    ]
+    ],
+    "pip39_dependencies": {
+        "wheel": []
+    },
+    "pip313_dependencies": {
+        "wheel": []
+    }
 }
