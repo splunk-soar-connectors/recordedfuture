@@ -33,7 +33,7 @@ import platform
 import sys
 import time
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from html import escape
 from math import ceil
 from typing import Literal
@@ -892,7 +892,7 @@ class RecordedfutureConnector(BaseConnector):
                 self.save_progress("API response provided no new leaked credentials containers to ingest")
 
         action_result.set_status(phantom.APP_SUCCESS)
-        self._state["last_leaked_credentials_fetch_time"] = datetime.now(tz=timezone.utc).isoformat()
+        self._state["last_leaked_credentials_fetch_time"] = datetime.now(tz=UTC).isoformat()
 
     def _on_poll(self, param):
         """Entry point for obtaining alerts, rules, and leaked credentials."""
