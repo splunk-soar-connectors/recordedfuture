@@ -1,7 +1,7 @@
 # Recorded Future For Splunk SOAR
 
 Publisher: Recorded Future, Inc <br>
-Connector Version: 4.6.0 <br>
+Connector Version: 4.6.1 <br>
 Product Vendor: Recorded Future, Inc <br>
 Product Name: Recorded Future App for Phantom <br>
 Minimum Product Version: 6.3.0
