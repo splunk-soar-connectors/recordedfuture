@@ -73,7 +73,7 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 [create list](#action-create-list) - Create new list <br>
 [list add entity](#action-list-add-entity) - Add new entity to list <br>
 [list remove entity](#action-list-remove-entity) - Remove entity from list <br>
-[list details](#action-list-details) - Get list details <br>
+[list details](#action-list-details) - Get list details. DEPRECATED: use 'list search' with 'list_id' parameter instead. This action will be removed in a future release <br>
 [list status](#action-list-status) - Get list status info <br>
 [list entities](#action-list-entities) - Get list entities <br>
 [ip reputation](#action-ip-reputation) - Get a quick indicator of the risk associated with an IP address <br>
@@ -954,6 +954,7 @@ Read only: **True**
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
 **list_name** | optional | List Name | string | |
+**list_id** | optional | List ID. If provided, returns details for a specific list. Cannot be combined with list_name or entity_types; limit is ignored when list_id is provided. Note: you can obtain List ID from a previous 'list search' by name. | string | |
 **entity_types** | optional | Entity Types | string | |
 **limit** | optional | Limit number of records in response | numeric | |
 
@@ -974,6 +975,7 @@ action_result.summary | string | | |
 action_result.message | string | `recordedfuture result message` | |
 summary.total_objects | numeric | `recordedfuture total objects` | 1 |
 summary.total_objects_successful | numeric | `recordedfuture total objects successful` | 1 |
+action_result.parameter.list_id | string | | |
 
 ## action: 'create list'
 
@@ -1070,7 +1072,7 @@ summary.total_objects_successful | numeric | `recordedfuture total objects succe
 
 ## action: 'list details'
 
-Get list details
+Get list details. DEPRECATED: use 'list search' with 'list_id' parameter instead. This action will be removed in a future release
 
 Type: **investigate** <br>
 Read only: **True**
