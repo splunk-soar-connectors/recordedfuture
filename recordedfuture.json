@@ -4543,6 +4543,11 @@
                     "data_type": "string",
                     "order": 0
                 },
+                "list_id": {
+                    "description": "List ID. If provided, returns details for a specific list. Cannot be combined with list_name or entity_types; limit is ignored when list_id is provided. Note: you can obtain List ID from a previous 'list search' by name.",
+                    "data_type": "string",
+                    "order": 1
+                },
                 "entity_types": {
                     "description": "Entity Types",
                     "data_type": "string",
@@ -4568,13 +4573,13 @@
                         "target",
                         "method"
                     ],
-                    "order": 1
+                    "order": 2
                 },
                 "limit": {
                     "description": "Limit number of records in response",
                     "data_type": "numeric",
                     "default": 25,
-                    "order": 2
+                    "order": 3
                 }
             },
             "output": [
@@ -4651,6 +4656,10 @@
                     "example_values": [
                         1
                     ]
+                },
+                {
+                    "data_path": "action_result.parameter.list_id",
+                    "data_type": "string"
                 }
             ],
             "render": {
@@ -5004,7 +5013,7 @@
         {
             "action": "list details",
             "identifier": "list_details",
-            "description": "Get list details",
+            "description": "Get list details. DEPRECATED: use 'list search' with 'list_id' parameter instead. This action will be removed in a future release",
             "type": "investigate",
             "read_only": true,
             "parameters": {

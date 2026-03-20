@@ -465,7 +465,7 @@ class RecordedfutureConnector(BaseConnector):
         )
 
         # Do not fail on 404. Give a message to user with success status.
-        if phantom.is_fail(my_ret_val) and response.status_code == 404:
+        if phantom.is_fail(my_ret_val) and response is not None and response.status_code == 404:
             action_result.set_status(
                 phantom.APP_SUCCESS,
                 status_message="Recorded Future does not have any information on this indicator.",
@@ -546,6 +546,11 @@ class RecordedfutureConnector(BaseConnector):
         if action == "search":
             return self._handle_list_search(param)
         if action == "details":
+            self.save_progress(
+                "DEPRECATION WARNING: 'list details' action is deprecated and will be "
+                "removed in a future release. Please use 'list search' with 'list_id' "
+                "parameter instead."
+            )
             return self._handle_list_details(param, info_type="info")
         if action == "entities":
             return self._handle_list_details(param, info_type="entities")
@@ -571,27 +576,50 @@ class RecordedfutureConnector(BaseConnector):
         """Find lists"""
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         action_result = self.add_action_result(ActionResult(param))
-        params = {"limit": param.get("limit", 25)}
-        entity_types = param.get("entity_types", "")
+
+        list_id = param.get("list_id")
         list_name = param.get("list_name", "")
-        if entity_types:
-            params["type"] = UnicodeDammit(escape(entity_types)).unicode_markup
-        if list_name:
-            params["name"] = UnicodeDammit(escape(list_name)).unicode_markup
+        entity_types = param.get("entity_types", "")
 
-        my_ret_val, response = self._make_rest_call("/list/search", action_result, json=params, method="post")
+        if list_id and (list_name or entity_types):
+            return action_result.set_status(
+                phantom.APP_ERROR,
+                "Invalid parameters: 'list_id' cannot be combined with 'list_name' or 'entity_types'. "
+                "Provide either 'list_id' alone or use 'list_name'/'entity_types' for search.",
+            )
 
-        self.debug_print(
-            "_handle_list_search",
-            {
-                "endpoint": "/list/search",
-                "action_result": action_result,
-                "param": param,
-                "params": params,
-                "my_ret_val": my_ret_val,
-                "response": response,
-            },
-        )
+        if list_id:
+            list_id = UnicodeDammit(list_id).unicode_markup
+            my_ret_val, response = self._make_rest_call(f"/list/{list_id}/info", action_result, method="get")
+            self.debug_print(
+                "_handle_list_search",
+                {
+                    "endpoint": f"/list/{list_id}/info",
+                    "action_result": action_result,
+                    "param": param,
+                    "my_ret_val": my_ret_val,
+                    "response": response,
+                },
+            )
+        else:
+            params = {"limit": param.get("limit", 25)}
+            if entity_types:
+                params["type"] = UnicodeDammit(escape(entity_types)).unicode_markup
+            if list_name:
+                params["name"] = UnicodeDammit(escape(list_name)).unicode_markup
+
+            my_ret_val, response = self._make_rest_call("/list/search", action_result, json=params, method="post")
+            self.debug_print(
+                "_handle_list_search",
+                {
+                    "endpoint": "/list/search",
+                    "action_result": action_result,
+                    "param": param,
+                    "params": params,
+                    "my_ret_val": my_ret_val,
+                    "response": response,
+                },
+            )
 
         return self._get_list_action_result(
             action_result=action_result,
