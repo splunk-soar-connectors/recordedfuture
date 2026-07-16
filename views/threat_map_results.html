@@ -205,7 +205,11 @@ and will be merged during compilation:
         <h5>Opportunity: {{ actor.opportunity }}</h5>
         <h5>Severity: {{ actor.severity }}</h5>
         <h5>Categories: {{ actor.categories|join:", "|default:"N/A" }}</h5>
-        <a href="{{ actor.intelCard }}">Link to Portal</a>
+        {% if actor.intelCard|slice:":8" == "https://" %}
+          <a href="{{ actor.intelCard }}">Link to Portal</a>
+        {% else %}
+          <span>Portal link unavailable</span>
+        {% endif %}
         <br />
         <hr />
       {% endfor %}

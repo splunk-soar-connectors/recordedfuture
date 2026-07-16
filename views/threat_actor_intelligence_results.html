@@ -203,7 +203,11 @@ and will be merged during compilation:
       <h5>Actor Opportunity: {{ result.data.opportunity|default:"N/A" }}</h5>
       <h5>Actor Severity: {{ result.data.severity|default:"N/A" }}</h5>
       <h5>Actor Categories: {{ result.data.categories|join:", "|default:"N/A" }}</h5>
-      <a href="{{ result.data.intelCard }}">Link to Portal</a>
+      {% if result.data.intelCard|slice:":8" == "https://" %}
+        <a href="{{ result.data.intelCard }}">Link to Portal</a>
+      {% else %}
+        <span>Portal link unavailable</span>
+      {% endif %}
       <h4>Links for {{ result.data.name }} :</h4>
       <div class="rf-full-width-box">
         <table class="rf-table">
