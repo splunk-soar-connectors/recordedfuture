@@ -15,6 +15,8 @@ import json
 
 from pytest_splunk_soar_connectors.models import InputJSON
 
+from recordedfuture_view import list_search_results
+
 
 BASE_URL = "http://localhost:8089/phantom"
 JSON_HEADERS = {"Content-Type": "application/json"}
@@ -211,3 +213,62 @@ def test_list_details_deprecation_warning(rf_connector, requests_mock):
         "removed in a future release. Please use 'list search' with 'list_id' "
         "parameter instead."
     )
+
+
+def test_list_search_view_renders_list_id_result(rf_connector, requests_mock):
+    """RFPD-107086: searching by list_id returns a single object (GET /list/{id}/info),
+    while the widget template iterates result.data. The view must normalize the single
+    object into a list so the widget renders it instead of showing an empty table."""
+    in_json: InputJSON = {
+        "action": "list search",
+        "identifier": "list_search",
+        "config": {},
+        "parameters": [{"list_id": "abc123"}],
+        "environment_variables": {},
+    }
+
+    requests_mock.get(
+        f"{BASE_URL}/list/abc123/info",
+        json=MOCKED_LIST_INFO,
+        headers=JSON_HEADERS,
+    )
+
+    rf_connector._handle_action(json.dumps(in_json), None)
+    results = rf_connector.get_action_results()
+
+    context = {}
+    list_search_results(None, [(None, results)], context)
+
+    rendered = context["results"][0]["data"]
+    # Must be an iterable of list objects (not the raw dict) so the template's
+    # `{% for el in result.data %}` yields data rows instead of dict keys.
+    assert rendered == [MOCKED_LIST_INFO]
+    assert rendered[0]["name"] == "My List"
+
+
+def test_list_search_view_renders_name_search_result(rf_connector, requests_mock):
+    """A name/type search returns an array (POST /list/search); the view must leave
+    that array untouched so every matched list renders."""
+    in_json: InputJSON = {
+        "action": "list search",
+        "identifier": "list_search",
+        "config": {},
+        "parameters": [{"list_name": "My List", "limit": 10}],
+        "environment_variables": {},
+    }
+
+    requests_mock.post(
+        f"{BASE_URL}/list/search",
+        json=MOCKED_LIST_SEARCH_RESPONSE,
+        headers=JSON_HEADERS,
+    )
+
+    rf_connector._handle_action(json.dumps(in_json), None)
+    results = rf_connector.get_action_results()
+
+    context = {}
+    list_search_results(None, [(None, results)], context)
+
+    rendered = context["results"][0]["data"]
+    assert rendered == MOCKED_LIST_SEARCH_RESPONSE
+    assert len(rendered) == 2
