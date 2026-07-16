@@ -789,6 +789,10 @@ class RecordedfutureConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _write_file_to_vault(self, container, file_data, file_name):
+        file_name = os.path.basename(str(file_name).replace("\\", "/"))
+        if file_name in {"", ".", ".."}:
+            raise ValueError("Invalid vault filename")
+
         if hasattr(vault.Vault, "get_vault_tmp_dir"):
             file_path = os.path.join(vault.Vault.get_vault_tmp_dir(), file_name)
         else:

@@ -1,3 +1,3 @@
 **Unreleased**
 
-* Chore: refresh development checks (temporary baseline note).
+* Restrict detection-rule output to a safe vault filename.
