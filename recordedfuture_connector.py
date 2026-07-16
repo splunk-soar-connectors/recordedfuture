@@ -37,6 +37,7 @@ from datetime import UTC, datetime
 from html import escape
 from math import ceil
 from typing import Literal
+from urllib.parse import quote
 
 # Phantom App imports
 # noinspection PyUnresolvedReferences
@@ -629,11 +630,12 @@ class RecordedfutureConnector(BaseConnector):
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         action_result = self.add_action_result(ActionResult(param))
         list_id = UnicodeDammit(param["list_id"]).unicode_markup
-        my_ret_val, response = self._make_rest_call(f"/list/{list_id}/{info_type}", action_result, method="get")
+        safe_list_id = quote(str(list_id), safe="")
+        my_ret_val, response = self._make_rest_call(f"/list/{safe_list_id}/{info_type}", action_result, method="get")
         self.debug_print(
             "_handle_list_details",
             {
-                "endpoint": f"/list/{list_id}/{info_type}",
+                "endpoint": f"/list/{safe_list_id}/{info_type}",
                 "action_result": action_result,
                 "my_ret_val": my_ret_val,
                 "response": response,
@@ -646,6 +648,7 @@ class RecordedfutureConnector(BaseConnector):
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         action_result = self.add_action_result(ActionResult(param))
         list_id = UnicodeDammit(param["list_id"]).unicode_markup
+        safe_list_id = quote(str(list_id), safe="")
         entity_id = param.get("entity_id")
         entity_name = param.get("entity_name")
         entity_type = param.get("entity_type")
@@ -655,11 +658,11 @@ class RecordedfutureConnector(BaseConnector):
             "type": (UnicodeDammit(escape(entity_type)).unicode_markup if entity_type else None),
             "id": (UnicodeDammit(escape(entity_id)).unicode_markup if entity_id else None),
         }
-        my_ret_val, response = self._make_rest_call(f"/list/{list_id}/entity/{action}", action_result, json=data, method="post")
+        my_ret_val, response = self._make_rest_call(f"/list/{safe_list_id}/entity/{action}", action_result, json=data, method="post")
         self.debug_print(
             "_handle_manage_list_entities",
             {
-                "endpoint": f"/list/{list_id}/entity/{action}",
+                "endpoint": f"/list/{safe_list_id}/entity/{action}",
                 "action_result": action_result,
                 "my_ret_val": my_ret_val,
                 "response": response,
@@ -1098,6 +1101,7 @@ class RecordedfutureConnector(BaseConnector):
 
         # Required values can be accessed directly
         rule_id = UnicodeDammit(param["rule_id"]).unicode_markup
+        safe_rule_id = quote(str(rule_id), safe="")
         timeframe = UnicodeDammit(param["timeframe"]).unicode_markup
         assert rule_id is not None
         assert timeframe is not None
@@ -1106,12 +1110,12 @@ class RecordedfutureConnector(BaseConnector):
         params = {"triggered": timeframe}
 
         # Make rest call
-        my_ret_val, response = self._make_rest_call(f"/alert/rule/{rule_id}", action_result, params=params)
+        my_ret_val, response = self._make_rest_call(f"/alert/rule/{safe_rule_id}", action_result, params=params)
 
         self.debug_print(
             "_handle_alert_search",
             {
-                "path_info": f"/alert/rule/{rule_id}",
+                "path_info": f"/alert/rule/{safe_rule_id}",
                 "action_result": action_result,
                 "params": params,
                 "my_ret_val": my_ret_val,
@@ -1181,14 +1185,15 @@ class RecordedfutureConnector(BaseConnector):
 
         # Required values can be accessed directly
         alert_id = UnicodeDammit(param["alert_id"]).unicode_markup
+        safe_alert_id = quote(str(alert_id), safe="")
 
         # Make rest call
-        my_ret_val, response = self._make_rest_call(f"/alert/lookup/{alert_id}", action_result)
+        my_ret_val, response = self._make_rest_call(f"/alert/lookup/{safe_alert_id}", action_result)
 
         self.debug_print(
             "_handle_alert_lookup",
             {
-                "path_info": f"/alert/lookup/{alert_id}",
+                "path_info": f"/alert/lookup/{safe_alert_id}",
                 "action_result": action_result,
                 "my_ret_val": my_ret_val,
                 "response": response,
@@ -1359,17 +1364,18 @@ class RecordedfutureConnector(BaseConnector):
         # Add an action result object to self (BaseConnector) to represent
         # the action for this param
         action_result = self.add_action_result(ActionResult(param))
+        safe_alert_id = quote(str(param["alert_id"]), safe="")
 
         # make rest call
         my_ret_val, response = self._make_rest_call(
-            f"/playbook_alert/{param['alert_id']}",
+            f"/playbook_alert/{safe_alert_id}",
             action_result,
         )
 
         self.debug_print(
             "_handle_playbook_alert_details",
             {
-                "path_info": f"/playbook_alert/domain_abuse/{param['alert_id']}",
+                "path_info": f"/playbook_alert/{safe_alert_id}",
                 "action_result": action_result,
                 "my_ret_val": my_ret_val,
                 "response": response,
@@ -1392,6 +1398,7 @@ class RecordedfutureConnector(BaseConnector):
         # Add an action result object to self (BaseConnector) to represent
         # the action for this param
         action_result = self.add_action_result(ActionResult(param))
+        safe_alert_id = quote(str(param["alert_id"]), safe="")
 
         params = {
             "priority": UnicodeDammit(param.get("priority", "")).unicode_markup,
@@ -1402,7 +1409,7 @@ class RecordedfutureConnector(BaseConnector):
 
         # make rest call
         my_ret_val, response = self._make_rest_call(
-            f"/playbook_alert/{param['alert_id']}",
+            f"/playbook_alert/{safe_alert_id}",
             json=params,
             action_result=action_result,
             method="put",
@@ -1411,7 +1418,7 @@ class RecordedfutureConnector(BaseConnector):
         self.debug_print(
             "_handle_playbook_alert_update",
             {
-                "path_info": f"/playbook_alert/{param['alert_id']}",
+                "path_info": f"/playbook_alert/{safe_alert_id}",
                 "action_result": action_result,
                 "my_ret_val": my_ret_val,
                 "response": response,
