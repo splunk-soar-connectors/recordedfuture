@@ -207,27 +207,27 @@ and will be merged during compilation:
                   <span class="non-highlighted">Domain Reputation</span>
                   <br />
                   <a href="javascript:;"
-                     onclick="context_menu(this, [{'contains': ['domain'], 'value': '{{ result.param.domain }}' }], 0, {{ container.id }}, null, false);">{{ result.param.domain }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
+                     onclick="context_menu(this, [{'contains': ['domain'], 'value': '{{ result.param.domain|escapejs }}' }], 0, {{ container.id }}, null, false);">{{ result.param.domain }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
                 {% elif result.param.ip %}
                   <span class="non-highlighted">IP Reputation</span>
                   <br />
                   <a href="javascript:;"
-                     onclick="context_menu(this, [{'contains': ['ip'], 'value': '{{ result.param.ip }}' }], 0, {{ container.id }}, null, false);">{{ result.param.ip }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
+                     onclick="context_menu(this, [{'contains': ['ip'], 'value': '{{ result.param.ip|escapejs }}' }], 0, {{ container.id }}, null, false);">{{ result.param.ip }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
                 {% elif result.param.hash %}
                   <span class="non-highlighted">Hash Reputation</span>
                   <br />
                   <a href="javascript:;"
-                     onclick="context_menu(this, [{'contains': ['hash'], 'value': '{{ result.param.hash }}' }], 0, {{ container.id }}, null, false);">{{ result.param.hash }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
+                     onclick="context_menu(this, [{'contains': ['hash'], 'value': '{{ result.param.hash|escapejs }}' }], 0, {{ container.id }}, null, false);">{{ result.param.hash }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
                 {% elif result.param.url %}
                   <span class="non-highlighted">URL Reputation</span>
                   <br />
                   <a href="javascript:;"
-                     onclick="context_menu(this, [{'contains': ['url'], 'value': '{{ result.param.url }}' }], 0, {{ container.id }}, null, false);">{{ result.param.url }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
+                     onclick="context_menu(this, [{'contains': ['url'], 'value': '{{ result.param.url|escapejs }}' }], 0, {{ container.id }}, null, false);">{{ result.param.url }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
                 {% elif result.param.vulnerability %}
                   <span class="non-highlighted">Vulnerability Reputation</span>
                   <br />
                   <a href="javascript:;"
-                     onclick="context_menu(this, [{'contains': ['vulnerability'], 'value': '{{ result.param.vulnerability }}' }], 0, {{ container.id }}, null, false);">{{ result.param.vulnerability }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
+                     onclick="context_menu(this, [{'contains': ['vulnerability'], 'value': '{{ result.param.vulnerability|escapejs }}' }], 0, {{ container.id }}, null, false);">{{ result.param.vulnerability }}&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
                 {% endif %}
               </td>
             </tr>
