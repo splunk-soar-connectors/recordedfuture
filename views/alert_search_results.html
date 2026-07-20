@@ -207,7 +207,7 @@ and will be merged during compilation:
                   <br />
                   {{ alert.rule.name }}
                   (<a href="javascript:;"
-   onclick="context_menu(this, [{'contains': ['recordedfuture alert rule id'], 'value': '{{ alert.rule.id }}' }], 0, {{ container.id }}, null, false);">
+   onclick="context_menu(this, [{'contains': ['recordedfuture alert rule id'], 'value': '{{ alert.rule.id|escapejs }}' }], 0, {{ container.id }}, null, false);">
                   <span class="highlighted">{{ alert.rule.id }})</span>&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
               </td>
               <td style="width: 20%">
@@ -223,7 +223,7 @@ and will be merged during compilation:
                   <br />
                   {{ triggered.title }}
                   (<a href="javascript:;"
-   onclick="context_menu(this, [{'contains': ['recordedfuture alert id'], 'value': '{{ triggered.id }}' }], 0, {{ container.id }}, null, false);">
+   onclick="context_menu(this, [{'contains': ['recordedfuture alert id'], 'value': '{{ triggered.id|escapejs }}' }], 0, {{ container.id }}, null, false);">
                   <span class="highlighted">{{ triggered.id }})</span>&nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span></a>
               </td>
               <td>

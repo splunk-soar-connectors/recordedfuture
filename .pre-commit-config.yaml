@@ -8,7 +8,7 @@ default_stages: [pre-commit]
 # This is a template for connector pre-commit hooks
 repos:
   - repo: https://github.com/compilerla/conventional-pre-commit
-    rev: v4.3.0
+    rev: v4.4.0
     hooks:
       - id: conventional-pre-commit
         stages: [commit-msg]
@@ -27,25 +27,31 @@ repos:
       - id: check-json
       - id: check-yaml
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.0
+    rev: v0.15.22
     hooks:
       - id: ruff
         args: [ "--fix", "--unsafe-fixes"] # Allow unsafe fixes (ruff pretty strict about what it can fix)
       - id: ruff-format
   - repo: https://github.com/djlint/djLint
-    rev: v1.36.4
+    rev: v1.40.7
     hooks:
       - id: djlint-reformat-django
       - id: djlint-django
+  - repo: https://github.com/phantomcyber/soar-app-linter
+    rev: 0.1.0
+    hooks:
+      - id: soar-app-linter
+        args: ["--single-repo", "--message-level", "error"]
   - repo: https://github.com/hukkin/mdformat
     rev: 1.0.0
     hooks:
       - id: mdformat
         exclude: "release_notes/.*"
-  - repo: https://github.com/semgrep/pre-commit
-    rev: v1.149.0
+  - repo: https://github.com/returntocorp/semgrep
+    rev: v1.165.0
     hooks:
       - id: semgrep
+        additional_dependencies: ["setuptools==81.0.0"]
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.5.0
     hooks:
@@ -55,7 +61,7 @@ repos:
         exclude: "README.md"
   # Central hooks
   - repo: https://github.com/phantomcyber/dev-cicd-tools
-    rev: v2.1.1
+    rev: v2.1.6
     hooks:
       - id: build-docs
         language: python
