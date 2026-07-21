@@ -49,7 +49,7 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 **on_poll_playbook_alert_type** | optional | string | Comma-separated list of Playbook alert types. (domain_abuse, cyber_vulnerability, code_repo_leakage are now supported) |
 **on_poll_playbook_alert_status** | optional | string | Comma-separated list of Playbook alert statuses. (New, InProgress, Dismissed, Resolved are now supported) |
 **on_poll_playbook_alert_start_time** | optional | string | Poll playbook alerts created after (date in ISO format: 2022-12-01T11:00:00+00) |
-**on_poll_leaked_credentials_domains** | optional | string | Comma-separated list of domains to be searched for leaked credentials. You consent to pulling and storing identity and credential data in the system. |
+**on_poll_leaked_credentials_domains** | optional | string | Comma-separated list of domains to be searched for leaked credentials (maximum 200 domains). You consent to pulling and storing identity and credential data in the system. |
 **on_poll_leaked_credentials_novel_only** | optional | boolean | Only return novel credentials |
 **on_poll_leaked_credentials_created_after** | optional | string | Poll leaked credentials created after this date (ISO format: 2022-12-01T11:00:00+00) |
 
@@ -1992,7 +1992,7 @@ Read only: **True**
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
 **organization_id** | optional | Comma-separated list of Organization IDs to filter detections | string | `recordedfuture organization id` |
-**domains** | required | Comma-separated list of domains to search for detections | string | `domain` |
+**domains** | required | Comma-separated list of domains to search for detections (maximum 200 domains) | string | `domain` |
 **novel_only** | optional | Only fetch novel detections (True/False) | boolean | |
 **detection_type** | optional | Type of detection to fetch | string | |
 **created_after** | optional | Detections created after this date (ISO 8601 format) | string | |
