@@ -145,7 +145,7 @@
         "on_poll_leaked_credentials_domains": {
             "data_type": "string",
             "order": 21,
-            "description": "Comma-separated list of domains to be searched for leaked credentials. You consent to pulling and storing identity and credential data in the system."
+            "description": "Comma-separated list of domains to be searched for leaked credentials (maximum 200 domains). You consent to pulling and storing identity and credential data in the system."
         },
         "ph9": {
             "data_type": "ph",
@@ -10303,7 +10303,7 @@
                     "order": 0
                 },
                 "domains": {
-                    "description": "Comma-separated list of domains to search for detections",
+                    "description": "Comma-separated list of domains to search for detections (maximum 200 domains)",
                     "data_type": "string",
                     "required": true,
                     "contains": [
