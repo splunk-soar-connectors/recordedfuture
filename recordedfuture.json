@@ -5,7 +5,7 @@
     "publisher": "Recorded Future, Inc",
     "type": "reputation",
     "main_module": "recordedfuture_connector.py",
-    "app_version": "4.6.2",
+    "app_version": "4.7.0",
     "utctime_updated": "2026-07-17T23:29:22.059043Z",
     "package_name": "phantom_recordedfuture",
     "product_name": "Recorded Future App for Phantom",
@@ -145,7 +145,7 @@
         "on_poll_leaked_credentials_domains": {
             "data_type": "string",
             "order": 21,
-            "description": "Comma-separated list of domains to be searched for leaked credentials. You consent to pulling and storing identity and credential data in the system."
+            "description": "Comma-separated list of domains to be searched for leaked credentials (maximum 200 domains). You consent to pulling and storing identity and credential data in the system."
         },
         "ph9": {
             "data_type": "ph",
@@ -4543,6 +4543,11 @@
                     "data_type": "string",
                     "order": 0
                 },
+                "list_id": {
+                    "description": "List ID. If provided, returns details for a specific list. Cannot be combined with list_name or entity_types; limit is ignored when list_id is provided. Note: you can obtain List ID from a previous 'list search' by name.",
+                    "data_type": "string",
+                    "order": 1
+                },
                 "entity_types": {
                     "description": "Entity Types",
                     "data_type": "string",
@@ -4568,13 +4573,13 @@
                         "target",
                         "method"
                     ],
-                    "order": 1
+                    "order": 2
                 },
                 "limit": {
                     "description": "Limit number of records in response",
                     "data_type": "numeric",
                     "default": 25,
-                    "order": 2
+                    "order": 3
                 }
             },
             "output": [
@@ -4651,6 +4656,10 @@
                     "example_values": [
                         1
                     ]
+                },
+                {
+                    "data_path": "action_result.parameter.list_id",
+                    "data_type": "string"
                 }
             ],
             "render": {
@@ -5004,7 +5013,7 @@
         {
             "action": "list details",
             "identifier": "list_details",
-            "description": "Get list details",
+            "description": "Get list details. DEPRECATED: use 'list search' with 'list_id' parameter instead. This action will be removed in a future release",
             "type": "investigate",
             "read_only": true,
             "parameters": {
@@ -10294,7 +10303,7 @@
                     "order": 0
                 },
                 "domains": {
-                    "description": "Comma-separated list of domains to search for detections",
+                    "description": "Comma-separated list of domains to search for detections (maximum 200 domains)",
                     "data_type": "string",
                     "required": true,
                     "contains": [

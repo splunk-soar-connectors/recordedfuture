@@ -1,7 +1,7 @@
 # Recorded Future For Splunk SOAR
 
 Publisher: Recorded Future, Inc <br>
-Connector Version: 4.6.2 <br>
+Connector Version: 4.7.0 <br>
 Product Vendor: Recorded Future, Inc <br>
 Product Name: Recorded Future App for Phantom <br>
 Minimum Product Version: 6.3.0
@@ -49,7 +49,7 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 **on_poll_playbook_alert_type** | optional | string | Comma-separated list of Playbook alert types. (domain_abuse, cyber_vulnerability, code_repo_leakage are now supported) |
 **on_poll_playbook_alert_status** | optional | string | Comma-separated list of Playbook alert statuses. (New, InProgress, Dismissed, Resolved are now supported) |
 **on_poll_playbook_alert_start_time** | optional | string | Poll playbook alerts created after (date in ISO format: 2022-12-01T11:00:00+00) |
-**on_poll_leaked_credentials_domains** | optional | string | Comma-separated list of domains to be searched for leaked credentials. You consent to pulling and storing identity and credential data in the system. |
+**on_poll_leaked_credentials_domains** | optional | string | Comma-separated list of domains to be searched for leaked credentials (maximum 200 domains). You consent to pulling and storing identity and credential data in the system. |
 **on_poll_leaked_credentials_novel_only** | optional | boolean | Only return novel credentials |
 **on_poll_leaked_credentials_created_after** | optional | string | Poll leaked credentials created after this date (ISO format: 2022-12-01T11:00:00+00) |
 
@@ -73,7 +73,7 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 [create list](#action-create-list) - Create new list <br>
 [list add entity](#action-list-add-entity) - Add new entity to list <br>
 [list remove entity](#action-list-remove-entity) - Remove entity from list <br>
-[list details](#action-list-details) - Get list details <br>
+[list details](#action-list-details) - Get list details. DEPRECATED: use 'list search' with 'list_id' parameter instead. This action will be removed in a future release <br>
 [list status](#action-list-status) - Get list status info <br>
 [list entities](#action-list-entities) - Get list entities <br>
 [ip reputation](#action-ip-reputation) - Get a quick indicator of the risk associated with an IP address <br>
@@ -954,6 +954,7 @@ Read only: **True**
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
 **list_name** | optional | List Name | string | |
+**list_id** | optional | List ID. If provided, returns details for a specific list. Cannot be combined with list_name or entity_types; limit is ignored when list_id is provided. Note: you can obtain List ID from a previous 'list search' by name. | string | |
 **entity_types** | optional | Entity Types | string | |
 **limit** | optional | Limit number of records in response | numeric | |
 
@@ -974,6 +975,7 @@ action_result.summary | string | | |
 action_result.message | string | `recordedfuture result message` | |
 summary.total_objects | numeric | `recordedfuture total objects` | 1 |
 summary.total_objects_successful | numeric | `recordedfuture total objects successful` | 1 |
+action_result.parameter.list_id | string | | |
 
 ## action: 'create list'
 
@@ -1070,7 +1072,7 @@ summary.total_objects_successful | numeric | `recordedfuture total objects succe
 
 ## action: 'list details'
 
-Get list details
+Get list details. DEPRECATED: use 'list search' with 'list_id' parameter instead. This action will be removed in a future release
 
 Type: **investigate** <br>
 Read only: **True**
@@ -1990,7 +1992,7 @@ Read only: **True**
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
 **organization_id** | optional | Comma-separated list of Organization IDs to filter detections | string | `recordedfuture organization id` |
-**domains** | required | Comma-separated list of domains to search for detections | string | `domain` |
+**domains** | required | Comma-separated list of domains to search for detections (maximum 200 domains) | string | `domain` |
 **novel_only** | optional | Only fetch novel detections (True/False) | boolean | |
 **detection_type** | optional | Type of detection to fetch | string | |
 **created_after** | optional | Detections created after this date (ISO 8601 format) | string | |
