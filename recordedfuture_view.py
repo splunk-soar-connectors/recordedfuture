@@ -332,6 +332,12 @@ def list_search_results(provides, all_app_runs, context):
             result_data = result.get_data()
             if result_data:
                 result_data = result_data[0]
+                # When searching by list_id the API returns a single list object
+                # (GET /list/{id}/info); a name/type search returns an array
+                # (POST /list/search). Normalize the single object into a list so
+                # the template can iterate over it uniformly.
+                if isinstance(result_data, dict):
+                    result_data = [result_data]
             results.append({"param": result.get_param(), "data": result_data})
 
     return "views/list_search_results.html"
