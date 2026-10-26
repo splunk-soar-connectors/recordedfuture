@@ -12,7 +12,7 @@ Settings" and "Ingest Settings".
 "Asset Settings" defines a list of rule IDs, what severity to apply to the new events and set the
 limits for the number of events created by the ingestion.
 
-<img src="img/recorded_future_asset_settings.png" style="{border-style: solid;}" />
+![](img/recorded_future_asset_settings.png)
 
 The scheduling of the ingestion is set under "Ingest Settings"
 

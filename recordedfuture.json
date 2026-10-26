@@ -118,7 +118,7 @@
         "on_poll_playbook_alert_type": {
             "data_type": "string",
             "order": 15,
-            "description": "Comma-separated list of Playbook alert types. (domain_abuse, cyber_vulnerability, code_repo_leakage are now supported)"
+            "description": "Comma-separated list of Playbook alert types. (domain_abuse, cyber_vulnerability, code_repo_leakage, malicious_sites are supported)"
         },
         "ph6": {
             "data_type": "ph",
@@ -5921,7 +5921,7 @@
             "read_only": true,
             "parameters": {
                 "category": {
-                    "description": "Playbook alert category (cyber_vulnerability, domain_abuse, code_repo_leakage)",
+                    "description": "Playbook alert category (cyber_vulnerability, domain_abuse, code_repo_leakage, malicious_sites)",
                     "data_type": "string",
                     "order": 0
                 },
@@ -6312,6 +6312,62 @@
                 },
                 {
                     "data_path": "action_result.data.*.panel_evidence_summary.screenshots.*.tag",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.category",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_summary.attackers.*.attacker",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_summary.attackers.*.cause",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_summary.attackers.*.priority",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_summary.attackers.*.assessments.*.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_summary.attackers.*.assessments.*.priority",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_summary.attackers.*.assets.*.type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_summary.attackers.*.assets.*.company_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_summary.attackers.*.assets.*.logotype_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_summary.attackers.*.logotypes.*.url",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_summary.attackers.*.logotypes.*.is_high_interest",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_summary.attackers.*.screenshots.*.image_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_summary.attackers.*.screenshots.*.tag",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.panel_evidence_summary.attackers.*.screenshots.*.created",
                     "data_type": "string"
                 },
                 {

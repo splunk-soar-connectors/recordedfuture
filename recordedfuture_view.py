@@ -40,6 +40,7 @@ PLAYBOOK_ALERT_CATEGORY_DISPLAY_MAPPING = {
     "domain_abuse": "Domain Abuse",
     "cyber_vulnerability": "Vulnerability",
     "code_repo_leakage": "Code Repo Leakage",
+    "malicious_sites": "Malicious Sites",
 }
 
 

@@ -354,6 +354,67 @@ and will be merged during compilation:
             {% endif %}
           {% endfor %}
         </div>
+      {% elif result.data.category == "malicious_sites" %}
+        <h3 class="rf-playbook-alert-panel-title">Malicious Sites</h3>
+        <div class="rf-alert-panel">
+          <div class="rf-playbook-alert-data-row">
+            <div class="rf-playbook-alert-data-row-title">Subject</div>
+            <div>{{ result.data.panel_status.entity_name }}</div>
+          </div>
+          <div class="rf-playbook-alert-data-row">
+            <div class="rf-playbook-alert-data-row-title">Status</div>
+            <div>{{ result.data.panel_status.status }}</div>
+          </div>
+          <div class="rf-playbook-alert-data-row">
+            <div class="rf-playbook-alert-data-row-title">Priority</div>
+            <div>{{ result.data.panel_status.priority }}</div>
+          </div>
+          <div class="rf-playbook-alert-data-row">
+            <div class="rf-playbook-alert-data-row-title">Created</div>
+            <div>{{ result.data.panel_status.created }}</div>
+          </div>
+        </div>
+        <h3 class="rf-playbook-alert-panel-title">Evidence summary</h3>
+        <div class="rf-alert-panel">
+          <p>{{ result.data.panel_evidence_summary.explanation }}</p>
+          <p>Cause: {{ result.data.panel_evidence_summary.cause }}</p>
+          {% for attacker in result.data.panel_evidence_summary.attackers %}
+            <div class="rf-alert-panel">
+              <h4>{{ attacker.attacker }}</h4>
+              <p>Cause: {{ attacker.cause }} | Priority: {{ attacker.priority }}</p>
+              {% for assessment in attacker.assessments %}
+                <div class="rf-playbook-alert-data-row">
+                  <div>{{ assessment.name }}</div>
+                  <div>{{ assessment.priority }}</div>
+                </div>
+              {% endfor %}
+              {% for asset in attacker.assets %}
+                <div class="rf-playbook-alert-data-row">
+                  <div>{{ asset.type }}</div>
+                  <div>{{ asset.company_id }}{{ asset.logotype_id }}</div>
+                </div>
+              {% endfor %}
+              {% for logotype in attacker.logotypes %}
+                <div class="rf-playbook-alert-data-row">
+                  <div>Logo URL: {{ logotype.url }}</div>
+                  <div>High interest: {{ logotype.is_high_interest }}</div>
+                </div>
+              {% endfor %}
+              {% for screenshot in attacker.screenshots %}
+                <div class="rf-playbook-alert-data-row">
+                  <div>Screenshot: {{ screenshot.tag }}</div>
+                  <div>{{ screenshot.created }}</div>
+                  <div>{{ screenshot.image_id }}</div>
+                </div>
+              {% endfor %}
+            </div>
+          {% endfor %}
+          {% for image in result.data.images %}
+            <img class="rf-playbook-alert-screenshot"
+                 src="data:image/jpeg;base64, {{ image }}"
+                 alt="Malicious site screenshot">
+          {% endfor %}
+        </div>
       {% elif result.data.category == "cyber_vulnerability" %}
         <h3 class="rf-playbook-alert-panel-title">Vulnerability</h3>
         <div class="rf-alert-panel">
