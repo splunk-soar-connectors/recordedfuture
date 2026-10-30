@@ -13,6 +13,7 @@
 # limitations under the License.
 import json
 
+import pytest
 from pytest_splunk_soar_connectors.models import InputJSON
 
 
@@ -136,6 +137,39 @@ def test_ip_reputation_no_data(rf_connector, requests_mock):
     result = rf_connector.get_action_results()[0]
     assert result.get_status() is True
     assert result.get_summary().get("riskscore") == "No information available."
+
+
+@pytest.mark.parametrize(
+    ("identifier", "parameter", "value"),
+    [
+        ("ip_reputation", "ip", "192.0.2.1"),
+        ("domain_reputation", "domain", "example.invalid"),
+        ("url_reputation", "url", "https://example.invalid/indicator"),
+        ("file_reputation", "hash", "a" * 64),
+    ],
+)
+def test_reputation_empty_response(rf_connector, requests_mock, identifier, parameter, value):
+    in_json: InputJSON = {
+        "action": identifier.replace("_", " "),
+        "identifier": identifier,
+        "config": {},
+        "parameters": [{parameter: value}],
+        "environment_variables": {},
+    }
+    requests_mock.post(
+        f"{BASE_URL}/lookup/reputation",
+        json=[],
+        headers=JSON_HEADERS,
+        additional_matcher=lambda req: req.json() == {parameter: value},
+    )
+
+    rf_connector._handle_action(json.dumps(in_json), None)
+
+    result = rf_connector.get_action_results()[0]
+    assert result.get_status() is True
+    assert result.get_summary().get("riskscore") == "No information available."
+    assert result.get_data() == [{}]
+    assert requests_mock.call_count == 1
 
 
 def test_ip_reputation_api_error(rf_connector, requests_mock):

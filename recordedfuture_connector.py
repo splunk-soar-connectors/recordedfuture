@@ -521,7 +521,7 @@ class RecordedfutureConnector(BaseConnector):
 
         # the BFI returns a list of entities. In future we may add the capability for
         # to do a reputation lookup of more than one entity
-        entity = response.pop(0)
+        entity = response[0] if response else {}
 
         summary = action_result.get_summary()
 
