@@ -1,1 +1,3 @@
 **Unreleased**
+
+* Return no-information results when a reputation lookup returns an empty array.
